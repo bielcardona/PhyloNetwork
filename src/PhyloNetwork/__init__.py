@@ -3,6 +3,7 @@ Class for phylogenetic networks... with nested taxa
 """
 
 from classes import *
+from distances import *
 
 def eNewick_reader(filename,ignore_prefix=None):
     f = open(filename,'r')
@@ -17,5 +18,5 @@ def eNewick_reader(filename,ignore_prefix=None):
 if __name__ == '__main__':
     net1=PhyloNetwork(eNewick='(1,2,3);')
     net2=PhyloNetwork(eNewick='(1,2)3;')
-    print net1.mu_distance(net2)
+    print mu_distance(net1,net2)
     

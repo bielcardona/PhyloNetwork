@@ -177,6 +177,15 @@ class PhyloNetwork(DiGraph):
                 self._mus[u][pos]=1                
             return self._mus[u]
 
+    def mu_string(self):
+        try:
+            return self._mu_string
+        except:
+            self._mu_string=\
+            '-'.join([str(self.mu(u)) for u in self.sorted_nodes()])
+            return self._mu_string
+
+
     def sorted_nodes(self):
         try:
             return self._sorted_nodes
@@ -253,37 +262,6 @@ class PhyloNetwork(DiGraph):
             string += self.eNewick_node(root,visited)+';'
         return string
     
-    def mu_distance(self,net2):
-#        if self.taxa() != net2.taxa():
-#            return
-        nodes1=self.sorted_nodes()[:]
-        nodes2=net2.sorted_nodes()[:]
-        d=0
-        while(len(nodes1)>0 and len(nodes2)>0):
-            x1=nodes1[0]
-            x2=nodes2[0]
-            comp=total_cmp(self.mu(x1),net2.mu(x2))
-            if comp==-1:
-                del nodes1[0]
-                d+=1
-            elif comp==1:
-                del nodes2[0]
-                d+=1
-            else:
-                del nodes1[0]
-                del nodes2[0]
-        return d+len(nodes1)+len(nodes2)
-
-    def mu_string(self):
-        try:
-            return self._mu_string
-        except:
-            self._mu_string=\
-            '-'.join([str(self.mu(u)) for u in self.sorted_nodes()])
-            return self._mu_string
-    
-    def is_isomorphic_fast(self,net2):
-        return self.mu_string() == net2.mu_string()
 
     def descendant_nodes(self,u):
         try:
@@ -385,29 +363,6 @@ class PhyloNetwork(DiGraph):
             self._nodal_matrix=matrix
             return self._nodal_matrix
 
-    def nodal_distance_splitted(self,net2,p=1,take_root=False):
-        mat=self.nodal_matrix()-net2.nodal_matrix()
-        if p==1:
-            return sum(abs(mat.flatten()))
-        else:
-            if take_root:
-                return sum(abs(mat.flatten())**p)**(1.0/p)
-            else:
-                return sum(abs(mat.flatten())**p)
-
-    def nodal_distance_unsplitted(self,net2,p=1,take_root=False):
-        mat1=self.nodal_matrix()
-        mat1=mat1+mat1.transpose()
-        mat2=net2.nodal_matrix()
-        mat2=mat2+mat2.transpose()
-        mat=mat1-mat2
-        if p==1:
-            return sum(abs(mat.flatten()))/2
-        else:
-            if take_root:
-                return (sum(abs(mat.flatten())**p)/2)**(1.0/p)
-            else:
-                return (sum(abs(mat.flatten())**p)/2)
 
     def nodal_area(self):
         mat=self.nodal_matrix()
@@ -521,18 +476,6 @@ class PhyloNetwork(DiGraph):
             self._matching_permutation=permutations.Permutation(permutation)
             return self._matching_permutation
 
-    def transposition_distance(self,net2):
-#        pi1=permutations.Permutation(self.matching_permutation())
-#        pi2=permutations.Permutation(net2.matching_permutation())
-        pi1=self.matching_permutation()
-        pi2=net2.matching_permutation()
-        pi=pi2**(-1)*pi1
-        cicles=pi.cycles()
-        dist=0
-        for cicle in cicles:
-            dist+=len(cicle)-1
-        return dist/2
-
     def cluster(self,u):
         cl=[]
         dictio=single_source_shortest_path_length(self,u)
@@ -547,9 +490,6 @@ class PhyloNetwork(DiGraph):
         cls=map(self.cluster,self.nodes())
         cls.sort()
         return cls
-
-    def RF_distance(self,net2):
-        return len(set(self.cluster_representation())^set(net2.cluster_representation()))
 
     def nested_label(self,node):
         try:
@@ -569,6 +509,4 @@ class PhyloNetwork(DiGraph):
         nls=map(self.nested_label,self.nodes())
         return set(nls)
 
-    def nested_label_distance(self,net2):
-        return len(self.nested_label_representation() ^ net2.nested_label_representation())
     
