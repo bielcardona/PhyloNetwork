@@ -10,8 +10,8 @@ class memoize(object):
 	"""Decorator that caches a function's return value each time it is called.
 	If called later with the same arguments, the cached value is returned, and
 	not re-evaluated.
-	The cache is stored as a property of the instance decorated, so that it is
-	very easy to clear it.
+	The cache is stored as the property 'cache' of the instance whose method is 
+	decorated, so that it is very easy to clear it.
 	"""
 	def __init__(self, func):
 		print "Init"
@@ -21,7 +21,7 @@ class memoize(object):
 	def __call__(self, *args):
 		print "Call"
 		if not self.func in self.cache:
-			 self.cache[self.func] = {}
+			self.cache[self.func] = {}
 		try:
 			return self.cache[self.func][args]
 		except KeyError:
@@ -32,18 +32,21 @@ class memoize(object):
 			# uncachable -- for instance, passing a list as an argument.
 			# Better to not cache than to blow up entirely.
 			return self.func(*args)
-	  
+
 	def __repr__(self):
 		"""Return the function's docstring."""
 		return self.func.__doc__
-  
+
 	def __get__(self, obj, objtype):
 		"""Support instance methods."""
 		print "Get"
+		try:
+			fn = self.fn
+		except:
+			print "at partial"
+			fn = functools.partial(self.__call__, obj)
+			self.fn = fn
+		#if not self.hasattr('cache'):
 		self.cache = obj.cache
-		fn = functools.partial(self.__call__, obj)
 		return fn
-  
-	def _echo(self,*args):
-		 print self.cache
-		 print args
+
