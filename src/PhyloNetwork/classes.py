@@ -10,7 +10,7 @@ from networkx import single_source_shortest_path_length,all_pairs_shortest_path_
 
 import numpy,pyparsing,copy
 
-from eNewick import eNewickParser
+from .eNewick import eNewickParser
 from utils import total_cmp
 import permutations
 
@@ -418,9 +418,9 @@ class PhyloNetwork(DiGraph):
         return restricted
 
     def has_nested_taxa(self):
-        taxa=self.taxa
+        taxa=self.taxa()
         for taxon in taxa:
-            if not self.is_leaf(self._node_by_taxa[taxa]):
+            if not self.is_leaf(self._node_by_taxa[taxon]):
                 return True
         return False
 

@@ -2,8 +2,8 @@
 Class for phylogenetic networks... with nested taxa
 """
 
-from classes import *
-from distances import *
+from PhyloNetwork.classes import *
+from PhyloNetwork.distances import *
 
 def eNewick_reader(filename,ignore_prefix=None):
     f = open(filename,'r')
