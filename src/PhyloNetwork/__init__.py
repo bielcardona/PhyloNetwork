@@ -4,6 +4,9 @@ Class for phylogenetic networks... with nested taxa
 
 from PhyloNetwork.classes import *
 from PhyloNetwork.distances import *
+from PhyloNetwork.memoize import *
+from PhyloNetwork.permutations import *
+from PhyloNetwork.eNewick import *
 
 def eNewick_reader(filename,ignore_prefix=None):
     f = open(filename,'r')
