@@ -1,0 +1,12 @@
+setup.py
+PhyloNetwork.egg-info/PKG-INFO
+PhyloNetwork.egg-info/SOURCES.txt
+PhyloNetwork.egg-info/dependency_links.txt
+PhyloNetwork.egg-info/top_level.txt
+src/PhyloNetwork/__init__.py
+src/PhyloNetwork/classes.py
+src/PhyloNetwork/distances.py
+src/PhyloNetwork/eNewick.py
+src/PhyloNetwork/memoize.py
+src/PhyloNetwork/permutations.py
+src/PhyloNetwork/utils.py

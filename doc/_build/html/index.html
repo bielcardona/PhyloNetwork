@@ -1,0 +1,201 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Welcome to PhyloNetwork’s documentation! &mdash; PhyloNetwork 0.9 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="PhyloNetwork 0.9 documentation" href="#" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="#">PhyloNetwork 0.9 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="welcome-to-phylonetwork-s-documentation">
+<h1>Welcome to PhyloNetwork&#8217;s documentation!<a class="headerlink" href="#welcome-to-phylonetwork-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>Contents:</p>
+<div class="toctree-wrapper compound">
+<ul class="simple">
+</ul>
+</div>
+<span class="target" id="module-PhyloNetwork"></span><p>Class for phylogenetic networks... with nested taxa</p>
+<span class="target" id="module-PhyloNetwork.classes"></span><p>Created on Dec 24, 2011</p>
+<p>&#64;author: cardona</p>
+<dl class="class">
+<dt id="PhyloNetwork.classes.PhyloNetwork">
+<em class="property">class </em><tt class="descclassname">PhyloNetwork.classes.</tt><tt class="descname">PhyloNetwork</tt><big>(</big><em>data=None</em>, <em>name=''</em>, <em>eNewick=None</em>, <em>ignore_prefix=None</em><big>)</big><a class="reference internal" href="_modules/PhyloNetwork/classes.html#PhyloNetwork"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PhyloNetwork.classes.PhyloNetwork" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main class for Phylogenetic Networks (with nested taxa).</p>
+<dl class="method">
+<dt id="PhyloNetwork.classes.PhyloNetwork.is_hybrid_node">
+<tt class="descname">is_hybrid_node</tt><big>(</big><em>u</em><big>)</big><a class="reference internal" href="_modules/PhyloNetwork/classes.html#PhyloNetwork.is_hybrid_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PhyloNetwork.classes.PhyloNetwork.is_hybrid_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if u is a tree node, False otherwise.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PhyloNetwork.classes.PhyloNetwork.is_labelled">
+<tt class="descname">is_labelled</tt><big>(</big><em>u</em><big>)</big><a class="reference internal" href="_modules/PhyloNetwork/classes.html#PhyloNetwork.is_labelled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PhyloNetwork.classes.PhyloNetwork.is_labelled" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if u is a labelled node, False otherwise.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PhyloNetwork.classes.PhyloNetwork.is_leaf">
+<tt class="descname">is_leaf</tt><big>(</big><em>u</em><big>)</big><a class="reference internal" href="_modules/PhyloNetwork/classes.html#PhyloNetwork.is_leaf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PhyloNetwork.classes.PhyloNetwork.is_leaf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if u is a leaf, False otherwise.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PhyloNetwork.classes.PhyloNetwork.is_root">
+<tt class="descname">is_root</tt><big>(</big><em>u</em><big>)</big><a class="reference internal" href="_modules/PhyloNetwork/classes.html#PhyloNetwork.is_root"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PhyloNetwork.classes.PhyloNetwork.is_root" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if u is a root, False otherwise.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PhyloNetwork.classes.PhyloNetwork.is_tree_node">
+<tt class="descname">is_tree_node</tt><big>(</big><em>u</em><big>)</big><a class="reference internal" href="_modules/PhyloNetwork/classes.html#PhyloNetwork.is_tree_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PhyloNetwork.classes.PhyloNetwork.is_tree_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if u is a tree node, False otherwise.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PhyloNetwork.classes.PhyloNetwork.label">
+<tt class="descname">label</tt><big>(</big><em>node</em><big>)</big><a class="reference internal" href="_modules/PhyloNetwork/classes.html#PhyloNetwork.label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PhyloNetwork.classes.PhyloNetwork.label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the label of node, or None if not labelled.</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-PhyloNetwork.distances"></span><p>Created on Dec 24, 2011</p>
+<p>&#64;author: cardona</p>
+<dl class="function">
+<dt id="PhyloNetwork.distances.RF_distance">
+<tt class="descclassname">PhyloNetwork.distances.</tt><tt class="descname">RF_distance</tt><big>(</big><em>net1</em>, <em>net2</em><big>)</big><a class="reference internal" href="_modules/PhyloNetwork/distances.html#RF_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PhyloNetwork.distances.RF_distance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="PhyloNetwork.distances.is_isomorphic_fast">
+<tt class="descclassname">PhyloNetwork.distances.</tt><tt class="descname">is_isomorphic_fast</tt><big>(</big><em>net1</em>, <em>net2</em><big>)</big><a class="reference internal" href="_modules/PhyloNetwork/distances.html#is_isomorphic_fast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PhyloNetwork.distances.is_isomorphic_fast" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="PhyloNetwork.distances.mu_distance">
+<tt class="descclassname">PhyloNetwork.distances.</tt><tt class="descname">mu_distance</tt><big>(</big><em>net1</em>, <em>net2</em><big>)</big><a class="reference internal" href="_modules/PhyloNetwork/distances.html#mu_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PhyloNetwork.distances.mu_distance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="PhyloNetwork.distances.nested_label_distance">
+<tt class="descclassname">PhyloNetwork.distances.</tt><tt class="descname">nested_label_distance</tt><big>(</big><em>net1</em>, <em>net2</em><big>)</big><a class="reference internal" href="_modules/PhyloNetwork/distances.html#nested_label_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PhyloNetwork.distances.nested_label_distance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="PhyloNetwork.distances.nodal_distance_splitted">
+<tt class="descclassname">PhyloNetwork.distances.</tt><tt class="descname">nodal_distance_splitted</tt><big>(</big><em>net1</em>, <em>net2</em>, <em>p=1</em>, <em>take_root=False</em><big>)</big><a class="reference internal" href="_modules/PhyloNetwork/distances.html#nodal_distance_splitted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PhyloNetwork.distances.nodal_distance_splitted" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="PhyloNetwork.distances.nodal_distance_unsplitted">
+<tt class="descclassname">PhyloNetwork.distances.</tt><tt class="descname">nodal_distance_unsplitted</tt><big>(</big><em>net1</em>, <em>net2</em>, <em>p=1</em>, <em>take_root=False</em><big>)</big><a class="reference internal" href="_modules/PhyloNetwork/distances.html#nodal_distance_unsplitted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PhyloNetwork.distances.nodal_distance_unsplitted" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="PhyloNetwork.distances.transposition_distance">
+<tt class="descclassname">PhyloNetwork.distances.</tt><tt class="descname">transposition_distance</tt><big>(</big><em>net1</em>, <em>net2</em><big>)</big><a class="reference internal" href="_modules/PhyloNetwork/distances.html#transposition_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PhyloNetwork.distances.transposition_distance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
+<li><a class="reference internal" href="py-modindex.html"><em>Module Index</em></a></li>
+<li><a class="reference internal" href="search.html"><em>Search Page</em></a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Welcome to PhyloNetwork&#8217;s documentation!</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="#">PhyloNetwork 0.9 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Gabriel Cardona.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

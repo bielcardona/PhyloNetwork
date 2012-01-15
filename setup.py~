@@ -1,0 +1,6 @@
+from setuptools import setup, find_packages
+setup(name="PhyloNetwork",
+      version="0.1",
+      packages=['PhyloNetwork'],
+      package_dir = {'PhyloNetwork': 'src/PhyloNetwork'}
+)

@@ -1,0 +1,504 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>PhyloNetwork.classes &mdash; PhyloNetwork 0.9 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="PhyloNetwork 0.9 documentation" href="../../index.html" />
+    <link rel="up" title="PhyloNetwork" href="../PhyloNetwork.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">PhyloNetwork 0.9 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../PhyloNetwork.html" accesskey="U">PhyloNetwork</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for PhyloNetwork.classes</h1><div class="highlight"><pre>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Created on Dec 24, 2011</span>
+
+<span class="sd">@author: cardona</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">from</span> <span class="nn">networkx</span> <span class="kn">import</span> <span class="n">DiGraph</span><span class="p">,</span> <span class="n">is_directed_acyclic_graph</span><span class="p">,</span> <span class="n">dfs_successors</span> 
+<span class="c">#from networkx.exception import NetworkXException, NetworkXError</span>
+<span class="kn">from</span> <span class="nn">networkx</span> <span class="kn">import</span> <span class="n">single_source_shortest_path_length</span><span class="p">,</span><span class="n">all_pairs_shortest_path_length</span><span class="p">,</span><span class="n">dijkstra_path_length</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span><span class="o">,</span><span class="nn">pyparsing</span><span class="o">,</span><span class="nn">copy</span>
+
+<span class="kn">from</span> <span class="nn">.eNewick</span> <span class="kn">import</span> <span class="n">eNewickParser</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">total_cmp</span>
+<span class="kn">import</span> <span class="nn">permutations</span>
+<span class="kn">from</span> <span class="nn">.memoize</span> <span class="kn">import</span> <span class="n">memoize_method</span>
+
+<div class="viewcode-block" id="PhyloNetwork"><a class="viewcode-back" href="../../index.html#PhyloNetwork.classes.PhyloNetwork">[docs]</a><span class="k">class</span> <span class="nc">PhyloNetwork</span><span class="p">(</span><span class="n">DiGraph</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Main class for Phylogenetic Networks (with nested taxa).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">eNewick</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">ignore_prefix</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="c"># initialization here</span>
+        <span class="n">DiGraph</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">=</span><span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_labels</span><span class="o">=</span><span class="p">{}</span>
+        <span class="k">if</span> <span class="n">eNewick</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">from_eNewick</span><span class="p">(</span><span class="n">eNewick</span><span class="p">,</span><span class="n">ignore_prefix</span><span class="o">=</span><span class="n">ignore_prefix</span><span class="p">)</span>
+    
+    <span class="nd">@memoize_method</span>
+    <span class="k">def</span> <span class="nf">is_phylogenetic_network</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_directed_acyclic_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">return</span> <span class="bp">True</span>
+    
+    <span class="nd">@memoize_method</span>
+    <span class="k">def</span> <span class="nf">taxa</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the taxa (set of labels) of self.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">taxa</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_labels</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+        <span class="n">taxa</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">taxa</span>
+
+<div class="viewcode-block" id="PhyloNetwork.label"><a class="viewcode-back" href="../../index.html#PhyloNetwork.classes.PhyloNetwork.label">[docs]</a>    <span class="k">def</span> <span class="nf">label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the label of node, or None if not labelled.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_labels</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+</div>
+    <span class="nd">@memoize_method</span>
+    <span class="k">def</span> <span class="nf">node_by_taxa</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">taxa</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the node labelled by taxa or None if no node is labelled by taxa.</span>
+<span class="sd">        Important: If more than one node is labelleb by taxa, then a random one is</span>
+<span class="sd">        returned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">labelled_nodes</span><span class="p">():</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="o">==</span> <span class="n">taxa</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">node</span>
+        <span class="k">return</span> <span class="bp">None</span>
+
+<div class="viewcode-block" id="PhyloNetwork.is_tree_node"><a class="viewcode-back" href="../../index.html#PhyloNetwork.classes.PhyloNetwork.is_tree_node">[docs]</a>    <span class="k">def</span> <span class="nf">is_tree_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns True if u is a tree node, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_degree</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">&lt;=</span><span class="mi">1</span>
+    </div>
+<div class="viewcode-block" id="PhyloNetwork.is_hybrid_node"><a class="viewcode-back" href="../../index.html#PhyloNetwork.classes.PhyloNetwork.is_hybrid_node">[docs]</a>    <span class="k">def</span> <span class="nf">is_hybrid_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns True if u is a tree node, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_degree</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span>
+</div>
+<div class="viewcode-block" id="PhyloNetwork.is_leaf"><a class="viewcode-back" href="../../index.html#PhyloNetwork.classes.PhyloNetwork.is_leaf">[docs]</a>    <span class="k">def</span> <span class="nf">is_leaf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns True if u is a leaf, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_degree</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span>
+    </div>
+<div class="viewcode-block" id="PhyloNetwork.is_root"><a class="viewcode-back" href="../../index.html#PhyloNetwork.classes.PhyloNetwork.is_root">[docs]</a>    <span class="k">def</span> <span class="nf">is_root</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns True if u is a root, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_degree</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span>
+</div>
+    <span class="k">def</span> <span class="nf">is_elementary_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">in_degree</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">&lt;=</span><span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_degree</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">))</span>
+    
+<div class="viewcode-block" id="PhyloNetwork.is_labelled"><a class="viewcode-back" href="../../index.html#PhyloNetwork.classes.PhyloNetwork.is_labelled">[docs]</a>    <span class="k">def</span> <span class="nf">is_labelled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns True if u is a labelled node, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_labels</span>
+        </div>
+    <span class="nd">@memoize_method</span>
+    <span class="k">def</span> <span class="nf">leaves</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the set of leaves of self.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">leaves</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">is_leaf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span>
+        <span class="n">leaves</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">leaves</span>
+
+    <span class="nd">@memoize_method</span>
+    <span class="k">def</span> <span class="nf">roots</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the set of roots of self.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">roots</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">is_root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span>
+        <span class="n">roots</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">roots</span>
+
+    <span class="nd">@memoize_method</span>
+    <span class="k">def</span> <span class="nf">labelled_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns de set of labelled nodes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_labels</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            
+    <span class="nd">@memoize_method</span>
+    <span class="k">def</span> <span class="nf">depth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">min</span><span class="p">([</span><span class="n">dijkstra_path_length</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">root</span><span class="p">,</span><span class="n">u</span><span class="p">)</span> <span class="k">for</span> <span class="n">root</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">roots</span><span class="p">()])</span>
+        
+    <span class="nd">@memoize_method</span>
+    <span class="k">def</span> <span class="nf">height</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the height of u. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_leaf</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">successors</span><span class="p">(</span><span class="n">u</span><span class="p">)))</span><span class="o">+</span><span class="mi">1</span>
+
+    <span class="nd">@memoize_method</span>
+    <span class="k">def</span> <span class="nf">mu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_leaf</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+            <span class="n">mu</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">taxa</span><span class="p">()),</span><span class="nb">int</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mu</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mu</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">successors</span><span class="p">(</span><span class="n">u</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_labelled</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+            <span class="n">pos</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">taxa</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">u</span><span class="p">))</span>
+            <span class="n">mu</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">mu</span>
+
+    <span class="nd">@memoize_method</span>
+    <span class="k">def</span> <span class="nf">mu_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;-&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mu</span><span class="p">(</span><span class="n">u</span><span class="p">))</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorted_nodes</span><span class="p">()])</span>
+
+    <span class="nd">@memoize_method</span>
+    <span class="k">def</span> <span class="nf">sorted_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">nodes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">()[:]</span>
+        <span class="n">nodes</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="nb">cmp</span><span class="o">=</span><span class="k">lambda</span> <span class="n">u</span><span class="p">,</span><span class="n">v</span><span class="p">:</span><span class="n">total_cmp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mu</span><span class="p">(</span><span class="n">u</span><span class="p">),</span><span class="bp">self</span><span class="o">.</span><span class="n">mu</span><span class="p">(</span><span class="n">v</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">nodes</span>
+        
+    <span class="k">def</span> <span class="nf">getlabel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lastlabel</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lastlabel</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="s">&#39;_</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lastlabel</span><span class="p">)</span>
+            
+            
+    <span class="k">def</span> <span class="nf">walk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">parsed</span><span class="p">,</span><span class="n">ignore_prefix</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parsed</span><span class="p">,</span> <span class="n">pyparsing</span><span class="o">.</span><span class="n">ParseResults</span><span class="p">):</span>
+            
+            <span class="k">if</span> <span class="s">&#39;tag&#39;</span> <span class="ow">in</span> <span class="n">parsed</span><span class="p">:</span>
+                <span class="n">internal_label</span><span class="o">=</span><span class="s">&#39;#&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">parsed</span><span class="p">[</span><span class="s">&#39;tag&#39;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">internal_label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">getlabel</span><span class="p">()</span>
+            <span class="k">if</span> <span class="s">&#39;length&#39;</span> <span class="ow">in</span> <span class="n">parsed</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">internal_label</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s">&#39;label&#39;</span> <span class="ow">in</span> <span class="n">parsed</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_labels</span><span class="p">[</span><span class="n">internal_label</span><span class="p">]</span><span class="o">=</span><span class="n">parsed</span><span class="p">[</span><span class="s">&#39;label&#39;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">parsed</span><span class="p">:</span>
+                <span class="n">child_label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">child</span><span class="p">,</span><span class="n">ignore_prefix</span><span class="o">=</span><span class="n">ignore_prefix</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">child_label</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">internal_label</span><span class="p">,</span><span class="n">child_label</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">internal_label</span>
+
+    <span class="k">def</span> <span class="nf">from_eNewick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">string</span><span class="p">,</span><span class="n">ignore_prefix</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">parsed</span><span class="o">=</span><span class="n">eNewickParser</span><span class="p">(</span><span class="n">string</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">except</span> <span class="n">pyparsing</span><span class="o">.</span><span class="n">ParseException</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&#39;Malformed eNewick&#39;</span>
+            <span class="c">#raise JoQueSe</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">parsed</span><span class="p">,</span><span class="n">ignore_prefix</span><span class="o">=</span><span class="n">ignore_prefix</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">eNewick_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">,</span><span class="n">visited</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_leaf</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+            <span class="c">#return self._labels[u]</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_labels</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">visited</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">u</span>
+        <span class="n">visited</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+        <span class="n">children</span><span class="o">=</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">eNewick_node</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">visited</span><span class="p">),</span><span class="bp">self</span><span class="o">.</span><span class="n">successors</span><span class="p">(</span><span class="n">u</span><span class="p">))</span>
+        <span class="n">internal</span><span class="o">=</span><span class="s">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">children</span><span class="p">)</span>
+        <span class="n">mylabel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="ow">or</span> <span class="s">&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_hybrid_node</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+            <span class="n">mylabel</span><span class="o">+=</span><span class="n">u</span>
+        <span class="k">return</span> <span class="s">&#39;(&#39;</span><span class="o">+</span><span class="n">internal</span><span class="o">+</span><span class="s">&#39;)&#39;</span><span class="o">+</span><span class="n">mylabel</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eNewick</span><span class="p">()</span>
+    
+    <span class="k">def</span> <span class="nf">eNewick</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">visited</span><span class="o">=</span><span class="p">[]</span>
+        <span class="n">string</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">root</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">roots</span><span class="p">():</span>
+            <span class="n">string</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eNewick_node</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="n">visited</span><span class="p">)</span><span class="o">+</span><span class="s">&#39;;&#39;</span>
+        <span class="k">return</span> <span class="n">string</span>
+    
+    <span class="nd">@memoize_method</span>
+    <span class="k">def</span> <span class="nf">descendant_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">dfs_successors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">(),[])</span> <span class="o">+</span> <span class="p">[</span><span class="n">u</span><span class="p">]</span>
+        <span class="c">#return dfs_successors(self,u)</span>
+
+    <span class="nd">@memoize_method</span>
+    <span class="k">def</span> <span class="nf">descendant_taxa</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span> <span class="k">for</span> <span class="n">desc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">descendant_nodes</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_labelled</span><span class="p">(</span><span class="n">desc</span><span class="p">)]</span>
+
+    <span class="nd">@memoize_method</span>
+    <span class="k">def</span> <span class="nf">strict_descendant_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_root</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">descendant_nodes</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+        <span class="n">pruned</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">pruned</span><span class="o">.</span><span class="n">cache</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">pruned</span><span class="o">.</span><span class="n">remove_node</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+        <span class="n">desc_pruned</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">root</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">roots</span><span class="p">():</span>
+            <span class="n">desc_pruned</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">dfs_successors</span><span class="p">(</span><span class="n">pruned</span><span class="p">,</span><span class="n">root</span><span class="p">))</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">desc</span> <span class="k">for</span> <span class="n">desc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">descendant_nodes</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">desc</span> <span class="ow">in</span> <span class="n">desc_pruned</span><span class="p">]</span>
+
+    <span class="nd">@memoize_method</span>
+    <span class="k">def</span> <span class="nf">strict_descendant_taxa</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span> <span class="k">for</span> <span class="n">desc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">strict_descendant_nodes</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_labelled</span><span class="p">(</span><span class="n">desc</span><span class="p">)]</span>
+
+    <span class="nd">@memoize_method</span>
+    <span class="k">def</span> <span class="nf">ancestors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">taxon</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">u</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorted_nodes</span><span class="p">()</span> <span class="k">if</span> <span class="n">taxon</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">descendant_taxa</span><span class="p">(</span><span class="n">u</span><span class="p">)]</span>
+
+    <span class="nd">@memoize_method</span>
+    <span class="k">def</span> <span class="nf">strict_ancestors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">taxon</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">u</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorted_nodes</span><span class="p">()</span> <span class="k">if</span> <span class="n">taxon</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">strict_descendant_taxa</span><span class="p">(</span><span class="n">u</span><span class="p">)]</span>
+
+    <span class="nd">@memoize_method</span>
+    <span class="k">def</span> <span class="nf">CSA</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">tax1</span><span class="p">,</span><span class="n">tax2</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">u</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ancestors</span><span class="p">(</span><span class="n">tax1</span><span class="p">)</span> <span class="k">if</span>
+                <span class="p">(</span><span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ancestors</span><span class="p">(</span><span class="n">tax2</span><span class="p">))</span> <span class="ow">and</span>
+                <span class="p">((</span><span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">strict_ancestors</span><span class="p">(</span><span class="n">tax1</span><span class="p">))</span> <span class="ow">or</span>
+                 <span class="p">(</span><span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">strict_ancestors</span><span class="p">(</span><span class="n">tax2</span><span class="p">)))]</span>
+
+    <span class="nd">@memoize_method</span>
+    <span class="k">def</span> <span class="nf">LCSA</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">tax1</span><span class="p">,</span><span class="n">tax2</span><span class="p">):</span>
+        <span class="n">csa</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">CSA</span><span class="p">(</span><span class="n">tax1</span><span class="p">,</span><span class="n">tax2</span><span class="p">)</span>
+        <span class="k">print</span> <span class="bp">self</span><span class="p">,</span><span class="n">tax1</span><span class="p">,</span><span class="n">tax2</span><span class="p">,</span><span class="n">csa</span>
+        <span class="n">csa</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span><span class="nb">cmp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">(</span><span class="n">y</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">csa</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>        
+
+    <span class="nd">@memoize_method</span>
+    <span class="k">def</span> <span class="nf">nodal_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">n</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">taxa</span><span class="p">())</span>
+        <span class="n">matrix</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="n">n</span><span class="p">),</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">dicdist</span><span class="o">=</span><span class="n">all_pairs_shortest_path_length</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">ti</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">taxa</span><span class="p">()[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">n</span><span class="p">):</span>
+                <span class="n">tj</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">taxa</span><span class="p">()[</span><span class="n">j</span><span class="p">]</span>
+                <span class="n">lcsa</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">LCSA</span><span class="p">(</span><span class="n">ti</span><span class="p">,</span><span class="n">tj</span><span class="p">)</span>
+                <span class="n">matrix</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span><span class="o">=</span><span class="n">dicdist</span><span class="p">[</span><span class="n">lcsa</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">node_by_taxa</span><span class="p">(</span><span class="n">ti</span><span class="p">)]</span>
+                <span class="n">matrix</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">dicdist</span><span class="p">[</span><span class="n">lcsa</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">node_by_taxa</span><span class="p">(</span><span class="n">tj</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">matrix</span>
+
+    <span class="k">def</span> <span class="nf">nodal_area</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">mat</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nodal_matrix</span><span class="p">()</span>
+        <span class="c">#mat=mat+mat.transpose()</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">mat</span><span class="o">.</span><span class="n">flatten</span><span class="p">()))</span>
+
+    <span class="k">def</span> <span class="nf">common_taxa</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">net2</span><span class="p">):</span>
+        <span class="n">common</span><span class="o">=</span><span class="p">[]</span>
+        <span class="n">taxa1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">taxa</span><span class="p">()</span>
+        <span class="n">taxa2</span><span class="o">=</span><span class="n">net2</span><span class="o">.</span><span class="n">taxa</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">taxon</span> <span class="ow">in</span> <span class="n">taxa1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">taxon</span> <span class="ow">in</span> <span class="n">taxa2</span><span class="p">:</span>
+                <span class="n">common</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">taxon</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">common</span>
+            
+    <span class="k">def</span> <span class="nf">common_taxa_leaves</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">net2</span><span class="p">):</span>
+        <span class="n">common</span><span class="o">=</span><span class="p">[]</span>
+        <span class="n">taxa1</span><span class="o">=</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">l</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">is_leaf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node_by_taxa</span><span class="p">(</span><span class="n">l</span><span class="p">)),</span><span class="bp">self</span><span class="o">.</span><span class="n">taxa</span><span class="p">())</span>
+        <span class="n">taxa2</span><span class="o">=</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">l</span><span class="p">:</span><span class="n">net2</span><span class="o">.</span><span class="n">is_leaf</span><span class="p">(</span><span class="n">net2</span><span class="o">.</span><span class="n">node_by_taxa</span><span class="p">(</span><span class="n">l</span><span class="p">)),</span><span class="n">net2</span><span class="o">.</span><span class="n">taxa</span><span class="p">())</span>
+        <span class="k">for</span> <span class="n">taxon</span> <span class="ow">in</span> <span class="n">taxa1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">taxon</span> <span class="ow">in</span> <span class="n">taxa2</span><span class="p">:</span>
+                <span class="n">common</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">taxon</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">common</span>
+            
+    
+    <span class="k">def</span> <span class="nf">topological_restriction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">subtaxa</span><span class="p">):</span>
+        <span class="n">restricted</span><span class="o">=</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">taxon</span> <span class="ow">in</span> <span class="n">restricted</span><span class="o">.</span><span class="n">taxa</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">taxon</span> <span class="ow">in</span> <span class="n">subtaxa</span><span class="p">:</span>
+                <span class="n">u</span><span class="o">=</span><span class="n">restricted</span><span class="o">.</span><span class="n">node_by_taxa</span><span class="p">(</span><span class="n">taxon</span><span class="p">)</span>
+                <span class="k">del</span> <span class="n">restricted</span><span class="o">.</span><span class="n">_labels</span><span class="p">[</span><span class="n">u</span><span class="p">]</span>
+        <span class="n">restricted</span><span class="o">.</span><span class="n">cache</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">leaves_to_delete</span><span class="o">=</span><span class="p">[</span><span class="n">u</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">restricted</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span> <span class="k">if</span> \
+                                  <span class="n">restricted</span><span class="o">.</span><span class="n">is_leaf</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="ow">and</span> \
+                                  <span class="ow">not</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">restricted</span><span class="o">.</span><span class="n">_labels</span> <span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">leaves_to_delete</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">restricted</span><span class="o">.</span><span class="n">remove_nodes_from</span><span class="p">(</span><span class="n">leaves_to_delete</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">restricted</span><span class="o">.</span><span class="n">nodes</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">restricted</span><span class="o">.</span><span class="n">is_elementary_node</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="ow">and</span> \
+                    <span class="ow">not</span> <span class="n">restricted</span><span class="o">.</span><span class="n">is_labelled</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">parent</span> <span class="ow">in</span> <span class="n">restricted</span><span class="o">.</span><span class="n">predecessors</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">restricted</span><span class="o">.</span><span class="n">successors</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+                        <span class="n">restricted</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span><span class="n">child</span><span class="p">)</span>
+                <span class="n">restricted</span><span class="o">.</span><span class="n">remove_node</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+        <span class="n">restricted</span><span class="o">.</span><span class="n">cache</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">return</span> <span class="n">restricted</span>
+
+    <span class="nd">@memoize_method</span>
+    <span class="k">def</span> <span class="nf">has_nested_taxa</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">labelled_nodes</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_leaf</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">return</span> <span class="bp">False</span>
+
+    <span class="k">def</span> <span class="nf">matching_representation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matching_representation</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_matching_representation</span><span class="o">=</span><span class="p">{}</span>
+            <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_matching_representation</span><span class="p">[</span><span class="n">u</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span>
+            <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">leaves</span><span class="p">():</span>
+                <span class="n">pos</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">taxa</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">u</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_matching_representation</span><span class="p">[</span><span class="n">u</span><span class="p">]</span><span class="o">=</span><span class="n">pos</span><span class="o">+</span><span class="mi">1</span>
+            <span class="n">h</span><span class="o">=</span><span class="mi">1</span>
+            <span class="n">i</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">leaves</span><span class="p">())</span><span class="o">+</span><span class="mi">1</span>
+            <span class="n">thislevel</span><span class="o">=</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">u</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">==</span><span class="n">h</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span>
+            <span class="k">while</span> <span class="n">thislevel</span><span class="p">:</span>
+                <span class="n">minims</span><span class="o">=</span><span class="p">{}</span>
+                <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">thislevel</span><span class="p">:</span>
+                    <span class="n">minims</span><span class="p">[</span><span class="n">u</span><span class="p">]</span><span class="o">=</span><span class="nb">min</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_matching_representation</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="k">for</span> \
+                                       <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">successors</span><span class="p">(</span><span class="n">u</span><span class="p">)])</span>
+                <span class="n">thislevel</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span> <span class="n">minims</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">-</span><span class="n">minims</span><span class="p">[</span><span class="n">y</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">thislevel</span><span class="p">)):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_matching_representation</span><span class="p">[</span><span class="n">thislevel</span><span class="p">[</span><span class="n">k</span><span class="p">]]</span><span class="o">=</span><span class="n">i</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">h</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">thislevel</span><span class="o">=</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">u</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">==</span><span class="n">h</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matching_representation</span>
+                          
+    <span class="k">def</span> <span class="nf">matching_permutation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matching_permutation</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">permutation</span><span class="o">=</span><span class="p">{}</span>
+            <span class="n">representation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">matching_representation</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">():</span>
+                <span class="n">children</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">successors</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+                <span class="n">children</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="nb">cmp</span><span class="o">=</span><span class="k">lambda</span> <span class="n">u</span><span class="p">,</span><span class="n">v</span><span class="p">:</span><span class="n">representation</span><span class="p">[</span><span class="n">u</span><span class="p">]</span><span class="o">-</span><span class="n">representation</span><span class="p">[</span><span class="n">v</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">children</span><span class="p">)):</span>
+                    <span class="n">permutation</span><span class="p">[</span><span class="n">representation</span><span class="p">[</span><span class="n">children</span><span class="p">[</span><span class="n">i</span><span class="p">]]]</span><span class="o">=</span><span class="n">representation</span><span class="p">[</span><span class="n">children</span><span class="p">[(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">children</span><span class="p">)]]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_matching_permutation</span><span class="o">=</span><span class="n">permutations</span><span class="o">.</span><span class="n">Permutation</span><span class="p">(</span><span class="n">permutation</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matching_permutation</span>
+
+    <span class="k">def</span> <span class="nf">cluster</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
+        <span class="n">cl</span><span class="o">=</span><span class="p">[]</span>
+        <span class="n">dictio</span><span class="o">=</span><span class="n">single_source_shortest_path_length</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">dictio</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+                <span class="n">cl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">node</span><span class="p">))</span>
+        <span class="n">cl</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+        <span class="n">cl</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">cl</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cl</span>
+
+    <span class="k">def</span> <span class="nf">cluster_representation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">cls</span><span class="o">=</span><span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cluster</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">cls</span>
+
+    <span class="k">def</span> <span class="nf">nested_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">node</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nested_label</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="s">&#39;_nested_label&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_nested_label</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_leaf</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">desc_labels</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">nested_label</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">successors</span><span class="p">(</span><span class="n">node</span><span class="p">)]</span>
+                <span class="n">desc_labels</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_nested_label</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;{&#39;</span><span class="o">+</span><span class="s">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">desc_labels</span><span class="p">)</span><span class="o">+</span><span class="s">&#39;}&#39;</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nested_label</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">nested_label_representation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">nls</span><span class="o">=</span><span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nested_label</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">nls</span><span class="p">)</span>
+
+    </div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">PhyloNetwork 0.9 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../PhyloNetwork.html" >PhyloNetwork</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Gabriel Cardona.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>
