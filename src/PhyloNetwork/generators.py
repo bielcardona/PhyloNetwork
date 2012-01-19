@@ -7,6 +7,7 @@ Created on Jan 16, 2012
 from .classes import PhyloNetwork
 from .distances import mu_distance
 from .operations import push_and_hang,hold_and_hang,push_and_label,hold_and_label
+
 #import numpy
 import random
 
@@ -47,6 +48,101 @@ def Tree_generator(taxa,binary=False,nested_taxa=True):
                 newtree=hold_and_label(parent,u,taxon)
                 if newtree:
                     yield newtree
+
+def number_of_trees_bin_nont_partial(n,l,N):
+    """Gives the number of phylogenetic trees on n taxa with l leaves and N nodes.
+    Assume binary trees without nested taxa.
+    """
+    if (l != n) or (N != 2*n-1) or (n < 0):
+        return 0
+    if n == 1:
+        return 1
+    return (N-2)*number_of_trees_bin_nont_partial(n-1,l-1,N-2)
+
+def number_of_trees_bin_nont_global(n):
+    """Gives the number of phylogenetic trees on n taxa.
+    Assume binary trees and without nested taxa.
+    """
+    return number_of_trees_bin_nont_partial(n,n,2*n-1)
+
+def number_of_trees_nobin_nont_partial(n,l,N):
+    """Gives the number of phylogenetic trees on n taxa with l leaves and N nodes.
+    Assume not necessarily binary trees and without nested taxa.
+    """
+    if (l != n) or (N < n) or (n < 0) or (N >= 2*n):
+        return 0
+    if n==1:
+        return 1
+    return (N-2)*number_of_trees_nobin_nont_partial(n-1,l-1,N-2) + \
+           (N-n)*number_of_trees_nobin_nont_partial(n-1,l-1,N-1)
+
+def number_of_trees_nobin_nont_global(n):
+    """Gives the number of phylogenetic trees on n taxa.
+    Assume not necessarily binary trees and without nested taxa.
+    """
+    if n == 1:
+        return 1
+    return sum([number_of_trees_nobin_nont_partial(n,n,N) for N in range(n+1,2*n)])
+
+def number_of_trees_bin_nt_partial(n,l,N,e,log=False):
+    """Gives the number of phylogenetic trees on n taxa with l leaves, N nodes, e of them being elementary.
+    Assume binary trees with nested taxa.
+    """
+    #print "n=%d, l=%d, N=%d, e=%d" % (n,l,N,e)
+    if (l <= 0) or (l > n) or (n < 0) or (N < n) or (l+e > N) or (l+e > n) or (e < 0):
+        #print "n=%d, l=%d, N=%d, e=%d, --> %d" % (n,l,N,e,0)
+        return 0
+    if n==1:
+        #print "n=%d, l=%d, N=%d, e=%d, --> %d" % (n,l,N,e,1)
+        if (l == 1) and (N == 1) and (e == 0):
+            return 1
+        else:
+            return 0
+    count = (
+        (N-2)*number_of_trees_bin_nt_partial(n-1,l-1,N-2,e) + # P&H
+        (N-1)*number_of_trees_bin_nt_partial(n-1,l,N-1,e-1) + # P&L
+        (N-n+1)*number_of_trees_bin_nt_partial(n-1,l,N,e) +   # H&L
+        (l)*number_of_trees_bin_nt_partial(n-1,l,N-1,e-1) +   # H&H leaf
+        (e+1)*number_of_trees_bin_nt_partial(n-1,l-1,N-1,e+1) # H&H elem
+    )
+    #print "n=%d, l=%d, N=%d, e=%d, --> %d" % (n,l,N,e,count)
+    return count
+
+def number_of_trees_bin_nt_global(n):
+    if n==1:
+        return 1
+    return sum([number_of_trees_bin_nt_partial(n,l,N,e) for l in range(1,n+1) \
+                                                        for N in range(n,2*n)
+                                                        for e in range(0,n)])
+
+def number_of_trees_nobin_nt_partial(n,l,N,log=False):
+    """Gives the number of phylogenetic trees on n taxa with l leaves, N nodes, e of them being elementary.
+    Assume binary trees with nested taxa.
+    """
+    #print "n=%d, l=%d, N=%d, e=%d" % (n,l,N,e)
+    if (l <= 0) or (l > n) or (n < 0) or (N < n):
+        #print "n=%d, l=%d, N=%d, e=%d, --> %d" % (n,l,N,e,0)
+        return 0
+    if n==1:
+        #print "n=%d, l=%d, N=%d, e=%d, --> %d" % (n,l,N,e,1)
+        if (l == 1) and (N == 1): 
+            return 1
+        else:
+            return 0
+    count = (
+        (N-2)*number_of_trees_nobin_nt_partial(n-1,l-1,N-2) + # P&H
+        (N-1)*number_of_trees_nobin_nt_partial(n-1,l-1,N-1) + # H&H
+        (N-1)*number_of_trees_nobin_nt_partial(n-1,l,N-1) +   # P&L
+        (N-n+1)*number_of_trees_nobin_nt_partial(n-1,l,N)   # H&L 
+    )
+    #print "n=%d, l=%d, N=%d, e=%d, --> %d" % (n,l,N,e,count)
+    return count
+
+def number_of_trees_nobin_nt_global(n):
+    if n==1:
+        return 1
+    return sum([number_of_trees_nobin_nt_partial(n,l,N) for l in range(1,n+1) \
+                                                        for N in range(n,2*n)])
 
 _not_byint={}
 _not_byint[(1,0)]=1
