@@ -118,6 +118,18 @@ class PhyloNetwork(DiGraph):
         Returns de set of labelled nodes.
         """
         return self._labels.keys()
+    
+    @memoize_method
+    def unlabelled_nodes(self):
+        return list(set(self.nodes())-set(self.labelled_nodes()))
+            
+    @memoize_method
+    def interior_nodes(self):
+        return list(set(self.nodes())-set(self.leaves()))
+    
+    @memoize_method
+    def elementary_nodes(self):
+        return filter(self.is_elementary_node, self.nodes())
             
     @memoize_method
     def depth(self,u):
