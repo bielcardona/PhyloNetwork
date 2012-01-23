@@ -20,11 +20,12 @@ class PhyloNetwork(DiGraph):
     Main class for Phylogenetic Networks (with nested taxa).
     """
 
-    def __init__(self, data=None, name='', eNewick=None, ignore_prefix=None):
+    def __init__(self, data=None, name='', eNewick=None, ignore_prefix=None, id_offset=0):
         # initialization here
         DiGraph.__init__(self,data)
         self.name=name
         self._labels={}
+        self._lastlabel=id_offset
         if eNewick != None:
             self.from_eNewick(eNewick,ignore_prefix=ignore_prefix)
     

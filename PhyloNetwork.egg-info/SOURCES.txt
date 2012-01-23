@@ -7,6 +7,8 @@ src/PhyloNetwork/__init__.py
 src/PhyloNetwork/classes.py
 src/PhyloNetwork/distances.py
 src/PhyloNetwork/eNewick.py
+src/PhyloNetwork/generators.py
 src/PhyloNetwork/memoize.py
+src/PhyloNetwork/operations.py
 src/PhyloNetwork/permutations.py
 src/PhyloNetwork/utils.py
