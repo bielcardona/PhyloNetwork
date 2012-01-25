@@ -34,7 +34,10 @@ def is_isomorphic_fast(net1,net2):
 
 
 def nodal_distance_splitted(net1,net2,p=1,take_root=False):
-    mat=net1.nodal_matrix()-net2.nodal_matrix()
+    try:
+        mat=net1.nodal_matrix()-net2.nodal_matrix()
+    except:
+        raise Exception("Networks over different set of taxa")
     if p==1:
         return sum(abs(mat.flatten()))
     else:
@@ -48,7 +51,10 @@ def nodal_distance_unsplitted(net1,net2,p=1,take_root=False):
     mat1=mat1+mat1.transpose()
     mat2=net2.nodal_matrix()
     mat2=mat2+mat2.transpose()
-    mat=mat1-mat2
+    try:
+        mat=net1.nodal_matrix()-net2.nodal_matrix()
+    except:
+        raise Exception("Networks over different set of taxa")
     if p==1:
         return sum(abs(mat.flatten()))/2
     else:
