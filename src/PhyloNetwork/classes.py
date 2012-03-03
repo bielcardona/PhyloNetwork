@@ -270,7 +270,7 @@ class PhyloNetwork(DiGraph):
     @memoize_method
     def LCSA(self,tax1,tax2):
         csa=self.CSA(tax1,tax2)
-        print self,tax1,tax2,csa
+        #print self,tax1,tax2,csa
         csa.sort(lambda x,y:cmp(self.height(x),self.height(y)))
         return csa[0]        
 
@@ -292,6 +292,18 @@ class PhyloNetwork(DiGraph):
         mat=self.nodal_matrix()
         #mat=mat+mat.transpose()
         return sum(abs(mat.flatten()))
+
+    @memoize_method
+    def cophenetic_matrix(self):
+        n=len(self.taxa())
+        matrix=numpy.zeros((n,n),int)
+        for i in range(n):
+            ti=self.taxa()[i]
+            for j in range(i,n):
+                tj=self.taxa()[j]
+                lcsa=self.LCSA(ti,tj)
+                matrix[i,j]=self.depth(lcsa)
+        return matrix
 
     def common_taxa(self,net2):
         common=[]

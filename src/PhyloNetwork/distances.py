@@ -63,6 +63,21 @@ def nodal_distance_unsplitted(net1,net2,p=1,take_root=False):
         else:
             return (sum(abs(mat.flatten())**p)/2)
 
+def cophenetic_distance(net1,net2,p=1,take_root=False):
+    mat1=net1.cophenetic_matrix()
+    mat2=net2.cophenetic_matrix()
+    try:
+        mat=mat1-mat2
+    except:
+        raise Exception("Networks over different set of taxa")
+    if p==1:
+        return sum(abs(mat.flatten()))/2
+    else:
+        if take_root:
+            return (sum(abs(mat.flatten())**p))**(1.0/p)
+        else:
+            return (sum(abs(mat.flatten())**p))
+
 def transposition_distance(net1,net2):
 #        pi1=permutations.Permutation(net1.matching_permutation())
 #        pi2=permutations.Permutation(net2.matching_permutation())
