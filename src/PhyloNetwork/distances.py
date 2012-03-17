@@ -55,13 +55,15 @@ def nodal_distance_unsplitted(net1,net2,p=1,take_root=False):
         mat=net1.nodal_matrix()-net2.nodal_matrix()
     except:
         raise Exception("Networks over different set of taxa")
+    n = len(net1.taxa())
+    result = sum([ (mat1[i,j]+mat1[j,i]-mat2[i,j]-mat2[j,i])**p for i in range(n) for j in range(i+1,n)])
     if p==1:
-        return sum(abs(mat.flatten()))/2
+        return result
     else:
         if take_root:
-            return (sum(abs(mat.flatten())**p)/2)**(1.0/p)
+            return (result)**(1.0/p)
         else:
-            return (sum(abs(mat.flatten())**p)/2)
+            return result
 
 def cophenetic_distance(net1,net2,p=1,take_root=False):
     mat1=net1.cophenetic_matrix()
@@ -71,7 +73,7 @@ def cophenetic_distance(net1,net2,p=1,take_root=False):
     except:
         raise Exception("Networks over different set of taxa")
     if p==1:
-        return sum(abs(mat.flatten()))/2
+        return sum(abs(mat.flatten()))
     else:
         if take_root:
             return (sum(abs(mat.flatten())**p))**(1.0/p)

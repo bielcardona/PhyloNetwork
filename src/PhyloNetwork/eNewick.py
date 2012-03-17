@@ -18,7 +18,7 @@ def makeeNewickParser():
     sharp     = Literal("#").suppress()
 
     # terminal
-    name    = Word(alphanums + alphas8bit + "_" + "-" + "." + "+" + "~" + "{" + "}" + "*" )
+    name    = Word(alphanums + alphas8bit + "_" + "-" + "." + "+" + "&" + "/" + "~" + "{" + "}" + "*" + "'" + '"' + '\\' + '?')
     string  = Word(alphas)
     fnumber = Combine(
         Word("+-"+nums, nums) + 

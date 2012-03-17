@@ -288,6 +288,22 @@ def Tree_generator_random(taxa,binary=False,nested_taxa=True,id_offset=0):
     while True:
         yield f(taxa,id_offset)
 
+def tree_generator_random_yule(taxa):
+    n = len(taxa)
+    if n == 1:
+        return PhyloNetwork(eNewick=('%s;' % taxa[0]))
+    tree = PhyloNetwork(eNewick=('(%s,%s);' % (taxa[0],taxa[1])))
+    for i in range(2,n):
+        leaf = random.choice(tree.leaves())
+        tree = push_and_hang(tree,leaf,taxa[i])
+    labels = tree._labels
+    keys = labels.keys()
+    values = labels.values()
+    random.shuffle(values)
+    tree._labels = dict(zip(keys,values))
+    tree.cache = {}
+    return tree
+
 if __name__ == "__main__":
     tg = Tree_generator(['1','2','3'])
     while tg:

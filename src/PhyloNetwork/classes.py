@@ -62,6 +62,13 @@ class PhyloNetwork(DiGraph):
                 return node
         return None
 
+    @memoize_method
+    def all_nodes_by_taxa(self,taxa):
+        """
+        Returns all nodes labelled by taxa.
+        """
+        return [node for node in self.labelled_nodes() if self.label(node)==taxa]
+
     def is_tree_node(self,u):
         """
         Returns True if u is a tree node, False otherwise.
@@ -194,10 +201,11 @@ class PhyloNetwork(DiGraph):
             return internal_label
 
     def from_eNewick(self,string,ignore_prefix=None):
+        #parsed=eNewickParser(string)[0]
         try:
             parsed=eNewickParser(string)[0]
         except pyparsing.ParseException:
-            print 'Malformed eNewick'
+            raise 'Malformed eNewick'
             #raise JoQueSe
             return False
         self.walk(parsed,ignore_prefix=ignore_prefix)
@@ -328,8 +336,8 @@ class PhyloNetwork(DiGraph):
         restricted=copy.deepcopy(self)
         for taxon in restricted.taxa():
             if not taxon in subtaxa:
-                u=restricted.node_by_taxa(taxon)
-                del restricted._labels[u]
+                for u in restricted.all_nodes_by_taxa(taxon):
+                    del restricted._labels[u]
         restricted.cache = {}
 
         while True:
