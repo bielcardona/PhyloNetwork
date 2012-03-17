@@ -1,5 +1,9 @@
 """
-Class for phylogenetic networks... with nested taxa
+The pyphylonetwork is the main module of the project PhyloNetworks.
+
+It includes classes to represent phylogenetic networks and trees with or
+without nested taxa, as well as functions for both the successive and
+random generation of all phylogenetic trees over a set of taxa.
 """
 
 from .classes import *

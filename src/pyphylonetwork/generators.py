@@ -2,6 +2,9 @@ from .classes import PhyloNetwork
 from .operations import push_and_hang,hold_and_hang,push_and_label,hold_and_label
 from .utils import random_weighted
 from .memoize import memoize_function
+##def memoize_function(f): return f # use it to document memoized functions (sphinx bug?)
+
+
 
 #import numpy
 import random

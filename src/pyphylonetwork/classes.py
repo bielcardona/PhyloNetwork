@@ -7,11 +7,12 @@ from .eNewick import eNewickParser
 from .utils import total_cmp
 import permutations
 from .memoize import memoize_method
+##def memoize_method(f): return f # use it to document memoized methods (sphinx bug?)
 from .exceptions import MalformedNewickException
 
 class PhyloNetwork(DiGraph):
     """
-    Main class for Phylogenetic Networks (with nested taxa).
+    Main class for phylogenetic networks and trees (with or without nested taxa).
     
     You can create a PhyloNetwork with its eNewick representation::
     

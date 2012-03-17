@@ -11,11 +11,14 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-.. automodule::  PhyloNetwork.classes
+.. automodule::  pyphylonetwork
+   :members:
+
+.. automodule::  pyphylonetwork.classes
    :members:
 
 
-.. automodule:: PhyloNetwork.distances
+.. automodule:: pyphylonetwork.distances
    :members:
    :undoc-members:
 
