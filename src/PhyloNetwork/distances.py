@@ -5,10 +5,14 @@ Created on Dec 24, 2011
 '''
 
 from utils import total_cmp
+from .exceptions import TaxaException
 
 
 
 def mu_distance(net1,net2):
+    """
+    Compute the mu distance between two phylogenetic networks.
+    """
 #        if net1.taxa() != net2.taxa():
 #            return
     nodes1=net1.sorted_nodes()[:]
@@ -29,15 +33,23 @@ def mu_distance(net1,net2):
             del nodes2[0]
     return d+len(nodes1)+len(nodes2)
 
-def is_isomorphic_fast(net1,net2):
-    return net1.mu_string() == net2.mu_string()
+#def is_isomorphic_fast(net1,net2):
+#    return net1.mu_string() == net2.mu_string()
 
-
-def nodal_distance_splitted(net1,net2,p=1,take_root=False):
+def nodal_distance_splitted(net1,net2,p=1,take_root=False, check=False):
+    """
+    Computes the nodal distance splitted between two phylogenetic networks.
+    If check = True, then it checks if the two networks have the same taxa. Otherwise it will only check if the number of labels is equal.
+    """
+    
+    if check:
+        if not net1.taxa() == net2.taxa():
+	    raise TaxaException("Networks over different set of taxa")
+	  
     try:
         mat=net1.nodal_matrix()-net2.nodal_matrix()
     except:
-        raise Exception("Networks over different set of taxa")
+        raise TaxaException("The number of possible labels is not equal")
     if p==1:
         return sum(abs(mat.flatten()))
     else:
@@ -46,7 +58,16 @@ def nodal_distance_splitted(net1,net2,p=1,take_root=False):
         else:
             return sum(abs(mat.flatten())**p)
 
-def nodal_distance_unsplitted(net1,net2,p=1,take_root=False):
+def nodal_distance_unsplitted(net1,net2,p=1,take_root=False, check=False):
+    """
+    Computes the nodal distance unsplitted between two phylogenetic networks.
+    If check = True, then it checks if the two networks have the same taxa. Otherwise it will only check if the number of labels is equal.
+    """
+    
+    if check:
+        if not net1.taxa() == net2.taxa():
+	    raise TaxaException("Networks over different set of taxa")
+	  
     mat1=net1.nodal_matrix()
     mat1=mat1+mat1.transpose()
     mat2=net2.nodal_matrix()
@@ -54,26 +75,33 @@ def nodal_distance_unsplitted(net1,net2,p=1,take_root=False):
     try:
         mat=net1.nodal_matrix()-net2.nodal_matrix()
     except:
-        raise Exception("Networks over different set of taxa")
-    n = len(net1.taxa())
-    result = sum([ (mat1[i,j]+mat1[j,i]-mat2[i,j]-mat2[j,i])**p for i in range(n) for j in range(i+1,n)])
+        raise TaxaException("The number of possible labels is not equal")
     if p==1:
-        return result
+        return sum(abs(mat.flatten()))/2
     else:
         if take_root:
-            return (result)**(1.0/p)
+            return (sum(abs(mat.flatten())**p)/2)**(1.0/p)
         else:
-            return result
+            return (sum(abs(mat.flatten())**p)/2)
 
-def cophenetic_distance(net1,net2,p=1,take_root=False):
+def cophenetic_distance(net1,net2,p=1,take_root=False, check=False):
+    """
+    Computes the nodal distance unsplitted between two phylogenetic networks.
+    If check = True, then it checks if the two networks have the same taxa. Otherwise it will only check if the number of labels is equal.
+    """
+    
+    if check:
+        if not net1.taxa() == net2.taxa():
+	    raise TaxaException("Networks over different set of taxa")
+	  
     mat1=net1.cophenetic_matrix()
     mat2=net2.cophenetic_matrix()
     try:
         mat=mat1-mat2
     except:
-        raise Exception("Networks over different set of taxa")
+        raise TaxaException("The number of possible labels is not equal")
     if p==1:
-        return sum(abs(mat.flatten()))
+        return sum(abs(mat.flatten()))/2
     else:
         if take_root:
             return (sum(abs(mat.flatten())**p))**(1.0/p)
@@ -81,6 +109,10 @@ def cophenetic_distance(net1,net2,p=1,take_root=False):
             return (sum(abs(mat.flatten())**p))
 
 def transposition_distance(net1,net2):
+    """
+    Computes the transposition distance between two phylogenetic networks.
+    """
+    
 #        pi1=permutations.Permutation(net1.matching_permutation())
 #        pi2=permutations.Permutation(net2.matching_permutation())
     pi1=net1.matching_permutation()
@@ -93,7 +125,15 @@ def transposition_distance(net1,net2):
     return dist/2
 
 def RF_distance(net1,net2):
+    """
+    Computes the RF distance between two phylogenetic networks.
+    """
+    
     return len(set(net1.cluster_representation())^set(net2.cluster_representation()))
 
 def nested_label_distance(net1,net2):
+    """
+    Computes the nested label distance between two phylogenetic networks.
+    """
+    
     return len(net1.nested_label_representation() ^ net2.nested_label_representation())

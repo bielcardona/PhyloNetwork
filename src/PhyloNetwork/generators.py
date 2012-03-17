@@ -14,12 +14,43 @@ import random
 
 # Sequential generator
 
-def Tree_generator(taxa,binary=False,nested_taxa=True):
-    """Returns a generator for trees with given taxa. 
+def all_trees(taxa,binary=False,nested_taxa=True):
+    """
+    Returns a generator for trees with given taxa. 
     If nested_taxa is True, then trees with internal nodes labeled 
     will also be produced.
     If binary is True, then only binary trees will be generated; otherwise trees will 
     have internal nodes with arbitrary out-degree. 
+    
+    EXAMPLE::
+    
+        >>> generator = all_trees(['A', 'B', 'C'], binary=True)
+        >>> generator.next().eNewick()
+        ... '((C,B),A);'
+        >>> generator.next().eNewick()
+        ... '(C,(B,A));'
+        >>> tmp = 2
+        >>> for tree in generator: tmp = tmp+1
+        >>> tmp
+        ... 21
+    
+    EXAMPLE::
+    
+        >>> for tree in all_trees(['A', 'B', 'C', binary=True, nested_taxa=False):
+        >>>     print tree.eNewick()
+        ... ((C,B),A);
+        ... (C,(B,A));
+        ... ((C,A),B);
+        
+    EXAMPLE::
+    
+        >>> for tree in all_trees(['A', 'B', 'C', binary=False, nested_taxa=False):
+        >>>     print tree.eNewick()
+        ... ((C,B),A);
+        ... (C,(B,A));
+        ... ((C,A),B);
+        ... (A,B,C);
+        
     """
     n=len(taxa)
     if n==1:
@@ -27,7 +58,7 @@ def Tree_generator(taxa,binary=False,nested_taxa=True):
         return
     taxon=taxa[-1]
     parent_taxa=taxa[0:-1]
-    parent_generator=Tree_generator(parent_taxa,
+    parent_generator=all_trees(parent_taxa,
                                     binary=binary,nested_taxa=nested_taxa)
     for parent in parent_generator:
         for u in parent.nodes():
@@ -56,7 +87,8 @@ def Tree_generator(taxa,binary=False,nested_taxa=True):
 
 @memoize_function
 def number_of_trees_bin_nont_partial(n,l,N):
-    """Gives the number of phylogenetic trees on n taxa with l leaves and N nodes.
+    """
+    Gives the number of phylogenetic trees on n taxa with l leaves and N nodes.
     Assume binary trees without nested taxa.
     """
     if (l != n) or (N != 2*n-1) or (n < 0):
@@ -67,12 +99,27 @@ def number_of_trees_bin_nont_partial(n,l,N):
 
 @memoize_function
 def number_of_trees_bin_nont_global(n):
-    """Gives the number of phylogenetic trees on n taxa.
+    """
+    Gives the number of phylogenetic trees on n taxa.
     Assume binary trees and without nested taxa.
     """
     return number_of_trees_bin_nont_partial(n,n,2*n-1)
 
-def random_tree_bin_nont_global(taxa,id_offset):
+def random_tree_bin_nont_global(taxa, id_offset=0):
+    """
+    Returns a random binary tree without nested taxa.
+    
+    EXAMPLE::
+    
+        >>> network = random_tree_bin_nont_global(['A', 'B', 'C', 'D'])
+        >>> network.nested_label(network.roots()[0])
+        ... '{D,{C,{A,B}}}' # random 
+        >>> network = random_tree_bin_nont_global(['A', 'B', 'C', 'D'])
+        >>> network.nested_label(network.roots()[0])
+        ... '{A,{C,{B,D}}}' # random 
+        
+    """
+    
     n = len(taxa)
     if n == 1:
         return PhyloNetwork(eNewick=('%s;' % taxa[0]),id_offset=id_offset)
@@ -85,7 +132,8 @@ def random_tree_bin_nont_global(taxa,id_offset):
 
 @memoize_function
 def number_of_trees_nobin_nont_partial(n,l,N):
-    """Gives the number of phylogenetic trees on n taxa with l leaves and N nodes.
+    """
+    Gives the number of phylogenetic trees on n taxa with l leaves and N nodes.
     Assume not necessarily binary trees and without nested taxa.
     """
     if (l != n) or (N < n) or (n < 0) or (N >= 2*n):
@@ -97,14 +145,15 @@ def number_of_trees_nobin_nont_partial(n,l,N):
 
 @memoize_function
 def number_of_trees_nobin_nont_global(n):
-    """Gives the number of phylogenetic trees on n taxa.
+    """
+    Gives the number of phylogenetic trees on n taxa.
     Assume not necessarily binary trees and without nested taxa.
     """
     if n == 1:
         return 1
     return sum([number_of_trees_nobin_nont_partial(n,n,N) for N in range(n+1,2*n)])
 
-def random_tree_nobin_nont_partial(taxa,l,N,id_offset):
+def random_tree_nobin_nont_partial(taxa,l,N,id_offset=0):
     n = len(taxa)
     if (l != n) or (N < n) or (n < 0) or (N >= 2*n):
         return None
@@ -121,7 +170,20 @@ def random_tree_nobin_nont_partial(taxa,l,N,id_offset):
     newtree = operation(parent,u,taxa[-1])
     return newtree
     
-def random_tree_nobin_nont_global(taxa,id_offset):
+def random_tree_nobin_nont_global(taxa,id_offset=0):
+    """
+    Returns a random tree without nested taxa.
+    
+    EXAMPLE::
+    
+        >>> network = random_tree_nobin_nont_global(['A', 'B', 'C', 'D'])
+        >>> network.nested_label(network.roots()[0])
+        ... '{A,B,{C,D}}' # random, not binary
+        >>> network = random_tree_nobin_nont_global(['A', 'B', 'C', 'D'])
+        >>> network.nested_label(network.roots()[0])
+        ... '{D,{A,{B,C}}}' # random
+        
+    """
     n = len(taxa)
     if n == 1:
         return PhyloNetwork(eNewick=('%s;' % taxa[0]),id_offset=id_offset)
@@ -136,7 +198,8 @@ def random_tree_nobin_nont_global(taxa,id_offset):
 
 @memoize_function
 def number_of_trees_bin_nt_partial(n,l,N,e):
-    """Gives the number of phylogenetic trees on n taxa with l leaves, N nodes, e of them being elementary.
+    """
+    Gives the number of phylogenetic trees on n taxa with l leaves, N nodes, e of them being elementary.
     Assume binary trees with nested taxa.
     """
     #print "n=%d, l=%d, N=%d, e=%d" % (n,l,N,e)
@@ -190,7 +253,21 @@ def random_tree_bin_nt_partial(taxa,l,N,e,id_offset):
     newtree = operation(parent,u,taxa[-1])
     return newtree
     
-def random_tree_bin_nt_global(taxa,id_offset):
+def random_tree_bin_nt_global(taxa,id_offset=0):
+    """
+    Returns a random binary tree with nested taxa.
+    
+    EXAMPLE::
+    
+        >>> network = random_tree_bin_nt_global(['A', 'B', 'C', 'D'])
+        >>> network.eNewick()
+        ... '((D,A),B)C;' # random
+        >>> network = random_tree_bin_nt_global(['A', 'B', 'C', 'D'])
+        >>> network.eNewick()
+        ... '((D,A),(B)C);' # random
+        
+    """
+    
     n = len(taxa)
     if n == 1:
         return PhyloNetwork(eNewick=('%s;' % taxa[0]),id_offset=id_offset)
@@ -206,7 +283,8 @@ def random_tree_bin_nt_global(taxa,id_offset):
 
 @memoize_function
 def number_of_trees_nobin_nt_partial(n,l,N):
-    """Gives the number of phylogenetic trees on n taxa with l leaves, N nodes, e of them being elementary.
+    """
+    Gives the number of phylogenetic trees on n taxa with l leaves, N nodes, e of them being elementary.
     Assume binary trees with nested taxa.
     """
     #print "n=%d, l=%d, N=%d, e=%d" % (n,l,N,e)
@@ -262,6 +340,20 @@ def random_tree_nobin_nt_partial(taxa,l,N,id_offset):
     return newtree
     
 def random_tree_nobin_nt_global(taxa,id_offset):
+    """
+    Returns a random tree with nested taxa.
+    
+    EXAMPLE::
+    
+        >>> network = random_tree_nobin_nt_global(['A', 'B', 'C', 'D'])
+        >>> network.eNewick()
+        ... '((D,A),C,B);' # random, non-binary
+        >>> network = random_tree_nobin_nt_global(['A', 'B', 'C', 'D'])
+        >>> network.eNewick()
+        ... '(((D,C),B),A);' # random
+        
+    """
+    
     n = len(taxa)
     if n == 1:
         return PhyloNetwork(eNewick=('%s;' % taxa[0]),id_offset=id_offset)
@@ -274,7 +366,23 @@ def random_tree_nobin_nt_global(taxa,id_offset):
     #print (l,N)
     return random_tree_nobin_nt_partial(taxa,l,N,id_offset)
 
-def Tree_generator_random(taxa,binary=False,nested_taxa=True,id_offset=0):
+def random_tree_generator(taxa,binary=False,nested_taxa=True,id_offset=0):
+    """
+    Returns generator of random trees.
+    If nested_taxa = True, then trees with internal labels will also be produced.
+    If binary = True, then only binary trees will be produced.
+    
+    EXAMPLE::
+    
+        >>> generator = random_tree_generator(['a', 'b', 'c', 'd', 'e', 'f'], binary=True)
+        >>> for i in range(3):
+        >>>     print generator.next().eNewick()
+        ... '((d,b),(c,((e)f)a));'
+        ... '(c,(((a,e),d),f)b);'
+        ... '(((c,f),((b)e)d))a;'
+        
+    """
+    
     if binary:
         if nested_taxa:
             f = random_tree_bin_nt_global
@@ -288,24 +396,8 @@ def Tree_generator_random(taxa,binary=False,nested_taxa=True,id_offset=0):
     while True:
         yield f(taxa,id_offset)
 
-def tree_generator_random_yule(taxa):
-    n = len(taxa)
-    if n == 1:
-        return PhyloNetwork(eNewick=('%s;' % taxa[0]))
-    tree = PhyloNetwork(eNewick=('(%s,%s);' % (taxa[0],taxa[1])))
-    for i in range(2,n):
-        leaf = random.choice(tree.leaves())
-        tree = push_and_hang(tree,leaf,taxa[i])
-    labels = tree._labels
-    keys = labels.keys()
-    values = labels.values()
-    random.shuffle(values)
-    tree._labels = dict(zip(keys,values))
-    tree.cache = {}
-    return tree
-
 if __name__ == "__main__":
-    tg = Tree_generator(['1','2','3'])
+    tg = all_trees(['1','2','3'])
     while tg:
         print tg.next()
         

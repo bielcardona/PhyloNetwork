@@ -40,6 +40,8 @@ class memoize_method(object):
         """Support instance methods."""
         #print "Get", obj, objtype
         fn = functools.partial(self.__call__, obj)
+        fn.__doc__ = self.func.__doc__
+        fn.__name__ = self.func.__name__
         try:
             self.cache = obj.cache
         except:
@@ -47,7 +49,7 @@ class memoize_method(object):
             self.cache = obj.cache
         #print self.cache
         return fn
-
+        
 class memoize_function(object):
     """Decorator that caches a function's return value each time it is called.
     If called later with the same arguments, the cached value is returned, and
