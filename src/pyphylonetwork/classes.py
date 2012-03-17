@@ -1,11 +1,4 @@
-'''
-Created on Dec 24, 2011
-
-@author: cardona
-'''
-
 from networkx import DiGraph, is_directed_acyclic_graph, dfs_successors 
-#from networkx.exception import NetworkXException, NetworkXError
 from networkx import single_source_shortest_path_length,all_pairs_shortest_path_length,dijkstra_path_length
 
 import numpy,pyparsing,copy

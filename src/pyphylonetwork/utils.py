@@ -1,9 +1,3 @@
-'''
-Created on Dec 24, 2011
-
-@author: cardona
-'''
-
 from random import randint
 
 def total_cmp(x,y):

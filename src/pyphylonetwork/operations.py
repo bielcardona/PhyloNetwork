@@ -1,9 +1,3 @@
-'''
-Created on Jan 16, 2012
-
-@author: cardona
-'''
-
 import copy
 
 def push_and_hang(net,u,newtaxa):

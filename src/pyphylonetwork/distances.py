@@ -1,9 +1,3 @@
-'''
-Created on Dec 24, 2011
-
-@author: cardona
-'''
-
 from utils import total_cmp
 from .exceptions import TaxaException
 
@@ -44,8 +38,8 @@ def nodal_distance_splitted(net1,net2,p=1,take_root=False, check=False):
     
     if check:
         if not net1.taxa() == net2.taxa():
-	    raise TaxaException("Networks over different set of taxa")
-	  
+            raise TaxaException("Networks over different set of taxa")
+         
     try:
         mat=net1.nodal_matrix()-net2.nodal_matrix()
     except:

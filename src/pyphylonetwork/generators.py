@@ -1,9 +1,3 @@
-'''
-Created on Jan 16, 2012
-
-@author: cardona
-'''
-
 from .classes import PhyloNetwork
 from .operations import push_and_hang,hold_and_hang,push_and_label,hold_and_label
 from .utils import random_weighted

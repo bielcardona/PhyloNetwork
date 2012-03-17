@@ -1,9 +1,3 @@
-'''
-Created on Dec 24, 2011
-
-@author: cardona
-'''
-
 import functools
 
 class memoize_method(object):
