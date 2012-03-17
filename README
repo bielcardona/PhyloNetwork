@@ -1,0 +1,5 @@
+PhyloNetwork project contains the python package pyphylonetwork, used to
+work with phylogenetic trees and networks.
+
+It can be installed with pip:
+> pip install PhyloNetwork
