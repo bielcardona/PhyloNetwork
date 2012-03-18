@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pyphylonetwork.generators &mdash; PhyloNetwork 1.0b1 documentation</title>
+    <title>phylonetwork.generators &mdash; PhyloNetwork 1.0b1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -48,18 +48,21 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <h1>Source code for pyphylonetwork.generators</h1><div class="highlight"><pre>
+  <h1>Source code for phylonetwork.generators</h1><div class="highlight"><pre>
 <span class="kn">from</span> <span class="nn">.classes</span> <span class="kn">import</span> <span class="n">PhyloNetwork</span>
 <span class="kn">from</span> <span class="nn">.operations</span> <span class="kn">import</span> <span class="n">push_and_hang</span><span class="p">,</span><span class="n">hold_and_hang</span><span class="p">,</span><span class="n">push_and_label</span><span class="p">,</span><span class="n">hold_and_label</span>
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">random_weighted</span>
 <span class="kn">from</span> <span class="nn">.memoize</span> <span class="kn">import</span> <span class="n">memoize_function</span>
+<span class="k">def</span> <span class="nf">memoize_function</span><span class="p">(</span><span class="n">f</span><span class="p">):</span> <span class="k">return</span> <span class="n">f</span> <span class="c"># use it to document memoized functions (sphinx bug?)</span>
+
+
 
 <span class="c">#import numpy</span>
 <span class="kn">import</span> <span class="nn">random</span>
 
 <span class="c"># Sequential generator</span>
 
-<div class="viewcode-block" id="all_trees"><a class="viewcode-back" href="../../index.html#pyphylonetwork.generators.all_trees">[docs]</a><span class="k">def</span> <span class="nf">all_trees</span><span class="p">(</span><span class="n">taxa</span><span class="p">,</span><span class="n">binary</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">nested_taxa</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="all_trees"><a class="viewcode-back" href="../../index.html#phylonetwork.generators.all_trees">[docs]</a><span class="k">def</span> <span class="nf">all_trees</span><span class="p">(</span><span class="n">taxa</span><span class="p">,</span><span class="n">binary</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">nested_taxa</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a generator for trees with given taxa. </span>
 <span class="sd">    If nested_taxa is True, then trees with internal nodes labeled </span>
@@ -131,7 +134,7 @@
 <span class="c"># Number of and random trees: binary without nested taxa</span>
 </div>
 <span class="nd">@memoize_function</span>
-<div class="viewcode-block" id="number_of_trees_bin_nont_partial"><a class="viewcode-back" href="../../index.html#pyphylonetwork.generators.number_of_trees_bin_nont_partial">[docs]</a><span class="k">def</span> <span class="nf">number_of_trees_bin_nont_partial</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">l</span><span class="p">,</span><span class="n">N</span><span class="p">):</span>
+<div class="viewcode-block" id="number_of_trees_bin_nont_partial"><a class="viewcode-back" href="../../index.html#phylonetwork.generators.number_of_trees_bin_nont_partial">[docs]</a><span class="k">def</span> <span class="nf">number_of_trees_bin_nont_partial</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">l</span><span class="p">,</span><span class="n">N</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gives the number of phylogenetic trees on n taxa with l leaves and N nodes.</span>
 <span class="sd">    Assume binary trees without nested taxa.</span>
@@ -143,14 +146,14 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">number_of_trees_bin_nont_partial</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">l</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
 </div>
 <span class="nd">@memoize_function</span>
-<div class="viewcode-block" id="number_of_trees_bin_nont_global"><a class="viewcode-back" href="../../index.html#pyphylonetwork.generators.number_of_trees_bin_nont_global">[docs]</a><span class="k">def</span> <span class="nf">number_of_trees_bin_nont_global</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<div class="viewcode-block" id="number_of_trees_bin_nont_global"><a class="viewcode-back" href="../../index.html#phylonetwork.generators.number_of_trees_bin_nont_global">[docs]</a><span class="k">def</span> <span class="nf">number_of_trees_bin_nont_global</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gives the number of phylogenetic trees on n taxa.</span>
 <span class="sd">    Assume binary trees and without nested taxa.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">number_of_trees_bin_nont_partial</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="random_tree_bin_nont_global"><a class="viewcode-back" href="../../index.html#pyphylonetwork.generators.random_tree_bin_nont_global">[docs]</a><span class="k">def</span> <span class="nf">random_tree_bin_nont_global</span><span class="p">(</span><span class="n">taxa</span><span class="p">,</span> <span class="n">id_offset</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="random_tree_bin_nont_global"><a class="viewcode-back" href="../../index.html#phylonetwork.generators.random_tree_bin_nont_global">[docs]</a><span class="k">def</span> <span class="nf">random_tree_bin_nont_global</span><span class="p">(</span><span class="n">taxa</span><span class="p">,</span> <span class="n">id_offset</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a random binary tree without nested taxa.</span>
 <span class="sd">    </span>
@@ -176,7 +179,7 @@
 <span class="c"># Number of and random trees: not necessarily binary without nested taxa</span>
 </div>
 <span class="nd">@memoize_function</span>
-<div class="viewcode-block" id="number_of_trees_nobin_nont_partial"><a class="viewcode-back" href="../../index.html#pyphylonetwork.generators.number_of_trees_nobin_nont_partial">[docs]</a><span class="k">def</span> <span class="nf">number_of_trees_nobin_nont_partial</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">l</span><span class="p">,</span><span class="n">N</span><span class="p">):</span>
+<div class="viewcode-block" id="number_of_trees_nobin_nont_partial"><a class="viewcode-back" href="../../index.html#phylonetwork.generators.number_of_trees_nobin_nont_partial">[docs]</a><span class="k">def</span> <span class="nf">number_of_trees_nobin_nont_partial</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">l</span><span class="p">,</span><span class="n">N</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gives the number of phylogenetic trees on n taxa with l leaves and N nodes.</span>
 <span class="sd">    Assume not necessarily binary trees and without nested taxa.</span>
@@ -189,7 +192,7 @@
            <span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="n">n</span><span class="p">)</span><span class="o">*</span><span class="n">number_of_trees_nobin_nont_partial</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">l</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 </div>
 <span class="nd">@memoize_function</span>
-<div class="viewcode-block" id="number_of_trees_nobin_nont_global"><a class="viewcode-back" href="../../index.html#pyphylonetwork.generators.number_of_trees_nobin_nont_global">[docs]</a><span class="k">def</span> <span class="nf">number_of_trees_nobin_nont_global</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<div class="viewcode-block" id="number_of_trees_nobin_nont_global"><a class="viewcode-back" href="../../index.html#phylonetwork.generators.number_of_trees_nobin_nont_global">[docs]</a><span class="k">def</span> <span class="nf">number_of_trees_nobin_nont_global</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gives the number of phylogenetic trees on n taxa.</span>
 <span class="sd">    Assume not necessarily binary trees and without nested taxa.</span>
@@ -215,7 +218,7 @@
     <span class="n">newtree</span> <span class="o">=</span> <span class="n">operation</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span><span class="n">u</span><span class="p">,</span><span class="n">taxa</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">newtree</span>
     
-<div class="viewcode-block" id="random_tree_nobin_nont_global"><a class="viewcode-back" href="../../index.html#pyphylonetwork.generators.random_tree_nobin_nont_global">[docs]</a><span class="k">def</span> <span class="nf">random_tree_nobin_nont_global</span><span class="p">(</span><span class="n">taxa</span><span class="p">,</span><span class="n">id_offset</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="random_tree_nobin_nont_global"><a class="viewcode-back" href="../../index.html#phylonetwork.generators.random_tree_nobin_nont_global">[docs]</a><span class="k">def</span> <span class="nf">random_tree_nobin_nont_global</span><span class="p">(</span><span class="n">taxa</span><span class="p">,</span><span class="n">id_offset</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a random tree without nested taxa.</span>
 <span class="sd">    </span>
@@ -242,7 +245,7 @@
 <span class="c"># Number of and random trees: binary with nested taxa</span>
 </div>
 <span class="nd">@memoize_function</span>
-<div class="viewcode-block" id="number_of_trees_bin_nt_partial"><a class="viewcode-back" href="../../index.html#pyphylonetwork.generators.number_of_trees_bin_nt_partial">[docs]</a><span class="k">def</span> <span class="nf">number_of_trees_bin_nt_partial</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">l</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">e</span><span class="p">):</span>
+<div class="viewcode-block" id="number_of_trees_bin_nt_partial"><a class="viewcode-back" href="../../index.html#phylonetwork.generators.number_of_trees_bin_nt_partial">[docs]</a><span class="k">def</span> <span class="nf">number_of_trees_bin_nt_partial</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">l</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">e</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gives the number of phylogenetic trees on n taxa with l leaves, N nodes, e of them being elementary.</span>
 <span class="sd">    Assume binary trees with nested taxa.</span>
@@ -298,7 +301,7 @@
     <span class="n">newtree</span> <span class="o">=</span> <span class="n">operation</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span><span class="n">u</span><span class="p">,</span><span class="n">taxa</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">newtree</span>
     
-<div class="viewcode-block" id="random_tree_bin_nt_global"><a class="viewcode-back" href="../../index.html#pyphylonetwork.generators.random_tree_bin_nt_global">[docs]</a><span class="k">def</span> <span class="nf">random_tree_bin_nt_global</span><span class="p">(</span><span class="n">taxa</span><span class="p">,</span><span class="n">id_offset</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="random_tree_bin_nt_global"><a class="viewcode-back" href="../../index.html#phylonetwork.generators.random_tree_bin_nt_global">[docs]</a><span class="k">def</span> <span class="nf">random_tree_bin_nt_global</span><span class="p">(</span><span class="n">taxa</span><span class="p">,</span><span class="n">id_offset</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a random binary tree with nested taxa.</span>
 <span class="sd">    </span>
@@ -327,7 +330,7 @@
 <span class="c"># Number of and random trees: not necessarily binary with nested taxa</span>
 </div>
 <span class="nd">@memoize_function</span>
-<div class="viewcode-block" id="number_of_trees_nobin_nt_partial"><a class="viewcode-back" href="../../index.html#pyphylonetwork.generators.number_of_trees_nobin_nt_partial">[docs]</a><span class="k">def</span> <span class="nf">number_of_trees_nobin_nt_partial</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">l</span><span class="p">,</span><span class="n">N</span><span class="p">):</span>
+<div class="viewcode-block" id="number_of_trees_nobin_nt_partial"><a class="viewcode-back" href="../../index.html#phylonetwork.generators.number_of_trees_nobin_nt_partial">[docs]</a><span class="k">def</span> <span class="nf">number_of_trees_nobin_nt_partial</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">l</span><span class="p">,</span><span class="n">N</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gives the number of phylogenetic trees on n taxa with l leaves, N nodes, e of them being elementary.</span>
 <span class="sd">    Assume binary trees with nested taxa.</span>
@@ -384,7 +387,7 @@
     <span class="n">newtree</span> <span class="o">=</span> <span class="n">operation</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span><span class="n">u</span><span class="p">,</span><span class="n">taxa</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">newtree</span>
     
-<div class="viewcode-block" id="random_tree_nobin_nt_global"><a class="viewcode-back" href="../../index.html#pyphylonetwork.generators.random_tree_nobin_nt_global">[docs]</a><span class="k">def</span> <span class="nf">random_tree_nobin_nt_global</span><span class="p">(</span><span class="n">taxa</span><span class="p">,</span><span class="n">id_offset</span><span class="p">):</span>
+<div class="viewcode-block" id="random_tree_nobin_nt_global"><a class="viewcode-back" href="../../index.html#phylonetwork.generators.random_tree_nobin_nt_global">[docs]</a><span class="k">def</span> <span class="nf">random_tree_nobin_nt_global</span><span class="p">(</span><span class="n">taxa</span><span class="p">,</span><span class="n">id_offset</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a random tree with nested taxa.</span>
 <span class="sd">    </span>
@@ -411,7 +414,7 @@
     <span class="c">#print (l,N)</span>
     <span class="k">return</span> <span class="n">random_tree_nobin_nt_partial</span><span class="p">(</span><span class="n">taxa</span><span class="p">,</span><span class="n">l</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">id_offset</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="random_tree_generator"><a class="viewcode-back" href="../../index.html#pyphylonetwork.generators.random_tree_generator">[docs]</a><span class="k">def</span> <span class="nf">random_tree_generator</span><span class="p">(</span><span class="n">taxa</span><span class="p">,</span><span class="n">binary</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">nested_taxa</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">id_offset</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="random_tree_generator"><a class="viewcode-back" href="../../index.html#phylonetwork.generators.random_tree_generator">[docs]</a><span class="k">def</span> <span class="nf">random_tree_generator</span><span class="p">(</span><span class="n">taxa</span><span class="p">,</span><span class="n">binary</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">nested_taxa</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">id_offset</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns generator of random trees.</span>
 <span class="sd">    If nested_taxa = True, then trees with internal labels will also be produced.</span>

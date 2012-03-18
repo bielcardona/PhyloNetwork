@@ -53,13 +53,13 @@
 <ul class="simple">
 </ul>
 </div>
-<span class="target" id="module-pyphylonetwork"></span><p>The pyphylonetwork is the main module of the project PhyloNetworks.</p>
+<span class="target" id="module-phylonetwork"></span><p>The phylonetwork is the main module of the project PhyloNetworks.</p>
 <p>It includes classes to represent phylogenetic networks and trees with or
 without nested taxa, as well as functions for both the successive and
 random generation of all phylogenetic trees over a set of taxa.</p>
-<span class="target" id="module-pyphylonetwork.classes"></span><dl class="class">
-<dt id="pyphylonetwork.classes.PhyloNetwork">
-<em class="property">class </em><tt class="descclassname">pyphylonetwork.classes.</tt><tt class="descname">PhyloNetwork</tt><big>(</big><em>data=None</em>, <em>name=''</em>, <em>eNewick=None</em>, <em>ignore_prefix=None</em>, <em>id_offset=0</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="module-phylonetwork.classes"></span><dl class="class">
+<dt id="phylonetwork.classes.PhyloNetwork">
+<em class="property">class </em><tt class="descclassname">phylonetwork.classes.</tt><tt class="descname">PhyloNetwork</tt><big>(</big><em>data=None</em>, <em>name=''</em>, <em>eNewick=None</em>, <em>ignore_prefix=None</em>, <em>id_offset=0</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork" title="Permalink to this definition">¶</a></dt>
 <dd><p>Main class for phylogenetic networks and trees (with or without nested taxa).</p>
 <p>You can create a PhyloNetwork with its eNewick representation:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="s">&quot;((1,2),(3,4)5);&quot;</span><span class="p">)</span>
@@ -90,8 +90,8 @@ random generation of all phylogenetic trees over a set of taxa.</p>
 </pre></div>
 </div>
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.CSA">
-<tt class="descname">CSA</tt><big>(</big><em>tax1</em>, <em>tax2</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.CSA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.CSA" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.CSA">
+<tt class="descname">CSA</tt><big>(</big><em>tax1</em>, <em>tax2</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.CSA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.CSA" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a set with the common strict ancestors of taxa1 and taxa2.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="p">((,(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span><span class="c">#1)2,#1)1;)</span>
@@ -112,8 +112,8 @@ random generation of all phylogenetic trees over a set of taxa.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.LCSA">
-<tt class="descname">LCSA</tt><big>(</big><em>tax1</em>, <em>tax2</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.LCSA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.LCSA" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.LCSA">
+<tt class="descname">LCSA</tt><big>(</big><em>tax1</em>, <em>tax2</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.LCSA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.LCSA" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a minimum of CSA(taxa1, taxa2) respect the height of nodes.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="p">((,(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span><span class="c">#1)2,#1)1;)</span>
@@ -134,8 +134,8 @@ random generation of all phylogenetic trees over a set of taxa.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.ancestors">
-<tt class="descname">ancestors</tt><big>(</big><em>taxon</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.ancestors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.ancestors" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.ancestors">
+<tt class="descname">ancestors</tt><big>(</big><em>taxon</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.ancestors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.ancestors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a set with all nodes that have a fixed descendant taxa.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="s">&quot;((3,4)1,(5,6,7)2);&quot;</span><span class="p">)</span>
@@ -148,20 +148,20 @@ random generation of all phylogenetic trees over a set of taxa.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.cluster">
-<tt class="descname">cluster</tt><big>(</big><em>u</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.cluster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.cluster" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.cluster">
+<tt class="descname">cluster</tt><big>(</big><em>u</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.cluster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.cluster" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the cluster of u in the network, None if the node is not in the network.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.cluster_representation">
-<tt class="descname">cluster_representation</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.cluster_representation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.cluster_representation" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.cluster_representation">
+<tt class="descname">cluster_representation</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.cluster_representation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.cluster_representation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the cluster of all nodes in the network.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.common_taxa">
-<tt class="descname">common_taxa</tt><big>(</big><em>net2</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.common_taxa"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.common_taxa" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.common_taxa">
+<tt class="descname">common_taxa</tt><big>(</big><em>net2</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.common_taxa"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.common_taxa" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns common taxa between self and net2.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="s">&quot;((1,2), 3)4;&quot;</span><span class="p">)</span>
@@ -175,8 +175,8 @@ random generation of all phylogenetic trees over a set of taxa.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.common_taxa_leaves">
-<tt class="descname">common_taxa_leaves</tt><big>(</big><em>net2</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.common_taxa_leaves"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.common_taxa_leaves" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.common_taxa_leaves">
+<tt class="descname">common_taxa_leaves</tt><big>(</big><em>net2</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.common_taxa_leaves"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.common_taxa_leaves" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns common taxa between self and net2 that are leaves on both networks.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="s">&quot;((1,2), 3)4;&quot;</span><span class="p">)</span>
@@ -190,8 +190,8 @@ random generation of all phylogenetic trees over a set of taxa.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.cophenetic_matrix">
-<tt class="descname">cophenetic_matrix</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.cophenetic_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.cophenetic_matrix" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.cophenetic_matrix">
+<tt class="descname">cophenetic_matrix</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.cophenetic_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.cophenetic_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a matrix with the cophenetic coeficient of labelled nodes.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="s">&quot;(((1,2), 3), 4);&quot;</span><span class="p">)</span>
@@ -205,8 +205,8 @@ random generation of all phylogenetic trees over a set of taxa.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.depth">
-<tt class="descname">depth</tt><big>(</big><em>u</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.depth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.depth" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.depth">
+<tt class="descname">depth</tt><big>(</big><em>u</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.depth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.depth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the depth of u. If the node u is not from the 
 phylogenetic network, then returns None.</p>
 <p>EXAMPLE:</p>
@@ -222,8 +222,8 @@ phylogenetic network, then returns None.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.descendant_nodes">
-<tt class="descname">descendant_nodes</tt><big>(</big><em>u</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.descendant_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.descendant_nodes" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.descendant_nodes">
+<tt class="descname">descendant_nodes</tt><big>(</big><em>u</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.descendant_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.descendant_nodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a set with all the descendents of u.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="s">&quot;((,(3,4)#1)2,#1)1;&quot;</span><span class="p">)</span>
@@ -242,8 +242,8 @@ phylogenetic network, then returns None.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.descendant_taxa">
-<tt class="descname">descendant_taxa</tt><big>(</big><em>u</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.descendant_taxa"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.descendant_taxa" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.descendant_taxa">
+<tt class="descname">descendant_taxa</tt><big>(</big><em>u</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.descendant_taxa"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.descendant_taxa" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a set with all the labelled descendents of u.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="s">&quot;((,(3,4)#1)2,#1)1;&quot;</span><span class="p">)</span>
@@ -262,14 +262,14 @@ phylogenetic network, then returns None.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.eNewick">
-<tt class="descname">eNewick</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.eNewick"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.eNewick" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.eNewick">
+<tt class="descname">eNewick</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.eNewick"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.eNewick" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the eNewick representation of the network.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.elementary_nodes">
-<tt class="descname">elementary_nodes</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.elementary_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.elementary_nodes" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.elementary_nodes">
+<tt class="descname">elementary_nodes</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.elementary_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.elementary_nodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the set of elementary nodes.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="s">&quot;((1)E,2);&quot;</span><span class="p">)</span>
@@ -286,14 +286,14 @@ phylogenetic network, then returns None.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.has_nested_taxa">
-<tt class="descname">has_nested_taxa</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.has_nested_taxa"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.has_nested_taxa" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.has_nested_taxa">
+<tt class="descname">has_nested_taxa</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.has_nested_taxa"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.has_nested_taxa" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns True is an internal node is labelled. False otherwise.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.height">
-<tt class="descname">height</tt><big>(</big><em>u</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.height"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.height" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.height">
+<tt class="descname">height</tt><big>(</big><em>u</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.height"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.height" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the height of u. If the node u is not from the 
 phylogenetic network, then returns None.</p>
 <p>EXAMPLE:</p>
@@ -309,8 +309,8 @@ phylogenetic network, then returns None.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.interior_nodes">
-<tt class="descname">interior_nodes</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.interior_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.interior_nodes" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.interior_nodes">
+<tt class="descname">interior_nodes</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.interior_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.interior_nodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the set of non-leaf nodes.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="s">&quot;((1,2),(3,4));&quot;</span><span class="p">)</span>
@@ -325,8 +325,8 @@ phylogenetic network, then returns None.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.is_elementary_node">
-<tt class="descname">is_elementary_node</tt><big>(</big><em>u</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.is_elementary_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.is_elementary_node" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.is_elementary_node">
+<tt class="descname">is_elementary_node</tt><big>(</big><em>u</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.is_elementary_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.is_elementary_node" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns True if u is an elementary node, False otherwise.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="s">&quot;((1)E,2);&quot;</span><span class="p">)</span>
@@ -343,8 +343,8 @@ phylogenetic network, then returns None.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.is_hybrid_node">
-<tt class="descname">is_hybrid_node</tt><big>(</big><em>u</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.is_hybrid_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.is_hybrid_node" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.is_hybrid_node">
+<tt class="descname">is_hybrid_node</tt><big>(</big><em>u</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.is_hybrid_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.is_hybrid_node" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns True if u is not a tree node, False otherwise.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="s">&quot;((3),(1,2));&quot;</span><span class="p">)</span>
@@ -364,8 +364,8 @@ phylogenetic network, then returns None.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.is_labelled">
-<tt class="descname">is_labelled</tt><big>(</big><em>u</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.is_labelled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.is_labelled" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.is_labelled">
+<tt class="descname">is_labelled</tt><big>(</big><em>u</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.is_labelled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.is_labelled" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns True if u is a labelled node, False otherwise.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="s">&quot;((3),(1,2))4;&quot;</span><span class="p">)</span>
@@ -380,8 +380,8 @@ phylogenetic network, then returns None.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.is_leaf">
-<tt class="descname">is_leaf</tt><big>(</big><em>u</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.is_leaf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.is_leaf" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.is_leaf">
+<tt class="descname">is_leaf</tt><big>(</big><em>u</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.is_leaf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.is_leaf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns True if u is a leaf, False otherwise.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="s">&quot;((3),(1,2));&quot;</span><span class="p">)</span>
@@ -400,8 +400,8 @@ phylogenetic network, then returns None.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.is_phylogenetic_network">
-<tt class="descname">is_phylogenetic_network</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.is_phylogenetic_network"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.is_phylogenetic_network" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.is_phylogenetic_network">
+<tt class="descname">is_phylogenetic_network</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.is_phylogenetic_network"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.is_phylogenetic_network" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns True if the network is a Phylogenetic Network. False otherwise.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="s">&quot;((1,2),(3,4)5);&quot;</span><span class="p">)</span>
@@ -417,8 +417,8 @@ phylogenetic network, then returns None.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.is_root">
-<tt class="descname">is_root</tt><big>(</big><em>u</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.is_root"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.is_root" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.is_root">
+<tt class="descname">is_root</tt><big>(</big><em>u</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.is_root"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.is_root" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns True if u is a root, False otherwise.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="s">&quot;((3),(1,2));&quot;</span><span class="p">)</span>
@@ -435,8 +435,8 @@ phylogenetic network, then returns None.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.is_tree_node">
-<tt class="descname">is_tree_node</tt><big>(</big><em>u</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.is_tree_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.is_tree_node" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.is_tree_node">
+<tt class="descname">is_tree_node</tt><big>(</big><em>u</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.is_tree_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.is_tree_node" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns True if u is a tree node, False otherwise.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="s">&quot;((3),(1,2));&quot;</span><span class="p">)</span>
@@ -456,8 +456,8 @@ phylogenetic network, then returns None.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.label">
-<tt class="descname">label</tt><big>(</big><em>node</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.label" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.label">
+<tt class="descname">label</tt><big>(</big><em>node</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.label" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the label of node, or None if not labelled.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="s">&quot;((1,2),(3,4)5);&quot;</span><span class="p">)</span>
@@ -476,8 +476,8 @@ phylogenetic network, then returns None.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.labelled_nodes">
-<tt class="descname">labelled_nodes</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.labelled_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.labelled_nodes" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.labelled_nodes">
+<tt class="descname">labelled_nodes</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.labelled_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.labelled_nodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the set of labelled nodes.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="s">&quot;((A,B,C),1);&quot;</span><span class="p">)</span>
@@ -496,8 +496,8 @@ phylogenetic network, then returns None.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.leaves">
-<tt class="descname">leaves</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.leaves"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.leaves" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.leaves">
+<tt class="descname">leaves</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.leaves"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.leaves" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the set of leaves of self.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="s">&quot;((3),(1,(5,6)2))4;&quot;</span><span class="p">)</span>
@@ -512,8 +512,8 @@ phylogenetic network, then returns None.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.mu">
-<tt class="descname">mu</tt><big>(</big><em>u</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.mu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.mu" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.mu">
+<tt class="descname">mu</tt><big>(</big><em>u</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.mu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.mu" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a tuple containing the number of paths from u to all 
 labelled nodes of the phylogenetic network.
 Returns None if the node u is not in the phylogenetic network.</p>
@@ -536,8 +536,8 @@ Returns None if the node u is not in the phylogenetic network.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.mu_string">
-<tt class="descname">mu_string</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.mu_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.mu_string" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.mu_string">
+<tt class="descname">mu_string</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.mu_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.mu_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a string representing the mu value of all nodes, with the same order as sorted_nodes()</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="s">&quot;((((LEAF1, LEAF2#1)), #1)INT,#1);&quot;</span><span class="p">)</span>
@@ -556,8 +556,8 @@ Returns None if the node u is not in the phylogenetic network.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.nested_label">
-<tt class="descname">nested_label</tt><big>(</big><em>node</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.nested_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.nested_label" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.nested_label">
+<tt class="descname">nested_label</tt><big>(</big><em>node</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.nested_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.nested_label" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a string representation of descendants of u. Very useful to identify where is a node located in the network.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="s">&quot;((2,3), (4,(5,6)))1;&quot;</span><span class="p">)</span>
@@ -574,8 +574,8 @@ Returns None if the node u is not in the phylogenetic network.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.nested_label_representation">
-<tt class="descname">nested_label_representation</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.nested_label_representation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.nested_label_representation" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.nested_label_representation">
+<tt class="descname">nested_label_representation</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.nested_label_representation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.nested_label_representation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the nested label of all nodes in the network.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="s">&quot;((1,2), (3,4));&quot;</span><span class="p">)</span>
@@ -588,8 +588,8 @@ Returns None if the node u is not in the phylogenetic network.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.nodal_area">
-<tt class="descname">nodal_area</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.nodal_area"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.nodal_area" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.nodal_area">
+<tt class="descname">nodal_area</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.nodal_area"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.nodal_area" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the sum of all elements of the nodal matrix.</p>
 <p>EXAMPLES:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="s">&quot;(((1,2), 3), 4);&quot;</span><span class="p">)</span>
@@ -605,8 +605,8 @@ Returns None if the node u is not in the phylogenetic network.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.nodal_matrix">
-<tt class="descname">nodal_matrix</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.nodal_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.nodal_matrix" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.nodal_matrix">
+<tt class="descname">nodal_matrix</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.nodal_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.nodal_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a matrix containing the nodal &#8216;distance&#8217; between all labelled nodes.</p>
 <p>EXAMPLES:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="s">&quot;(((1,2), 3), 4);&quot;</span><span class="p">)</span>
@@ -620,8 +620,8 @@ Returns None if the node u is not in the phylogenetic network.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.node_by_taxa">
-<tt class="descname">node_by_taxa</tt><big>(</big><em>taxa</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.node_by_taxa"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.node_by_taxa" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.node_by_taxa">
+<tt class="descname">node_by_taxa</tt><big>(</big><em>taxa</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.node_by_taxa"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.node_by_taxa" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the node labelled by taxa or None if no node is labelled by taxa.
 Important: If more than one node is labelled with taxa, only the first one will be displayed. In order to get all nodes with a fixed label, use nodes_by_taxa.</p>
 <p>EXAMPLE:</p>
@@ -641,8 +641,8 @@ Important: If more than one node is labelled with taxa, only the first one will 
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.nodes_by_taxa">
-<tt class="descname">nodes_by_taxa</tt><big>(</big><em>taxa</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.nodes_by_taxa"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.nodes_by_taxa" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.nodes_by_taxa">
+<tt class="descname">nodes_by_taxa</tt><big>(</big><em>taxa</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.nodes_by_taxa"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.nodes_by_taxa" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns all nodes labelled with taxa.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="s">&quot;((1,2),(3,4)1);&quot;</span><span class="p">)</span>
@@ -665,8 +665,8 @@ Important: If more than one node is labelled with taxa, only the first one will 
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.roots">
-<tt class="descname">roots</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.roots"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.roots" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.roots">
+<tt class="descname">roots</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.roots"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.roots" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the set of roots of self.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="s">&quot;(1,2,3)ROOT;&quot;</span><span class="p">)</span>
@@ -694,8 +694,8 @@ Important: If more than one node is labelled with taxa, only the first one will 
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.set_label">
-<tt class="descname">set_label</tt><big>(</big><em>node</em>, <em>label</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.set_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.set_label" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.set_label">
+<tt class="descname">set_label</tt><big>(</big><em>node</em>, <em>label</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.set_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.set_label" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set a new label to a node.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span> <span class="o">=</span> <span class="n">networkx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">()</span>
@@ -719,8 +719,8 @@ Important: If more than one node is labelled with taxa, only the first one will 
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.sorted_nodes">
-<tt class="descname">sorted_nodes</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.sorted_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.sorted_nodes" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.sorted_nodes">
+<tt class="descname">sorted_nodes</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.sorted_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.sorted_nodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the set of nodes sorted with the total order over their mu value.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="s">&quot;((((LEAF1, LEAF2#1)), #1)INT,#1);&quot;</span><span class="p">)</span>
@@ -737,8 +737,8 @@ Important: If more than one node is labelled with taxa, only the first one will 
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.strict_ancestors">
-<tt class="descname">strict_ancestors</tt><big>(</big><em>taxon</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.strict_ancestors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.strict_ancestors" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.strict_ancestors">
+<tt class="descname">strict_ancestors</tt><big>(</big><em>taxon</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.strict_ancestors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.strict_ancestors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a set with all nodes that have a fixed strict descendant taxa.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="p">((,(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span><span class="c">#1)2,#1)1;)</span>
@@ -753,8 +753,8 @@ Important: If more than one node is labelled with taxa, only the first one will 
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.strict_descendant_nodes">
-<tt class="descname">strict_descendant_nodes</tt><big>(</big><em>u</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.strict_descendant_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.strict_descendant_nodes" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.strict_descendant_nodes">
+<tt class="descname">strict_descendant_nodes</tt><big>(</big><em>u</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.strict_descendant_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.strict_descendant_nodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a set with all the strict descendents of u.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="s">&quot;((,(3,4)#1)2,#1)1;&quot;</span><span class="p">)</span>
@@ -771,8 +771,8 @@ Important: If more than one node is labelled with taxa, only the first one will 
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.strict_descendant_taxa">
-<tt class="descname">strict_descendant_taxa</tt><big>(</big><em>u</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.strict_descendant_taxa"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.strict_descendant_taxa" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.strict_descendant_taxa">
+<tt class="descname">strict_descendant_taxa</tt><big>(</big><em>u</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.strict_descendant_taxa"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.strict_descendant_taxa" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a set with all the strict labelled descendents of u.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="s">&quot;((,(3,4)#1)2,#1)1;&quot;</span><span class="p">)</span>
@@ -789,8 +789,8 @@ Important: If more than one node is labelled with taxa, only the first one will 
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.taxa">
-<tt class="descname">taxa</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.taxa"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.taxa" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.taxa">
+<tt class="descname">taxa</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.taxa"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.taxa" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the taxa (set of labels) of self.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="s">&quot;((1,2),(3,4)5);&quot;</span><span class="p">)</span>
@@ -807,8 +807,8 @@ Important: If more than one node is labelled with taxa, only the first one will 
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.topological_restriction">
-<tt class="descname">topological_restriction</tt><big>(</big><em>subtaxa</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.topological_restriction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.topological_restriction" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.topological_restriction">
+<tt class="descname">topological_restriction</tt><big>(</big><em>subtaxa</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.topological_restriction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.topological_restriction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a minimal subnetwork of self such that it containts a fixed subtaxa.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="s">&quot;((1,2), (3,4));&quot;</span><span class="p">)</span>
@@ -831,8 +831,8 @@ Important: If more than one node is labelled with taxa, only the first one will 
 </dd></dl>
 
 <dl class="method">
-<dt id="pyphylonetwork.classes.PhyloNetwork.unlabelled_nodes">
-<tt class="descname">unlabelled_nodes</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/classes.html#PhyloNetwork.unlabelled_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.classes.PhyloNetwork.unlabelled_nodes" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.classes.PhyloNetwork.unlabelled_nodes">
+<tt class="descname">unlabelled_nodes</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/phylonetwork/classes.html#PhyloNetwork.unlabelled_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.classes.PhyloNetwork.unlabelled_nodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the set of unlabelled nodes.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">PhyloNetwork</span><span class="p">(</span><span class="n">eNewick</span><span class="o">=</span><span class="s">&quot;((A,B,C),1);&quot;</span><span class="p">)</span>
@@ -852,9 +852,9 @@ Important: If more than one node is labelled with taxa, only the first one will 
 
 </dd></dl>
 
-<span class="target" id="module-pyphylonetwork.generators"></span><dl class="function">
-<dt id="pyphylonetwork.generators.all_trees">
-<tt class="descclassname">pyphylonetwork.generators.</tt><tt class="descname">all_trees</tt><big>(</big><em>taxa</em>, <em>binary=False</em>, <em>nested_taxa=True</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/generators.html#all_trees"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.generators.all_trees" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="module-phylonetwork.generators"></span><dl class="function">
+<dt id="phylonetwork.generators.all_trees">
+<tt class="descclassname">phylonetwork.generators.</tt><tt class="descname">all_trees</tt><big>(</big><em>taxa</em>, <em>binary=False</em>, <em>nested_taxa=True</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/generators.html#all_trees"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.generators.all_trees" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a generator for trees with given taxa. 
 If nested_taxa is True, then trees with internal nodes labeled 
 will also be produced.
@@ -892,50 +892,50 @@ have internal nodes with arbitrary out-degree.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="pyphylonetwork.generators.number_of_trees_bin_nont_global">
-<tt class="descclassname">pyphylonetwork.generators.</tt><tt class="descname">number_of_trees_bin_nont_global</tt><big>(</big><em>n</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/generators.html#number_of_trees_bin_nont_global"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.generators.number_of_trees_bin_nont_global" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.generators.number_of_trees_bin_nont_global">
+<tt class="descclassname">phylonetwork.generators.</tt><tt class="descname">number_of_trees_bin_nont_global</tt><big>(</big><em>n</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/generators.html#number_of_trees_bin_nont_global"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.generators.number_of_trees_bin_nont_global" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gives the number of phylogenetic trees on n taxa.
 Assume binary trees and without nested taxa.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="pyphylonetwork.generators.number_of_trees_bin_nont_partial">
-<tt class="descclassname">pyphylonetwork.generators.</tt><tt class="descname">number_of_trees_bin_nont_partial</tt><big>(</big><em>n</em>, <em>l</em>, <em>N</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/generators.html#number_of_trees_bin_nont_partial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.generators.number_of_trees_bin_nont_partial" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.generators.number_of_trees_bin_nont_partial">
+<tt class="descclassname">phylonetwork.generators.</tt><tt class="descname">number_of_trees_bin_nont_partial</tt><big>(</big><em>n</em>, <em>l</em>, <em>N</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/generators.html#number_of_trees_bin_nont_partial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.generators.number_of_trees_bin_nont_partial" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gives the number of phylogenetic trees on n taxa with l leaves and N nodes.
 Assume binary trees without nested taxa.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="pyphylonetwork.generators.number_of_trees_bin_nt_partial">
-<tt class="descclassname">pyphylonetwork.generators.</tt><tt class="descname">number_of_trees_bin_nt_partial</tt><big>(</big><em>n</em>, <em>l</em>, <em>N</em>, <em>e</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/generators.html#number_of_trees_bin_nt_partial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.generators.number_of_trees_bin_nt_partial" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.generators.number_of_trees_bin_nt_partial">
+<tt class="descclassname">phylonetwork.generators.</tt><tt class="descname">number_of_trees_bin_nt_partial</tt><big>(</big><em>n</em>, <em>l</em>, <em>N</em>, <em>e</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/generators.html#number_of_trees_bin_nt_partial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.generators.number_of_trees_bin_nt_partial" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gives the number of phylogenetic trees on n taxa with l leaves, N nodes, e of them being elementary.
 Assume binary trees with nested taxa.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="pyphylonetwork.generators.number_of_trees_nobin_nont_global">
-<tt class="descclassname">pyphylonetwork.generators.</tt><tt class="descname">number_of_trees_nobin_nont_global</tt><big>(</big><em>n</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/generators.html#number_of_trees_nobin_nont_global"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.generators.number_of_trees_nobin_nont_global" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.generators.number_of_trees_nobin_nont_global">
+<tt class="descclassname">phylonetwork.generators.</tt><tt class="descname">number_of_trees_nobin_nont_global</tt><big>(</big><em>n</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/generators.html#number_of_trees_nobin_nont_global"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.generators.number_of_trees_nobin_nont_global" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gives the number of phylogenetic trees on n taxa.
 Assume not necessarily binary trees and without nested taxa.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="pyphylonetwork.generators.number_of_trees_nobin_nont_partial">
-<tt class="descclassname">pyphylonetwork.generators.</tt><tt class="descname">number_of_trees_nobin_nont_partial</tt><big>(</big><em>n</em>, <em>l</em>, <em>N</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/generators.html#number_of_trees_nobin_nont_partial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.generators.number_of_trees_nobin_nont_partial" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.generators.number_of_trees_nobin_nont_partial">
+<tt class="descclassname">phylonetwork.generators.</tt><tt class="descname">number_of_trees_nobin_nont_partial</tt><big>(</big><em>n</em>, <em>l</em>, <em>N</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/generators.html#number_of_trees_nobin_nont_partial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.generators.number_of_trees_nobin_nont_partial" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gives the number of phylogenetic trees on n taxa with l leaves and N nodes.
 Assume not necessarily binary trees and without nested taxa.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="pyphylonetwork.generators.number_of_trees_nobin_nt_partial">
-<tt class="descclassname">pyphylonetwork.generators.</tt><tt class="descname">number_of_trees_nobin_nt_partial</tt><big>(</big><em>n</em>, <em>l</em>, <em>N</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/generators.html#number_of_trees_nobin_nt_partial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.generators.number_of_trees_nobin_nt_partial" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.generators.number_of_trees_nobin_nt_partial">
+<tt class="descclassname">phylonetwork.generators.</tt><tt class="descname">number_of_trees_nobin_nt_partial</tt><big>(</big><em>n</em>, <em>l</em>, <em>N</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/generators.html#number_of_trees_nobin_nt_partial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.generators.number_of_trees_nobin_nt_partial" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gives the number of phylogenetic trees on n taxa with l leaves, N nodes, e of them being elementary.
 Assume binary trees with nested taxa.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="pyphylonetwork.generators.random_tree_bin_nont_global">
-<tt class="descclassname">pyphylonetwork.generators.</tt><tt class="descname">random_tree_bin_nont_global</tt><big>(</big><em>taxa</em>, <em>id_offset=0</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/generators.html#random_tree_bin_nont_global"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.generators.random_tree_bin_nont_global" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.generators.random_tree_bin_nont_global">
+<tt class="descclassname">phylonetwork.generators.</tt><tt class="descname">random_tree_bin_nont_global</tt><big>(</big><em>taxa</em>, <em>id_offset=0</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/generators.html#random_tree_bin_nont_global"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.generators.random_tree_bin_nont_global" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a random binary tree without nested taxa.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">random_tree_bin_nont_global</span><span class="p">([</span><span class="s">&#39;A&#39;</span><span class="p">,</span> <span class="s">&#39;B&#39;</span><span class="p">,</span> <span class="s">&#39;C&#39;</span><span class="p">,</span> <span class="s">&#39;D&#39;</span><span class="p">])</span>
@@ -949,8 +949,8 @@ Assume binary trees with nested taxa.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="pyphylonetwork.generators.random_tree_bin_nt_global">
-<tt class="descclassname">pyphylonetwork.generators.</tt><tt class="descname">random_tree_bin_nt_global</tt><big>(</big><em>taxa</em>, <em>id_offset=0</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/generators.html#random_tree_bin_nt_global"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.generators.random_tree_bin_nt_global" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.generators.random_tree_bin_nt_global">
+<tt class="descclassname">phylonetwork.generators.</tt><tt class="descname">random_tree_bin_nt_global</tt><big>(</big><em>taxa</em>, <em>id_offset=0</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/generators.html#random_tree_bin_nt_global"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.generators.random_tree_bin_nt_global" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a random binary tree with nested taxa.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">random_tree_bin_nt_global</span><span class="p">([</span><span class="s">&#39;A&#39;</span><span class="p">,</span> <span class="s">&#39;B&#39;</span><span class="p">,</span> <span class="s">&#39;C&#39;</span><span class="p">,</span> <span class="s">&#39;D&#39;</span><span class="p">])</span>
@@ -964,8 +964,8 @@ Assume binary trees with nested taxa.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="pyphylonetwork.generators.random_tree_generator">
-<tt class="descclassname">pyphylonetwork.generators.</tt><tt class="descname">random_tree_generator</tt><big>(</big><em>taxa</em>, <em>binary=False</em>, <em>nested_taxa=True</em>, <em>id_offset=0</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/generators.html#random_tree_generator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.generators.random_tree_generator" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.generators.random_tree_generator">
+<tt class="descclassname">phylonetwork.generators.</tt><tt class="descname">random_tree_generator</tt><big>(</big><em>taxa</em>, <em>binary=False</em>, <em>nested_taxa=True</em>, <em>id_offset=0</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/generators.html#random_tree_generator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.generators.random_tree_generator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns generator of random trees.
 If nested_taxa = True, then trees with internal labels will also be produced.
 If binary = True, then only binary trees will be produced.</p>
@@ -981,8 +981,8 @@ If binary = True, then only binary trees will be produced.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="pyphylonetwork.generators.random_tree_nobin_nont_global">
-<tt class="descclassname">pyphylonetwork.generators.</tt><tt class="descname">random_tree_nobin_nont_global</tt><big>(</big><em>taxa</em>, <em>id_offset=0</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/generators.html#random_tree_nobin_nont_global"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.generators.random_tree_nobin_nont_global" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.generators.random_tree_nobin_nont_global">
+<tt class="descclassname">phylonetwork.generators.</tt><tt class="descname">random_tree_nobin_nont_global</tt><big>(</big><em>taxa</em>, <em>id_offset=0</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/generators.html#random_tree_nobin_nont_global"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.generators.random_tree_nobin_nont_global" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a random tree without nested taxa.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">random_tree_nobin_nont_global</span><span class="p">([</span><span class="s">&#39;A&#39;</span><span class="p">,</span> <span class="s">&#39;B&#39;</span><span class="p">,</span> <span class="s">&#39;C&#39;</span><span class="p">,</span> <span class="s">&#39;D&#39;</span><span class="p">])</span>
@@ -996,8 +996,8 @@ If binary = True, then only binary trees will be produced.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="pyphylonetwork.generators.random_tree_nobin_nt_global">
-<tt class="descclassname">pyphylonetwork.generators.</tt><tt class="descname">random_tree_nobin_nt_global</tt><big>(</big><em>taxa</em>, <em>id_offset</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/generators.html#random_tree_nobin_nt_global"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.generators.random_tree_nobin_nt_global" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.generators.random_tree_nobin_nt_global">
+<tt class="descclassname">phylonetwork.generators.</tt><tt class="descname">random_tree_nobin_nt_global</tt><big>(</big><em>taxa</em>, <em>id_offset</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/generators.html#random_tree_nobin_nt_global"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.generators.random_tree_nobin_nt_global" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a random tree with nested taxa.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">random_tree_nobin_nt_global</span><span class="p">([</span><span class="s">&#39;A&#39;</span><span class="p">,</span> <span class="s">&#39;B&#39;</span><span class="p">,</span> <span class="s">&#39;C&#39;</span><span class="p">,</span> <span class="s">&#39;D&#39;</span><span class="p">])</span>
@@ -1010,48 +1010,48 @@ If binary = True, then only binary trees will be produced.</p>
 </div>
 </dd></dl>
 
-<span class="target" id="module-pyphylonetwork.distances"></span><dl class="function">
-<dt id="pyphylonetwork.distances.RF_distance">
-<tt class="descclassname">pyphylonetwork.distances.</tt><tt class="descname">RF_distance</tt><big>(</big><em>net1</em>, <em>net2</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/distances.html#RF_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.distances.RF_distance" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="module-phylonetwork.distances"></span><dl class="function">
+<dt id="phylonetwork.distances.RF_distance">
+<tt class="descclassname">phylonetwork.distances.</tt><tt class="descname">RF_distance</tt><big>(</big><em>net1</em>, <em>net2</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/distances.html#RF_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.distances.RF_distance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the RF distance between two phylogenetic networks.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="pyphylonetwork.distances.cophenetic_distance">
-<tt class="descclassname">pyphylonetwork.distances.</tt><tt class="descname">cophenetic_distance</tt><big>(</big><em>net1</em>, <em>net2</em>, <em>p=1</em>, <em>take_root=False</em>, <em>check=False</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/distances.html#cophenetic_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.distances.cophenetic_distance" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.distances.cophenetic_distance">
+<tt class="descclassname">phylonetwork.distances.</tt><tt class="descname">cophenetic_distance</tt><big>(</big><em>net1</em>, <em>net2</em>, <em>p=1</em>, <em>take_root=False</em>, <em>check=False</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/distances.html#cophenetic_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.distances.cophenetic_distance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the nodal distance unsplitted between two phylogenetic networks.
 If check = True, then it checks if the two networks have the same taxa. Otherwise it will only check if the number of labels is equal.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="pyphylonetwork.distances.mu_distance">
-<tt class="descclassname">pyphylonetwork.distances.</tt><tt class="descname">mu_distance</tt><big>(</big><em>net1</em>, <em>net2</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/distances.html#mu_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.distances.mu_distance" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.distances.mu_distance">
+<tt class="descclassname">phylonetwork.distances.</tt><tt class="descname">mu_distance</tt><big>(</big><em>net1</em>, <em>net2</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/distances.html#mu_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.distances.mu_distance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the mu distance between two phylogenetic networks.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="pyphylonetwork.distances.nested_label_distance">
-<tt class="descclassname">pyphylonetwork.distances.</tt><tt class="descname">nested_label_distance</tt><big>(</big><em>net1</em>, <em>net2</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/distances.html#nested_label_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.distances.nested_label_distance" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.distances.nested_label_distance">
+<tt class="descclassname">phylonetwork.distances.</tt><tt class="descname">nested_label_distance</tt><big>(</big><em>net1</em>, <em>net2</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/distances.html#nested_label_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.distances.nested_label_distance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the nested label distance between two phylogenetic networks.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="pyphylonetwork.distances.nodal_distance_splitted">
-<tt class="descclassname">pyphylonetwork.distances.</tt><tt class="descname">nodal_distance_splitted</tt><big>(</big><em>net1</em>, <em>net2</em>, <em>p=1</em>, <em>take_root=False</em>, <em>check=False</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/distances.html#nodal_distance_splitted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.distances.nodal_distance_splitted" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.distances.nodal_distance_splitted">
+<tt class="descclassname">phylonetwork.distances.</tt><tt class="descname">nodal_distance_splitted</tt><big>(</big><em>net1</em>, <em>net2</em>, <em>p=1</em>, <em>take_root=False</em>, <em>check=False</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/distances.html#nodal_distance_splitted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.distances.nodal_distance_splitted" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the nodal distance splitted between two phylogenetic networks.
 If check = True, then it checks if the two networks have the same taxa. Otherwise it will only check if the number of labels is equal.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="pyphylonetwork.distances.nodal_distance_unsplitted">
-<tt class="descclassname">pyphylonetwork.distances.</tt><tt class="descname">nodal_distance_unsplitted</tt><big>(</big><em>net1</em>, <em>net2</em>, <em>p=1</em>, <em>take_root=False</em>, <em>check=False</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/distances.html#nodal_distance_unsplitted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.distances.nodal_distance_unsplitted" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.distances.nodal_distance_unsplitted">
+<tt class="descclassname">phylonetwork.distances.</tt><tt class="descname">nodal_distance_unsplitted</tt><big>(</big><em>net1</em>, <em>net2</em>, <em>p=1</em>, <em>take_root=False</em>, <em>check=False</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/distances.html#nodal_distance_unsplitted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.distances.nodal_distance_unsplitted" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the nodal distance unsplitted between two phylogenetic networks.
 If check = True, then it checks if the two networks have the same taxa. Otherwise it will only check if the number of labels is equal.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="pyphylonetwork.distances.transposition_distance">
-<tt class="descclassname">pyphylonetwork.distances.</tt><tt class="descname">transposition_distance</tt><big>(</big><em>net1</em>, <em>net2</em><big>)</big><a class="reference internal" href="_modules/pyphylonetwork/distances.html#transposition_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyphylonetwork.distances.transposition_distance" title="Permalink to this definition">¶</a></dt>
+<dt id="phylonetwork.distances.transposition_distance">
+<tt class="descclassname">phylonetwork.distances.</tt><tt class="descname">transposition_distance</tt><big>(</big><em>net1</em>, <em>net2</em><big>)</big><a class="reference internal" href="_modules/phylonetwork/distances.html#transposition_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylonetwork.distances.transposition_distance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the transposition distance between two phylogenetic networks.</p>
 </dd></dl>
 

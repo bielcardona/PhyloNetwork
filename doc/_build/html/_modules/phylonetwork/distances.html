@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pyphylonetwork.distances &mdash; PhyloNetwork 1.0b1 documentation</title>
+    <title>phylonetwork.distances &mdash; PhyloNetwork 1.0b1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -48,13 +48,13 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <h1>Source code for pyphylonetwork.distances</h1><div class="highlight"><pre>
+  <h1>Source code for phylonetwork.distances</h1><div class="highlight"><pre>
 <span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">total_cmp</span>
 <span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">TaxaException</span>
 
 
 
-<div class="viewcode-block" id="mu_distance"><a class="viewcode-back" href="../../index.html#pyphylonetwork.distances.mu_distance">[docs]</a><span class="k">def</span> <span class="nf">mu_distance</span><span class="p">(</span><span class="n">net1</span><span class="p">,</span><span class="n">net2</span><span class="p">):</span>
+<div class="viewcode-block" id="mu_distance"><a class="viewcode-back" href="../../index.html#phylonetwork.distances.mu_distance">[docs]</a><span class="k">def</span> <span class="nf">mu_distance</span><span class="p">(</span><span class="n">net1</span><span class="p">,</span><span class="n">net2</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the mu distance between two phylogenetic networks.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -81,7 +81,7 @@
 <span class="c">#def is_isomorphic_fast(net1,net2):</span>
 <span class="c">#    return net1.mu_string() == net2.mu_string()</span>
 </div>
-<div class="viewcode-block" id="nodal_distance_splitted"><a class="viewcode-back" href="../../index.html#pyphylonetwork.distances.nodal_distance_splitted">[docs]</a><span class="k">def</span> <span class="nf">nodal_distance_splitted</span><span class="p">(</span><span class="n">net1</span><span class="p">,</span><span class="n">net2</span><span class="p">,</span><span class="n">p</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">take_root</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="nodal_distance_splitted"><a class="viewcode-back" href="../../index.html#phylonetwork.distances.nodal_distance_splitted">[docs]</a><span class="k">def</span> <span class="nf">nodal_distance_splitted</span><span class="p">(</span><span class="n">net1</span><span class="p">,</span><span class="n">net2</span><span class="p">,</span><span class="n">p</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">take_root</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the nodal distance splitted between two phylogenetic networks.</span>
 <span class="sd">    If check = True, then it checks if the two networks have the same taxa. Otherwise it will only check if the number of labels is equal.</span>
@@ -89,8 +89,8 @@
     
     <span class="k">if</span> <span class="n">check</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">net1</span><span class="o">.</span><span class="n">taxa</span><span class="p">()</span> <span class="o">==</span> <span class="n">net2</span><span class="o">.</span><span class="n">taxa</span><span class="p">():</span>
-	    <span class="k">raise</span> <span class="n">TaxaException</span><span class="p">(</span><span class="s">&quot;Networks over different set of taxa&quot;</span><span class="p">)</span>
-	  
+            <span class="k">raise</span> <span class="n">TaxaException</span><span class="p">(</span><span class="s">&quot;Networks over different set of taxa&quot;</span><span class="p">)</span>
+         
     <span class="k">try</span><span class="p">:</span>
         <span class="n">mat</span><span class="o">=</span><span class="n">net1</span><span class="o">.</span><span class="n">nodal_matrix</span><span class="p">()</span><span class="o">-</span><span class="n">net2</span><span class="o">.</span><span class="n">nodal_matrix</span><span class="p">()</span>
     <span class="k">except</span><span class="p">:</span>
@@ -103,7 +103,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">mat</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span><span class="o">**</span><span class="n">p</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="nodal_distance_unsplitted"><a class="viewcode-back" href="../../index.html#pyphylonetwork.distances.nodal_distance_unsplitted">[docs]</a><span class="k">def</span> <span class="nf">nodal_distance_unsplitted</span><span class="p">(</span><span class="n">net1</span><span class="p">,</span><span class="n">net2</span><span class="p">,</span><span class="n">p</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">take_root</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="nodal_distance_unsplitted"><a class="viewcode-back" href="../../index.html#phylonetwork.distances.nodal_distance_unsplitted">[docs]</a><span class="k">def</span> <span class="nf">nodal_distance_unsplitted</span><span class="p">(</span><span class="n">net1</span><span class="p">,</span><span class="n">net2</span><span class="p">,</span><span class="n">p</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">take_root</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the nodal distance unsplitted between two phylogenetic networks.</span>
 <span class="sd">    If check = True, then it checks if the two networks have the same taxa. Otherwise it will only check if the number of labels is equal.</span>
@@ -129,7 +129,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">mat</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span><span class="o">**</span><span class="n">p</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="cophenetic_distance"><a class="viewcode-back" href="../../index.html#pyphylonetwork.distances.cophenetic_distance">[docs]</a><span class="k">def</span> <span class="nf">cophenetic_distance</span><span class="p">(</span><span class="n">net1</span><span class="p">,</span><span class="n">net2</span><span class="p">,</span><span class="n">p</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">take_root</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="cophenetic_distance"><a class="viewcode-back" href="../../index.html#phylonetwork.distances.cophenetic_distance">[docs]</a><span class="k">def</span> <span class="nf">cophenetic_distance</span><span class="p">(</span><span class="n">net1</span><span class="p">,</span><span class="n">net2</span><span class="p">,</span><span class="n">p</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">take_root</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the nodal distance unsplitted between two phylogenetic networks.</span>
 <span class="sd">    If check = True, then it checks if the two networks have the same taxa. Otherwise it will only check if the number of labels is equal.</span>
@@ -153,7 +153,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">mat</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span><span class="o">**</span><span class="n">p</span><span class="p">))</span>
 </div>
-<div class="viewcode-block" id="transposition_distance"><a class="viewcode-back" href="../../index.html#pyphylonetwork.distances.transposition_distance">[docs]</a><span class="k">def</span> <span class="nf">transposition_distance</span><span class="p">(</span><span class="n">net1</span><span class="p">,</span><span class="n">net2</span><span class="p">):</span>
+<div class="viewcode-block" id="transposition_distance"><a class="viewcode-back" href="../../index.html#phylonetwork.distances.transposition_distance">[docs]</a><span class="k">def</span> <span class="nf">transposition_distance</span><span class="p">(</span><span class="n">net1</span><span class="p">,</span><span class="n">net2</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the transposition distance between two phylogenetic networks.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -169,14 +169,14 @@
         <span class="n">dist</span><span class="o">+=</span><span class="nb">len</span><span class="p">(</span><span class="n">cicle</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
     <span class="k">return</span> <span class="n">dist</span><span class="o">/</span><span class="mi">2</span>
 </div>
-<div class="viewcode-block" id="RF_distance"><a class="viewcode-back" href="../../index.html#pyphylonetwork.distances.RF_distance">[docs]</a><span class="k">def</span> <span class="nf">RF_distance</span><span class="p">(</span><span class="n">net1</span><span class="p">,</span><span class="n">net2</span><span class="p">):</span>
+<div class="viewcode-block" id="RF_distance"><a class="viewcode-back" href="../../index.html#phylonetwork.distances.RF_distance">[docs]</a><span class="k">def</span> <span class="nf">RF_distance</span><span class="p">(</span><span class="n">net1</span><span class="p">,</span><span class="n">net2</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the RF distance between two phylogenetic networks.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">net1</span><span class="o">.</span><span class="n">cluster_representation</span><span class="p">())</span><span class="o">^</span><span class="nb">set</span><span class="p">(</span><span class="n">net2</span><span class="o">.</span><span class="n">cluster_representation</span><span class="p">()))</span>
 </div>
-<div class="viewcode-block" id="nested_label_distance"><a class="viewcode-back" href="../../index.html#pyphylonetwork.distances.nested_label_distance">[docs]</a><span class="k">def</span> <span class="nf">nested_label_distance</span><span class="p">(</span><span class="n">net1</span><span class="p">,</span><span class="n">net2</span><span class="p">):</span>
+<div class="viewcode-block" id="nested_label_distance"><a class="viewcode-back" href="../../index.html#phylonetwork.distances.nested_label_distance">[docs]</a><span class="k">def</span> <span class="nf">nested_label_distance</span><span class="p">(</span><span class="n">net1</span><span class="p">,</span><span class="n">net2</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the nested label distance between two phylogenetic networks.</span>
 <span class="sd">    &quot;&quot;&quot;</span>

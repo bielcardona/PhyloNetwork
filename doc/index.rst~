@@ -17,6 +17,9 @@ Contents:
 .. automodule::  pyphylonetwork.classes
    :members:
 
+.. automodule::  pyphylonetwork.generators
+   :members:
+
 
 .. automodule:: pyphylonetwork.distances
    :members:

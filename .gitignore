@@ -1,5 +1,7 @@
 proves
 *.pyc
 build
+scripts
+*egg-info
 
 .DS_Store

@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pyphylonetwork.classes &mdash; PhyloNetwork 1.0b1 documentation</title>
+    <title>phylonetwork.classes &mdash; PhyloNetwork 1.0b1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -48,7 +48,7 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <h1>Source code for pyphylonetwork.classes</h1><div class="highlight"><pre>
+  <h1>Source code for phylonetwork.classes</h1><div class="highlight"><pre>
 <span class="kn">from</span> <span class="nn">networkx</span> <span class="kn">import</span> <span class="n">DiGraph</span><span class="p">,</span> <span class="n">is_directed_acyclic_graph</span><span class="p">,</span> <span class="n">dfs_successors</span> 
 <span class="kn">from</span> <span class="nn">networkx</span> <span class="kn">import</span> <span class="n">single_source_shortest_path_length</span><span class="p">,</span><span class="n">all_pairs_shortest_path_length</span><span class="p">,</span><span class="n">dijkstra_path_length</span>
 
@@ -58,11 +58,12 @@
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">total_cmp</span>
 <span class="kn">import</span> <span class="nn">permutations</span>
 <span class="kn">from</span> <span class="nn">.memoize</span> <span class="kn">import</span> <span class="n">memoize_method</span>
+<span class="k">def</span> <span class="nf">memoize_method</span><span class="p">(</span><span class="n">f</span><span class="p">):</span> <span class="k">return</span> <span class="n">f</span> <span class="c"># use it to document memoized methods (sphinx bug?)</span>
 <span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">MalformedNewickException</span>
 
-<div class="viewcode-block" id="PhyloNetwork"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork">[docs]</a><span class="k">class</span> <span class="nc">PhyloNetwork</span><span class="p">(</span><span class="n">DiGraph</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork">[docs]</a><span class="k">class</span> <span class="nc">PhyloNetwork</span><span class="p">(</span><span class="n">DiGraph</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Main class for Phylogenetic Networks (with nested taxa).</span>
+<span class="sd">    Main class for phylogenetic networks and trees (with or without nested taxa).</span>
 <span class="sd">    </span>
 <span class="sd">    You can create a PhyloNetwork with its eNewick representation::</span>
 <span class="sd">    </span>
@@ -105,7 +106,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_from_eNewick</span><span class="p">(</span><span class="n">eNewick</span><span class="p">,</span> <span class="n">ignore_prefix</span><span class="o">=</span><span class="n">ignore_prefix</span><span class="p">)</span>
     
     <span class="nd">@memoize_method</span>
-<div class="viewcode-block" id="PhyloNetwork.is_phylogenetic_network"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.is_phylogenetic_network">[docs]</a>    <span class="k">def</span> <span class="nf">is_phylogenetic_network</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.is_phylogenetic_network"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.is_phylogenetic_network">[docs]</a>    <span class="k">def</span> <span class="nf">is_phylogenetic_network</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns True if the network is a Phylogenetic Network. False otherwise.</span>
 <span class="sd">                </span>
@@ -125,7 +126,7 @@
             <span class="k">return</span> <span class="bp">False</span>
         <span class="k">return</span> <span class="bp">True</span>
         </div>
-<div class="viewcode-block" id="PhyloNetwork.set_label"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.set_label">[docs]</a>    <span class="k">def</span> <span class="nf">set_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.set_label"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.set_label">[docs]</a>    <span class="k">def</span> <span class="nf">set_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set a new label to a node.</span>
 <span class="sd">        </span>
@@ -154,7 +155,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">cache</span> <span class="o">=</span> <span class="p">{}</span>
     </div>
     <span class="nd">@memoize_method</span>
-<div class="viewcode-block" id="PhyloNetwork.taxa"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.taxa">[docs]</a>    <span class="k">def</span> <span class="nf">taxa</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.taxa"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.taxa">[docs]</a>    <span class="k">def</span> <span class="nf">taxa</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the taxa (set of labels) of self.</span>
 <span class="sd">        </span>
@@ -175,7 +176,7 @@
         <span class="n">taxa</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">taxa</span>
 </div>
-<div class="viewcode-block" id="PhyloNetwork.label"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.label">[docs]</a>    <span class="k">def</span> <span class="nf">label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">node</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.label"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.label">[docs]</a>    <span class="k">def</span> <span class="nf">label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">node</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the label of node, or None if not labelled.</span>
 <span class="sd">        </span>
@@ -197,7 +198,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_labels</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
 </div>
     <span class="nd">@memoize_method</span>
-<div class="viewcode-block" id="PhyloNetwork.node_by_taxa"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.node_by_taxa">[docs]</a>    <span class="k">def</span> <span class="nf">node_by_taxa</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">taxa</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.node_by_taxa"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.node_by_taxa">[docs]</a>    <span class="k">def</span> <span class="nf">node_by_taxa</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">taxa</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the node labelled by taxa or None if no node is labelled by taxa.</span>
 <span class="sd">        Important: If more than one node is labelled with taxa, only the first one will be displayed. In order to get all nodes with a fixed label, use nodes_by_taxa.</span>
@@ -223,7 +224,7 @@
         <span class="k">return</span> <span class="bp">None</span>
         </div>
     <span class="nd">@memoize_method</span>
-<div class="viewcode-block" id="PhyloNetwork.nodes_by_taxa"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.nodes_by_taxa">[docs]</a>    <span class="k">def</span> <span class="nf">nodes_by_taxa</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">taxa</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.nodes_by_taxa"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.nodes_by_taxa">[docs]</a>    <span class="k">def</span> <span class="nf">nodes_by_taxa</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">taxa</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns all nodes labelled with taxa.</span>
 <span class="sd">        </span>
@@ -252,7 +253,7 @@
                 <span class="n">tmp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="PhyloNetwork.is_tree_node"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.is_tree_node">[docs]</a>    <span class="k">def</span> <span class="nf">is_tree_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.is_tree_node"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.is_tree_node">[docs]</a>    <span class="k">def</span> <span class="nf">is_tree_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns True if u is a tree node, False otherwise.</span>
 <span class="sd">        </span>
@@ -274,7 +275,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_degree</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">&lt;=</span><span class="mi">1</span>
     </div>
-<div class="viewcode-block" id="PhyloNetwork.is_hybrid_node"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.is_hybrid_node">[docs]</a>    <span class="k">def</span> <span class="nf">is_hybrid_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.is_hybrid_node"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.is_hybrid_node">[docs]</a>    <span class="k">def</span> <span class="nf">is_hybrid_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns True if u is not a tree node, False otherwise.</span>
 <span class="sd">        </span>
@@ -296,7 +297,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_degree</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span>
 </div>
-<div class="viewcode-block" id="PhyloNetwork.is_leaf"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.is_leaf">[docs]</a>    <span class="k">def</span> <span class="nf">is_leaf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.is_leaf"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.is_leaf">[docs]</a>    <span class="k">def</span> <span class="nf">is_leaf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns True if u is a leaf, False otherwise.</span>
 <span class="sd">        </span>
@@ -317,7 +318,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_degree</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span>
     </div>
-<div class="viewcode-block" id="PhyloNetwork.is_root"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.is_root">[docs]</a>    <span class="k">def</span> <span class="nf">is_root</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.is_root"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.is_root">[docs]</a>    <span class="k">def</span> <span class="nf">is_root</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns True if u is a root, False otherwise.</span>
 <span class="sd">        </span>
@@ -336,7 +337,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_degree</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span>
 </div>
-<div class="viewcode-block" id="PhyloNetwork.is_elementary_node"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.is_elementary_node">[docs]</a>    <span class="k">def</span> <span class="nf">is_elementary_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.is_elementary_node"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.is_elementary_node">[docs]</a>    <span class="k">def</span> <span class="nf">is_elementary_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns True if u is an elementary node, False otherwise.</span>
 <span class="sd">        </span>
@@ -356,7 +357,7 @@
         
         <span class="k">return</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">in_degree</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">&lt;=</span><span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_degree</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">))</span>
     </div>
-<div class="viewcode-block" id="PhyloNetwork.is_labelled"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.is_labelled">[docs]</a>    <span class="k">def</span> <span class="nf">is_labelled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.is_labelled"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.is_labelled">[docs]</a>    <span class="k">def</span> <span class="nf">is_labelled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns True if u is a labelled node, False otherwise.</span>
 <span class="sd">        </span>
@@ -374,7 +375,7 @@
         <span class="k">return</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_labels</span>
         </div>
     <span class="nd">@memoize_method</span>
-<div class="viewcode-block" id="PhyloNetwork.leaves"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.leaves">[docs]</a>    <span class="k">def</span> <span class="nf">leaves</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.leaves"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.leaves">[docs]</a>    <span class="k">def</span> <span class="nf">leaves</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the set of leaves of self.</span>
 <span class="sd">        </span>
@@ -394,7 +395,7 @@
         <span class="k">return</span> <span class="n">leaves</span>
 </div>
     <span class="nd">@memoize_method</span>
-<div class="viewcode-block" id="PhyloNetwork.roots"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.roots">[docs]</a>    <span class="k">def</span> <span class="nf">roots</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.roots"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.roots">[docs]</a>    <span class="k">def</span> <span class="nf">roots</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the set of roots of self.</span>
 <span class="sd">        </span>
@@ -427,7 +428,7 @@
         <span class="k">return</span> <span class="n">roots</span>
 </div>
     <span class="nd">@memoize_method</span>
-<div class="viewcode-block" id="PhyloNetwork.labelled_nodes"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.labelled_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">labelled_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.labelled_nodes"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.labelled_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">labelled_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the set of labelled nodes.</span>
 <span class="sd">        </span>
@@ -449,7 +450,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_labels</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
     </div>
     <span class="nd">@memoize_method</span>
-<div class="viewcode-block" id="PhyloNetwork.unlabelled_nodes"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.unlabelled_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">unlabelled_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.unlabelled_nodes"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.unlabelled_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">unlabelled_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the set of unlabelled nodes.</span>
 <span class="sd">        </span>
@@ -471,7 +472,7 @@
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span><span class="o">-</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">labelled_nodes</span><span class="p">()))</span>
             </div>
     <span class="nd">@memoize_method</span>
-<div class="viewcode-block" id="PhyloNetwork.interior_nodes"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.interior_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">interior_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.interior_nodes"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.interior_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">interior_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the set of non-leaf nodes.</span>
 <span class="sd">        </span>
@@ -489,7 +490,7 @@
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span><span class="o">-</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">leaves</span><span class="p">()))</span>
     </div>
     <span class="nd">@memoize_method</span>
-<div class="viewcode-block" id="PhyloNetwork.elementary_nodes"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.elementary_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">elementary_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.elementary_nodes"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.elementary_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">elementary_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the set of elementary nodes.</span>
 <span class="sd">        </span>
@@ -509,7 +510,7 @@
         <span class="k">return</span> <span class="nb">filter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">is_elementary_node</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span>
             </div>
     <span class="nd">@memoize_method</span>
-<div class="viewcode-block" id="PhyloNetwork.depth"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.depth">[docs]</a>    <span class="k">def</span> <span class="nf">depth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.depth"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.depth">[docs]</a>    <span class="k">def</span> <span class="nf">depth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the depth of u. If the node u is not from the </span>
 <span class="sd">        phylogenetic network, then returns None.</span>
@@ -530,7 +531,7 @@
         <span class="k">return</span> <span class="nb">min</span><span class="p">([</span><span class="n">dijkstra_path_length</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">root</span><span class="p">,</span><span class="n">u</span><span class="p">)</span> <span class="k">for</span> <span class="n">root</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">roots</span><span class="p">()])</span>
         </div>
     <span class="nd">@memoize_method</span>
-<div class="viewcode-block" id="PhyloNetwork.height"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.height">[docs]</a>    <span class="k">def</span> <span class="nf">height</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.height"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.height">[docs]</a>    <span class="k">def</span> <span class="nf">height</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the height of u. If the node u is not from the </span>
 <span class="sd">        phylogenetic network, then returns None.</span>
@@ -554,7 +555,7 @@
             <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">successors</span><span class="p">(</span><span class="n">u</span><span class="p">)))</span><span class="o">+</span><span class="mi">1</span>
 </div>
     <span class="nd">@memoize_method</span>
-<div class="viewcode-block" id="PhyloNetwork.mu"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.mu">[docs]</a>    <span class="k">def</span> <span class="nf">mu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.mu"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.mu">[docs]</a>    <span class="k">def</span> <span class="nf">mu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a tuple containing the number of paths from u to all </span>
 <span class="sd">        labelled nodes of the phylogenetic network.</span>
@@ -589,7 +590,7 @@
         <span class="k">return</span> <span class="n">mu</span>
 </div>
     <span class="nd">@memoize_method</span>
-<div class="viewcode-block" id="PhyloNetwork.mu_string"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.mu_string">[docs]</a>    <span class="k">def</span> <span class="nf">mu_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.mu_string"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.mu_string">[docs]</a>    <span class="k">def</span> <span class="nf">mu_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a string representing the mu value of all nodes, with the same order as sorted_nodes()</span>
 <span class="sd">        </span>
@@ -611,7 +612,7 @@
         <span class="k">return</span> <span class="s">&#39;-&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mu</span><span class="p">(</span><span class="n">u</span><span class="p">))</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorted_nodes</span><span class="p">()])</span>
         </div>
     <span class="nd">@memoize_method</span>
-<div class="viewcode-block" id="PhyloNetwork.sorted_nodes"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.sorted_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">sorted_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.sorted_nodes"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.sorted_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">sorted_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the set of nodes sorted with the total order over their mu value.</span>
 <span class="sd">        </span>
@@ -692,7 +693,7 @@
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s">&quot;Phylogenetic Network with taxa [&quot;</span> <span class="o">+</span> <span class="s">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">taxa</span><span class="p">()))</span> <span class="o">+</span> <span class="s">&quot;].&quot;</span>
     
-<div class="viewcode-block" id="PhyloNetwork.eNewick"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.eNewick">[docs]</a>    <span class="k">def</span> <span class="nf">eNewick</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.eNewick"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.eNewick">[docs]</a>    <span class="k">def</span> <span class="nf">eNewick</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the eNewick representation of the network.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -704,7 +705,7 @@
         <span class="k">return</span> <span class="n">string</span>
     </div>
     <span class="nd">@memoize_method</span>
-<div class="viewcode-block" id="PhyloNetwork.descendant_nodes"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.descendant_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">descendant_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.descendant_nodes"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.descendant_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">descendant_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a set with all the descendents of u.</span>
 
@@ -727,7 +728,7 @@
         <span class="c">#return dfs_successors(self,u)</span>
 </div>
     <span class="nd">@memoize_method</span>
-<div class="viewcode-block" id="PhyloNetwork.descendant_taxa"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.descendant_taxa">[docs]</a>    <span class="k">def</span> <span class="nf">descendant_taxa</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.descendant_taxa"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.descendant_taxa">[docs]</a>    <span class="k">def</span> <span class="nf">descendant_taxa</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a set with all the labelled descendents of u.</span>
 <span class="sd">        </span>
@@ -749,7 +750,7 @@
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span> <span class="k">for</span> <span class="n">desc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">descendant_nodes</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_labelled</span><span class="p">(</span><span class="n">desc</span><span class="p">)]</span>
 </div>
     <span class="nd">@memoize_method</span>
-<div class="viewcode-block" id="PhyloNetwork.strict_descendant_nodes"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.strict_descendant_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">strict_descendant_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.strict_descendant_nodes"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.strict_descendant_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">strict_descendant_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a set with all the strict descendents of u.</span>
 <span class="sd">        </span>
@@ -777,7 +778,7 @@
         <span class="k">return</span> <span class="p">[</span><span class="n">desc</span> <span class="k">for</span> <span class="n">desc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">descendant_nodes</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">desc</span> <span class="ow">in</span> <span class="n">desc_pruned</span><span class="p">]</span>
 </div>
     <span class="nd">@memoize_method</span>
-<div class="viewcode-block" id="PhyloNetwork.strict_descendant_taxa"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.strict_descendant_taxa">[docs]</a>    <span class="k">def</span> <span class="nf">strict_descendant_taxa</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.strict_descendant_taxa"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.strict_descendant_taxa">[docs]</a>    <span class="k">def</span> <span class="nf">strict_descendant_taxa</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a set with all the strict labelled descendents of u.</span>
 <span class="sd">        </span>
@@ -797,7 +798,7 @@
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span> <span class="k">for</span> <span class="n">desc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">strict_descendant_nodes</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_labelled</span><span class="p">(</span><span class="n">desc</span><span class="p">)]</span>
 </div>
     <span class="nd">@memoize_method</span>
-<div class="viewcode-block" id="PhyloNetwork.ancestors"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.ancestors">[docs]</a>    <span class="k">def</span> <span class="nf">ancestors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">taxon</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.ancestors"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.ancestors">[docs]</a>    <span class="k">def</span> <span class="nf">ancestors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">taxon</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a set with all nodes that have a fixed descendant taxa.</span>
 <span class="sd">        </span>
@@ -814,7 +815,7 @@
         <span class="k">return</span> <span class="p">[</span><span class="n">u</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorted_nodes</span><span class="p">()</span> <span class="k">if</span> <span class="n">taxon</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">descendant_taxa</span><span class="p">(</span><span class="n">u</span><span class="p">)]</span>
 </div>
     <span class="nd">@memoize_method</span>
-<div class="viewcode-block" id="PhyloNetwork.strict_ancestors"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.strict_ancestors">[docs]</a>    <span class="k">def</span> <span class="nf">strict_ancestors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">taxon</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.strict_ancestors"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.strict_ancestors">[docs]</a>    <span class="k">def</span> <span class="nf">strict_ancestors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">taxon</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a set with all nodes that have a fixed strict descendant taxa.</span>
 <span class="sd">        </span>
@@ -832,7 +833,7 @@
         <span class="k">return</span> <span class="p">[</span><span class="n">u</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorted_nodes</span><span class="p">()</span> <span class="k">if</span> <span class="n">taxon</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">strict_descendant_taxa</span><span class="p">(</span><span class="n">u</span><span class="p">)]</span>
 </div>
     <span class="nd">@memoize_method</span>
-<div class="viewcode-block" id="PhyloNetwork.CSA"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.CSA">[docs]</a>    <span class="k">def</span> <span class="nf">CSA</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">tax1</span><span class="p">,</span><span class="n">tax2</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.CSA"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.CSA">[docs]</a>    <span class="k">def</span> <span class="nf">CSA</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">tax1</span><span class="p">,</span><span class="n">tax2</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a set with the common strict ancestors of taxa1 and taxa2.</span>
 <span class="sd">        </span>
@@ -860,7 +861,7 @@
                  <span class="p">(</span><span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">strict_ancestors</span><span class="p">(</span><span class="n">tax2</span><span class="p">)))]</span>
 </div>
     <span class="nd">@memoize_method</span>
-<div class="viewcode-block" id="PhyloNetwork.LCSA"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.LCSA">[docs]</a>    <span class="k">def</span> <span class="nf">LCSA</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">tax1</span><span class="p">,</span><span class="n">tax2</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.LCSA"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.LCSA">[docs]</a>    <span class="k">def</span> <span class="nf">LCSA</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">tax1</span><span class="p">,</span><span class="n">tax2</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a minimum of CSA(taxa1, taxa2) respect the height of nodes.</span>
 <span class="sd">        </span>
@@ -887,7 +888,7 @@
         <span class="k">return</span> <span class="n">csa</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>        
 </div>
     <span class="nd">@memoize_method</span>
-<div class="viewcode-block" id="PhyloNetwork.nodal_matrix"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.nodal_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">nodal_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.nodal_matrix"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.nodal_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">nodal_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a matrix containing the nodal &#39;distance&#39; between all labelled nodes.</span>
 <span class="sd">        </span>
@@ -913,7 +914,7 @@
                 <span class="n">matrix</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">dicdist</span><span class="p">[</span><span class="n">lcsa</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">node_by_taxa</span><span class="p">(</span><span class="n">tj</span><span class="p">)]</span>
         <span class="k">return</span> <span class="n">matrix</span>
 </div>
-<div class="viewcode-block" id="PhyloNetwork.nodal_area"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.nodal_area">[docs]</a>    <span class="k">def</span> <span class="nf">nodal_area</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.nodal_area"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.nodal_area">[docs]</a>    <span class="k">def</span> <span class="nf">nodal_area</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the sum of all elements of the nodal matrix.</span>
 <span class="sd">        </span>
@@ -934,7 +935,7 @@
         <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">mat</span><span class="o">.</span><span class="n">flatten</span><span class="p">()))</span>
 </div>
     <span class="nd">@memoize_method</span>
-<div class="viewcode-block" id="PhyloNetwork.cophenetic_matrix"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.cophenetic_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">cophenetic_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.cophenetic_matrix"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.cophenetic_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">cophenetic_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a matrix with the cophenetic coeficient of labelled nodes.</span>
 <span class="sd">        </span>
@@ -958,7 +959,7 @@
                 <span class="n">matrix</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">depth</span><span class="p">(</span><span class="n">lcsa</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">matrix</span>
 </div>
-<div class="viewcode-block" id="PhyloNetwork.common_taxa"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.common_taxa">[docs]</a>    <span class="k">def</span> <span class="nf">common_taxa</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">net2</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.common_taxa"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.common_taxa">[docs]</a>    <span class="k">def</span> <span class="nf">common_taxa</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">net2</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns common taxa between self and net2.</span>
 <span class="sd">        </span>
@@ -981,7 +982,7 @@
                 <span class="n">common</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">taxon</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">common</span>
             </div>
-<div class="viewcode-block" id="PhyloNetwork.common_taxa_leaves"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.common_taxa_leaves">[docs]</a>    <span class="k">def</span> <span class="nf">common_taxa_leaves</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">net2</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.common_taxa_leaves"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.common_taxa_leaves">[docs]</a>    <span class="k">def</span> <span class="nf">common_taxa_leaves</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">net2</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns common taxa between self and net2 that are leaves on both networks.</span>
 <span class="sd">        </span>
@@ -1005,7 +1006,7 @@
         <span class="k">return</span> <span class="n">common</span>
             
     </div>
-<div class="viewcode-block" id="PhyloNetwork.topological_restriction"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.topological_restriction">[docs]</a>    <span class="k">def</span> <span class="nf">topological_restriction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">subtaxa</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.topological_restriction"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.topological_restriction">[docs]</a>    <span class="k">def</span> <span class="nf">topological_restriction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">subtaxa</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a minimal subnetwork of self such that it containts a fixed subtaxa.</span>
 <span class="sd">        </span>
@@ -1054,7 +1055,7 @@
         <span class="k">return</span> <span class="n">restricted</span>
 </div>
     <span class="nd">@memoize_method</span>
-<div class="viewcode-block" id="PhyloNetwork.has_nested_taxa"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.has_nested_taxa">[docs]</a>    <span class="k">def</span> <span class="nf">has_nested_taxa</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.has_nested_taxa"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.has_nested_taxa">[docs]</a>    <span class="k">def</span> <span class="nf">has_nested_taxa</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns True is an internal node is labelled. False otherwise.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1104,7 +1105,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_matching_permutation</span><span class="o">=</span><span class="n">permutations</span><span class="o">.</span><span class="n">Permutation</span><span class="p">(</span><span class="n">permutation</span><span class="p">)</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matching_permutation</span>
 
-<div class="viewcode-block" id="PhyloNetwork.cluster"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.cluster">[docs]</a>    <span class="k">def</span> <span class="nf">cluster</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.cluster"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.cluster">[docs]</a>    <span class="k">def</span> <span class="nf">cluster</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the cluster of u in the network, None if the node is not in the network.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1121,7 +1122,7 @@
         <span class="n">cl</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">cl</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">cl</span>
 </div>
-<div class="viewcode-block" id="PhyloNetwork.cluster_representation"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.cluster_representation">[docs]</a>    <span class="k">def</span> <span class="nf">cluster_representation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.cluster_representation"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.cluster_representation">[docs]</a>    <span class="k">def</span> <span class="nf">cluster_representation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the cluster of all nodes in the network.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1130,7 +1131,7 @@
         <span class="n">cls</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">cls</span>
 </div>
-<div class="viewcode-block" id="PhyloNetwork.nested_label"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.nested_label">[docs]</a>    <span class="k">def</span> <span class="nf">nested_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">node</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.nested_label"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.nested_label">[docs]</a>    <span class="k">def</span> <span class="nf">nested_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">node</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a string representation of descendants of u. Very useful to identify where is a node located in the network.</span>
 <span class="sd">        </span>
@@ -1164,7 +1165,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_nested_label</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;{&#39;</span><span class="o">+</span><span class="s">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">desc_labels</span><span class="p">)</span><span class="o">+</span><span class="s">&#39;}&#39;</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nested_label</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
 </div>
-<div class="viewcode-block" id="PhyloNetwork.nested_label_representation"><a class="viewcode-back" href="../../index.html#pyphylonetwork.classes.PhyloNetwork.nested_label_representation">[docs]</a>    <span class="k">def</span> <span class="nf">nested_label_representation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PhyloNetwork.nested_label_representation"><a class="viewcode-back" href="../../index.html#phylonetwork.classes.PhyloNetwork.nested_label_representation">[docs]</a>    <span class="k">def</span> <span class="nf">nested_label_representation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the nested label of all nodes in the network.</span>
 <span class="sd">        </span>

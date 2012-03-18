@@ -1,5 +1,5 @@
 """
-The pyphylonetwork is the main module of the project PhyloNetworks.
+The phylonetwork is the main module of the project PhyloNetworks.
 
 It includes classes to represent phylogenetic networks and trees with or
 without nested taxa, as well as functions for both the successive and
