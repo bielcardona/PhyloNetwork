@@ -981,8 +981,8 @@ class PhyloNetwork(DiGraph):
         restricted=copy.deepcopy(self)
         for taxon in restricted.taxa():
             if not taxon in subtaxa:
-                u=restricted.node_by_taxa(taxon)
-                del restricted._labels[u]
+                for u in restricted.nodes_by_taxa(taxon):
+                    del restricted._labels[u]
         restricted.cache = {}
 
         while True:
