@@ -1,5 +1,5 @@
 from utils import total_cmp
-from .exceptions import TaxaException
+from .phyloexceptions import TaxaException
 
 
 
