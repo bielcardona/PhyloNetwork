@@ -2,10 +2,9 @@ proves
 *.pyc
 build
 scripts
-*egg-info
-
+*egg-info/
+.settings/
 .DS_Store
-dist/phylonetwork-1.0b1.tar.gz
-dist/phylonetwork-1.0b1-py2.7.egg
-dist/phylonetwork-1.0b2.tar.gz
-PhyloNetwork.egg-info
+dist/
+PhyloNetwork.egg-info/
+.pydevproject
