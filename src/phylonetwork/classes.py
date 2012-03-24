@@ -955,9 +955,10 @@ class PhyloNetwork(DiGraph):
         return common
             
     
-    def topological_restriction(self,subtaxa):
+    def topological_restriction(self,subtaxa,nested=True):
         """
         Returns a minimal subnetwork of self such that it containts a fixed subtaxa.
+        If nested=False then only taxa on leaves will be considered.
         
         EXAMPLE::
         
@@ -979,20 +980,25 @@ class PhyloNetwork(DiGraph):
             
         """
         restricted=copy.deepcopy(self)
-        for taxon in restricted.taxa():
-            if not taxon in subtaxa:
-                for u in restricted.nodes_by_taxa(taxon):
-                    del restricted._labels[u]
+        for node in restricted:
+            if restricted.is_labelled(node) and restricted.label(node) not in subtaxa:
+                # Delete taxa not in subtaxa
+                del restricted._labels[node]
+            elif (not nested and not restricted.is_leaf(node)
+                            and restricted.is_labelled(node)):
+                # if not nested, all taxa (even if they are in subtaxa) 
+                # on internal nodes should be removed.
+                del restricted._labels[node]
         restricted.cache = {}
+        
+        candidates_to_delete = restricted.laves()
+        while len(candidates_to_delete) > 0:
+            node = candidates_to_delete.pop()
+            if restricted.is_leaf(node) and not restricted.is_labelled(node):
+                candidates_to_delete[0:0] = restricted.predecessors(node)
+                restricted.remove_node(node)
+                restricted.cache = {}
 
-        while True:
-            leaves_to_delete=[u for u in restricted.nodes() if \
-                                  restricted.is_leaf(u) and \
-                                  not u in restricted._labels ]
-            if not leaves_to_delete:
-                break
-            else:
-                restricted.remove_nodes_from(leaves_to_delete)
         for u in restricted.nodes():
             if restricted.is_elementary_node(u) and \
                     not restricted.is_labelled(u):
