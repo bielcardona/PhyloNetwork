@@ -980,18 +980,17 @@ class PhyloNetwork(DiGraph):
             
         """
         restricted=copy.deepcopy(self)
-        for node in restricted:
-            if restricted.is_labelled(node) and restricted.label(node) not in subtaxa:
+        for node in restricted.labelled_nodes():
+            if restricted.label(node) not in subtaxa:
                 # Delete taxa not in subtaxa
                 del restricted._labels[node]
-            elif (not nested and not restricted.is_leaf(node)
-                            and restricted.is_labelled(node)):
+            elif not nested and not restricted.is_leaf(node):
                 # if not nested, all taxa (even if they are in subtaxa) 
                 # on internal nodes should be removed.
                 del restricted._labels[node]
         restricted.cache = {}
         
-        candidates_to_delete = restricted.laves()
+        candidates_to_delete = restricted.leaves()
         while len(candidates_to_delete) > 0:
             node = candidates_to_delete.pop()
             if restricted.is_leaf(node) and not restricted.is_labelled(node):
