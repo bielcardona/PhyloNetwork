@@ -1,6 +1,13 @@
 proves
 *.pyc
 build
-
+scripts
+*egg-info/
+.settings/
 .DS_Store
+<<<<<<< HEAD
+=======
+dist/
+PhyloNetwork.egg-info/
+>>>>>>> upstream/master
 .pydevproject
