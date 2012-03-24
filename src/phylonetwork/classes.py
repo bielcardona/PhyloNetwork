@@ -8,7 +8,7 @@ from .utils import total_cmp
 import permutations
 from .memoize import memoize_method
 ##def memoize_method(f): return f # use it to document memoized methods (sphinx bug?)
-from .phyloexceptions import MalformedNewickException
+from .exceptions import MalformedNewickException
 
 class PhyloNetwork(DiGraph):
     """
