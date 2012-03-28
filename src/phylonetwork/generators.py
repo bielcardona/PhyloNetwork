@@ -2,6 +2,7 @@ from .classes import PhyloNetwork
 from .operations import push_and_hang,hold_and_hang,push_and_label,hold_and_label
 from .utils import random_weighted
 from .memoize import memoize_function
+from random import randint, shuffle
 ##def memoize_function(f): return f # use it to document memoized functions (sphinx bug?)
 
 
@@ -363,12 +364,57 @@ def random_tree_nobin_nt_global(taxa,id_offset):
     #print (l,N)
     return random_tree_nobin_nt_partial(taxa,l,N,id_offset)
 
-def random_tree_generator(taxa,binary=False,nested_taxa=True,id_offset=0):
+def random_yule_tree(taxa,id_offset=0):
+    ntaxa = len(taxa)
+    if ntaxa == 0:
+        return None
+    if ntaxa == 1:
+        return PhyloNetwork(eNewick=taxa[0] + ";")
+    network = PhyloNetwork()
+    network.add_node('_' + str(id_offset))
+    network.add_node('_' + str(id_offset+1))
+    network.add_node('_' + str(id_offset+2))
+    network.add_edge('_' + str(id_offset), '_' + str(id_offset+1))
+    network.add_edge('_' + str(id_offset), '_' + str(id_offset+2))
+    id_offset = id_offset + 3
+    for label in range(ntaxa-2):
+        nn = len(network.leaves())
+        parent = network.leaves()[randint(0,nn-1)]
+        
+        newnode = '_' + str(id_offset)
+        network.add_node(newnode)
+        network.add_edge(parent, newnode)
+        newnode = '_' + str(id_offset+1)
+        network.add_node(newnode)
+        network.add_edge(parent, newnode)
+        
+        id_offset = id_offset + 2
+        network.cache = {}
+    leaves = network.leaves()
+    shuffle(taxa)
+    for i in range(ntaxa):
+        network.set_label(leaves[i], taxa[i])
+    return network
+
+def random_tree_generator(taxa,binary=False,nested_taxa=True,yule=False,id_offset=0):
     """
     Returns generator of random trees.
     If nested_taxa = True, then trees with internal labels will also be produced.
     If binary = True, then only binary trees will be produced.
     
+    If yule = True, instead of generating trees with uniform probability we will 
+    use the yule model. Remember that yule model is only valid for non-nested 
+    binary trees.
+    
+    EXAMPLE::
+    
+        >>> generator = random_tree_generator(['a', 'b', 'c', 'd', 'e', 'f'], binary=False)
+        >>> for i in range(3):
+        >>>     print generator.next().eNewick()
+        ... ((a)d,(e,b,(c,f)));
+        ... (((((d)c)e)f,a))b;
+        ... ((e,d,(c)a),b,f);
+        
     EXAMPLE::
     
         >>> generator = random_tree_generator(['a', 'b', 'c', 'd', 'e', 'f'], binary=True)
@@ -378,13 +424,24 @@ def random_tree_generator(taxa,binary=False,nested_taxa=True,id_offset=0):
         ... '(c,(((a,e),d),f)b);'
         ... '(((c,f),((b)e)d))a;'
         
+    EXAMPLE::
+    
+        >>> generator = random_tree_generator(['a', 'b', 'c', 'd', 'e', 'f'], yule=True)
+        >>> for i in range(3):
+        >>>     print generator.next().eNewick()
+        ... ((b,(d,f)),((e,c),a));
+        ... (((c,e),b),((a,f),d));
+        ... ((e,(f,(a,b))),(d,c));
+        
     """
     
-    if binary:
+    if binary and not yule:
         if nested_taxa:
             f = random_tree_bin_nt_global
         else:
             f = random_tree_bin_nont_global
+    elif yule:
+        f = random_yule_tree
     else:
         if nested_taxa:
             f = random_tree_nobin_nt_global
