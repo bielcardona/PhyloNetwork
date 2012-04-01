@@ -1,5 +1,8 @@
 from networkx import DiGraph, is_directed_acyclic_graph, dfs_successors 
 from networkx import single_source_shortest_path_length,all_pairs_shortest_path_length,dijkstra_path_length
+from networkx import pydot_layout, draw_networkx
+import networkx as nx
+import pylab
 
 import numpy,pyparsing,copy
 
@@ -1134,3 +1137,82 @@ class PhyloNetwork(DiGraph):
         """
         nls=map(self.nested_label,self.nodes())
         return set(nls)
+    
+    def draw(self):
+        pos = nx.pydot_layout(self,prog='dot')
+        nx.draw_networkx(self, pos, labels = self._labels, edgelist=[])
+        nx.draw_networkx_edges(self, pos)
+        
+class PhyloTree(PhyloNetwork):
+    
+    def remove_elementary_nodes(self):
+        elementary_nodes = [u for u in self.nodes() if (self.out_degree(u)==1 and not self.is_labelled(u))]
+        for u in elementary_nodes:
+            child = self.successors(u)[0]
+            for v in self.predecessors(u):
+                self.add_edge(v,child)
+            self.remove_node(u)
+        
+    
+    
+class LGTPhyloNetwork(PhyloNetwork):
+    
+    def _walk(self,parsed,ignore_prefix=None):
+        if isinstance(parsed, pyparsing.ParseResults):
+            secondary = False
+            if 'tag' in parsed:
+                internal_label='#'+str(parsed['tag'])
+                if 'type' in parsed and parsed['type'] == 'LGT':
+                    secondary = True
+            else:
+                internal_label=self._generate_new_id()
+            if 'length' in parsed:
+                pass
+            self.add_node(internal_label)
+            if 'label' in parsed:
+                self._labels[internal_label]=parsed['label']
+            for child in parsed:
+                inner_walk = self._walk(child,ignore_prefix=ignore_prefix)
+                if inner_walk:
+                    child_label = inner_walk[0]
+                    secondary_edge = inner_walk[1]
+                    self.add_edge(internal_label,child_label,attr_dict={'secondary':secondary_edge})
+            return [internal_label,secondary]
+
+    def principal_edges(self):
+        return [(edge[0],edge[1]) for edge in self.edges(data=True) if 
+                not 'secondary' in edge[2] or edge[2]['secondary']==False]
+
+    def secondary_edges(self):
+        return [(edge[0],edge[1]) for edge in self.edges(data=True) if 
+                'secondary' in edge[2] and edge[2]['secondary']==True]
+        
+    def principal_subtree(self, simplify = True):
+        tree = PhyloTree()
+        tree.add_edges_from(self.principal_edges())
+        tree._labels = self._labels
+        if simplify:
+            tree.remove_elementary_nodes()
+        return tree
+    
+    def secondary_subtrees(self, simplify = True):
+        subtrees = []
+        for edge in self.secondary_edges():
+            tree = PhyloTree()
+            edges = [e for e in self.principal_edges() if e[1]!=edge[1]]
+            edges.append(edge)
+            tree.add_edges_from(edges)
+            tree._labels = self._labels
+            if simplify:
+                tree.remove_elementary_nodes()
+            subtrees.append(tree)
+        return subtrees     
+    
+    def draw(self):
+        pos = nx.pydot_layout(self,prog='dot')
+        nx.draw_networkx(self, pos, labels = self._labels, edgelist=[])
+        nx.draw_networkx_edges(self, pos, edgelist = self.principal_edges())
+        nx.draw_networkx_edges(self, pos, edgelist = self.secondary_edges(), style = 'dashed')
+        #pylab.axes('off')
+        
+        
