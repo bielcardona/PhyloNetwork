@@ -1214,6 +1214,8 @@ class PhyloTree(PhyloNetwork):
         node2 = self.node_by_taxa(tax2)
         return self._compute_LCA(node1, node2)
     
+    LCSA = LCA
+
     @memoize_method
     def nodal_matrix(self):
         """
