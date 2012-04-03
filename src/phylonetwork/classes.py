@@ -1153,6 +1153,7 @@ class PhyloTree(PhyloNetwork):
                 self.add_edge(v,child)
             self.remove_node(u)
             
+    @memoize_method
     def cluster(self, u):
         """
         Returns the cluster of u in the tree, None if the node is not in the network.
@@ -1162,13 +1163,14 @@ class PhyloTree(PhyloNetwork):
             return None
         
         if self.is_labelled(u):
-            return set(self.label(u))
+            return set([self.label(u)])
         else:
             tmp = set()
             for child in self.successors(u):
                 tmp = tmp.union(self.cluster(child))
             return tmp
         
+    @memoize_method
     def depth(self, u):
         """
         Returns the depth of u. If node u is not from the 
@@ -1181,7 +1183,62 @@ class PhyloTree(PhyloNetwork):
             return 0
         else:
             return 1+self.depth(self.predecessors(u)[0])
+          
+    @memoize_method  
+    def _compute_LCA(self, i, j):
+        if i == j:
+            return i
+        if self.is_root(i):
+            return i
+        parent = self.predecessors(i)[0]
+        if j in self.descendant_nodes(parent):
+            return parent
+        return self._compute_LCA(parent, j)
     
+    @memoize_method
+    def LCA(self, tax1, tax2):
+        """
+        Returns the minimum of CSA(taxa1, taxa2) respect the height of nodes.
+            
+        EXAMPLE::
+        
+            >>> network = PhyloTree(eNewick="(((1)), 2);")
+            >>> network.CSA('1', '2')
+            ... ['_2', '_1']
+            >>> network.LCSA('1', '2')
+            ... '_2'
+            
+        """
+        
+        node1 = self.node_by_taxa(tax1)
+        node2 = self.node_by_taxa(tax2)
+        return self._compute_LCA(node1, node2)
+    
+    @memoize_method
+    def nodal_matrix(self):
+        """
+        Returns a matrix containing the nodal 'distance' between all labelled nodes.
+        
+        EXAMPLES::
+        
+            >>> network = PhyloTree(eNewick="(((1,2), 3), 4);")
+            >>> network.nodal_matrix()
+            ... array([[0, 1, 2, 3],
+            ...       [1, 0, 2, 3],
+            ...       [1, 1, 0, 2], 
+            ...       [1, 1, 1, 0])
+            
+        """
+        n=len(self.taxa())
+        matrix=numpy.zeros((n,n),int)
+        for i in range(n):
+            ti=self.taxa()[i]
+            for j in range(i,n):
+                tj=self.taxa()[j]
+                lca=self.LCA(ti,tj)
+                matrix[i,j]=self.depth(self.node_by_taxa(ti))-self.depth(lca)
+                matrix[j,i]=self.depth(self.node_by_taxa(tj))-self.depth(lca)
+        return matrix
     
 class LGTPhyloNetwork(PhyloNetwork):
     
