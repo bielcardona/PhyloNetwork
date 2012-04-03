@@ -479,7 +479,7 @@ class PhyloNetwork(DiGraph):
             
         """
         if not u in self:
-	    return None
+            return None
         return min([dijkstra_path_length(self,root,u) for root in self.roots()])
         
     @memoize_method
@@ -500,7 +500,7 @@ class PhyloNetwork(DiGraph):
             
         """
         if not u in self:
-	    return None
+            return None
         if self.is_leaf(u):
             return 0
         else:
@@ -531,7 +531,7 @@ class PhyloNetwork(DiGraph):
             
         """
         if u not in self:
-	    return None
+            return None
         if self.is_leaf(u):
             mu = numpy.zeros(len(self.taxa()),int)
         else:
@@ -1068,8 +1068,8 @@ class PhyloNetwork(DiGraph):
         """
         
         if not u in self:
-	    return None
-	    
+            return None
+        
         cl=[]
         dictio=single_source_shortest_path_length(self,u)
         for node in dictio.keys():
@@ -1116,9 +1116,9 @@ class PhyloNetwork(DiGraph):
                 desc_labels = [self.nested_label(u) for u in self.successors(node)]
                 desc_labels.sort()
                 if desc_labels is None: 
-		    # If a leaf doesn't have a label
-		    self._nested_label[node] = "{}"
-		    return self.nested_label[node]
+                    # If a leaf doesn't have a label
+                    self._nested_label[node] = "{}"
+                    return self.nested_label[node]
                 self._nested_label[node] = '{'+','.join(desc_labels)+'}'
                 return self._nested_label[node]
 
@@ -1152,6 +1152,22 @@ class PhyloTree(PhyloNetwork):
             for v in self.predecessors(u):
                 self.add_edge(v,child)
             self.remove_node(u)
+            
+    def cluster(self, u):
+        """
+        Returns the cluster of u in the tree, None if the node is not in the network.
+        """
+        
+        if not u in self:
+            return None
+        
+        if self.is_labelled(u):
+            return set(self.label(u))
+        else:
+            tmp = set()
+            for child in self.successors(u):
+                tmp = tmp.union(self.cluster(child))
+            return tmp
         
     
     
