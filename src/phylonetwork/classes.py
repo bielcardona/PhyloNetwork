@@ -1169,6 +1169,18 @@ class PhyloTree(PhyloNetwork):
                 tmp = tmp.union(self.cluster(child))
             return tmp
         
+    def depth(self, u):
+        """
+        Returns the depth of u. If node u is not from the 
+        tree, then returns None.
+        """
+        if not u in self:
+            return None
+        
+        if self.is_root(u):
+            return 0
+        else:
+            return 1+self.depth(self.predecessors(u)[0])
     
     
 class LGTPhyloNetwork(PhyloNetwork):
