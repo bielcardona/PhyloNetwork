@@ -1,4 +1,4 @@
-from .classes import PhyloNetwork
+from .classes import PhyloTree as PhyloNetwork
 from .operations import push_and_hang,hold_and_hang,push_and_label,hold_and_label
 from .utils import random_weighted
 from .memoize import memoize_function

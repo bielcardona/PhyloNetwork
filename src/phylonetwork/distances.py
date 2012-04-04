@@ -30,6 +30,24 @@ def mu_distance(net1,net2):
 #def is_isomorphic_fast(net1,net2):
 #    return net1.mu_string() == net2.mu_string()
 
+def matrix_distance(mat1, mat2, p=1, take_root=False, only_half = False):
+    s1 = mat1.shape
+    s2 = mat2.shape
+    if len(set(s1+s2)) != 1:
+        raise TaxaException("The number of possible labels is not equal")
+    n = s1[0]
+    if only_half:
+        the_sum = sum([abs(mat1[i,j]-mat2[i,j])**p 
+                       for i in range(n) for j in range(i+1,n)])
+    else:
+        the_sum = sum([abs(mat1[i,j]-mat2[i,j])**p 
+                       for i in range(n) for j in range(n)])
+    if take_root:
+        return (the_sum)**(1.0/p)
+    else:
+        return the_sum
+
+
 def nodal_distance_splitted(net1,net2,p=1,take_root=False, check=False):
     """
     Computes the nodal distance splitted between two phylogenetic networks.
@@ -40,17 +58,7 @@ def nodal_distance_splitted(net1,net2,p=1,take_root=False, check=False):
         if not net1.taxa() == net2.taxa():
             raise TaxaException("Networks over different set of taxa")
          
-    try:
-        mat=net1.nodal_matrix()-net2.nodal_matrix()
-    except:
-        raise TaxaException("The number of possible labels is not equal")
-    if p==1:
-        return sum(abs(mat.flatten()))
-    else:
-        if take_root:
-            return sum(abs(mat.flatten())**p)**(1.0/p)
-        else:
-            return sum(abs(mat.flatten())**p)
+    return matrix_distance(net1.nodal_matrix(),net2.nodal_matrix(),p,take_root)
 
 def nodal_distance_unsplitted(net1,net2,p=1,take_root=False, check=False):
     """
@@ -66,17 +74,7 @@ def nodal_distance_unsplitted(net1,net2,p=1,take_root=False, check=False):
     mat1=mat1+mat1.transpose()
     mat2=net2.nodal_matrix()
     mat2=mat2+mat2.transpose()
-    try:
-        mat=net1.nodal_matrix()-net2.nodal_matrix()
-    except:
-        raise TaxaException("The number of possible labels is not equal")
-    if p==1:
-        return sum(abs(mat.flatten()))/2
-    else:
-        if take_root:
-            return (sum(abs(mat.flatten())**p)/2)**(1.0/p)
-        else:
-            return (sum(abs(mat.flatten())**p)/2)
+    return matrix_distance(mat1,mat2,p,take_root,only_half=True)
 
 def cophenetic_distance(net1,net2,p=1,take_root=False, check=False):
     """
@@ -90,17 +88,7 @@ def cophenetic_distance(net1,net2,p=1,take_root=False, check=False):
 	  
     mat1=net1.cophenetic_matrix()
     mat2=net2.cophenetic_matrix()
-    try:
-        mat=mat1-mat2
-    except:
-        raise TaxaException("The number of possible labels is not equal")
-    if p==1:
-        return sum(abs(mat.flatten()))/2
-    else:
-        if take_root:
-            return (sum(abs(mat.flatten())**p))**(1.0/p)
-        else:
-            return (sum(abs(mat.flatten())**p))
+    return matrix_distance(mat1,mat2,p,take_root)
 
 def transposition_distance(net1,net2):
     """
