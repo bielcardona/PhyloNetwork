@@ -1144,25 +1144,101 @@ class PhyloNetwork(DiGraph):
         nx.draw_networkx(self, pos, labels = self._labels, edgelist=[])
         nx.draw_networkx_edges(self, pos)
         
+        
+def _get_chunck(string):
+    if string[0] in '(),;':
+        return string[0],string[1:]
+    i = 0
+    while string[i] not in '(),;':
+        i += 1
+    return string[0:i],string[i:]
+
 class PhyloTree(PhyloNetwork):
     
-    @memoize_method
-    def cluster(self,u):
-        if self.is_leaf(u):
-            return set([self.label(u)])
-        cl = set()
-        for v in self.successors(u):
-            cl = cl | self.cluster(v)
-        return cl
+    def _from_eNewick(self,string,ignore_prefix=None):
+        substr = string
+        current = self._generate_new_id()
+        self.add_node(current)
+        finished = False
+        while not finished:
+            chunk,substr = _get_chunck(substr)
+            #print chunk,substr
+            if chunk == '(':
+                child = self._generate_new_id()
+                self.add_edge(current, child)
+                current = child
+                continue
+            if chunk == ')':
+                current = self.predecessors(current)[0]
+                continue
+            if chunk == ',':
+                parent = self.predecessors(current)[0]
+                child = self._generate_new_id()
+                self.add_edge(parent, child)
+                current = child
+            if chunk == ';':
+                finished = True
+                continue
+            else:
+                # chunk is label:dist
+                if ':' in chunk:
+                    spl = chunk.split(':')
+                    label = spl[0]
+                    length = spl[1]
+                else:
+                    label = chunk
+                    length = None
+                if label:
+                    self._labels[current] = label
+                if length:
+                    try:
+                        length_value = int(length)
+                    except:
+                        length_value = float(length)
+                    parent = self.predecessors(current)[0]
+                    self.edge[parent][current]['length'] = length_value
+            
 
-    @memoize_method
-    def depth(self,u):
-        if self.is_root(u):
-            return 0
-        return 1+self.depth(self.predecessors(u)[0])
     
+#    @memoize_method
+#    def cluster(self,u):
+#        if self.is_leaf(u):
+#            return set([self.label(u)])
+#        cl = set()
+#        for v in self.successors(u):
+#            cl = cl | self.cluster(v)
+#        return cl
+#
+#    @memoize_method
+#    def depth(self,u):
+#        if self.is_root(u):
+#            return 0
+#        return 1+self.depth(self.predecessors(u)[0])
+    
+#    @memoize_method
+#    def nodal_matrix(self):
+#        taxa = self.taxa()
+#        n = len(taxa)
+#        taxa_map = {taxa[i]:i for i in range(n)}
+#        matrix=numpy.zeros((n,n),int)
+#        for u in self.interior_nodes():
+#            descendant_clusters = [self.cluster(v) for v in self.successors(u)]
+#            pairs = combinations(descendant_clusters,2)
+#            for pair in pairs:
+#                cl1 = pair[0]
+#                cl2 = pair[1]
+#                for taxa_i in cl1:
+#                    for taxa_j in cl2:
+#                        i = taxa_map[taxa_i]
+#                        j = taxa_map[taxa_j]
+#                        li = self.depth(self.node_by_taxa(taxa_i)) - self.depth(u)
+#                        lj = self.depth(self.node_by_taxa(taxa_j)) - self.depth(u)
+#                        matrix[i,j] = li
+#                        matrix[j,i] = lj
+#        return matrix
+        
     @memoize_method
-    def nodal_matrix(self):
+    def cophenetic_matrix(self):
         taxa = self.taxa()
         n = len(taxa)
         taxa_map = {taxa[i]:i for i in range(n)}
@@ -1177,29 +1253,7 @@ class PhyloTree(PhyloNetwork):
                     for taxa_j in cl2:
                         i = taxa_map[taxa_i]
                         j = taxa_map[taxa_j]
-                        li = self.depth(self.node_by_taxa(taxa_i)) - self.depth(u)
-                        lj = self.depth(self.node_by_taxa(taxa_j)) - self.depth(u)
-                        matrix[i,j] = li
-                        matrix[j,i] = lj
-        return matrix
-        
-    @memoize_method
-    def cophenetic_matrix(self):
-        taxa = self.taxa()
-        n = len(taxa)
-        taxa_map = {taxa[i]:i for i in range(n)}
-        matrix=numpy.zeros((n,n),int)
-        for u in self.interior_nodes():
-            descendant_clusters = [self.cluster(v) for v in self.successors(u)]
-            pairs = combinations(descendant_clusters,2)
-            for pair in pairs:
-                for cl1 in pair[0]:
-                    for cl2 in pair[1]:
-                        for taxa_i in cl1:
-                            for taxa_j in cl2:
-                                i = taxa_map[taxa_i]
-                                j = taxa_map[taxa_j]
-                                matrix[min(i,j),max(i,j)] = self.depth(u)
+                        matrix[min(i,j),max(i,j)] = self.depth(u)
         for u in self.leaves():
             i = taxa_map[self.label(u)]
             matrix[i,i] = self.depth(u)
