@@ -113,9 +113,14 @@ def RF_distance(net1,net2):
     
     return len(set(net1.cluster_representation())^set(net2.cluster_representation()))
 
-def nested_label_distance(net1,net2):
+def nested_label_distance(net1,net2,multiset = False):
     """
     Computes the nested label distance between two phylogenetic networks.
     """
     
-    return len(net1.nested_label_representation() ^ net2.nested_label_representation())
+    if multiset:
+        c1 = net1.nested_label_representation()
+        c2 = net2.nested_label_representation()
+        return sum((c1-c2).values()) + sum((c2-c1).values())
+    else: 
+        return len(net1.nested_label_representation() ^ net2.nested_label_representation())

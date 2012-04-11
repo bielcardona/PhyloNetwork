@@ -13,6 +13,7 @@ from .memoize import memoize_method
 from .exceptions import MalformedNewickException
 
 from itertools import combinations
+from collections import Counter 
 
 class PhyloNetwork(DiGraph):
     """
@@ -154,7 +155,8 @@ class PhyloNetwork(DiGraph):
     def node_by_taxa(self, taxa):
         """
         Returns the node labelled by taxa or None if no node is labelled by taxa.
-        Important: If more than one node is labelled with taxa, only the first one will be displayed. In order to get all nodes with a fixed label, use nodes_by_taxa.
+        Important: If more than one node is labelled with taxa, only the first one will be displayed. 
+        In order to get all nodes with a fixed label, use nodes_by_taxa.
         
         EXAMPLE::
         
@@ -1123,9 +1125,11 @@ class PhyloNetwork(DiGraph):
                 self._nested_label[node] = '{'+','.join(desc_labels)+'}'
                 return self._nested_label[node]
 
-    def nested_label_representation(self):
+    def nested_label_representation(self,multiset = False):
         """
-        Returns the nested label of all nodes in the network.
+        Returns the nested label of all nodes in the network. If the optional parameter
+        is True, then the result is returned as a Counter object; otherwise as a set
+        object.
         
         EXAMPLE::
         
@@ -1136,8 +1140,11 @@ class PhyloNetwork(DiGraph):
             ... set(['{3,4}', '1', '3', '2', '4', '{1,2}', '{{1,2},{3,4}}'])
             
         """
-        nls=map(self.nested_label,self.nodes())
-        return set(nls)
+        nls = [self.nested_label(u) for u in self.nodes()]
+        if multiset:
+            return Counter(nls)
+        else:
+            return set(nls)
     
     def draw(self):
         pos = nx.pydot_layout(self,prog='dot')
