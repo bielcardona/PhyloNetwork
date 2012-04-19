@@ -636,6 +636,7 @@ class PhyloNetwork(DiGraph):
             return u
         visited.append(u)
         children=map(lambda x:self._eNewick_node(x,visited),self.successors(u))
+        children.sort()
         internal=','.join(children)
         mylabel=self.label(u) or ''
         if self.is_hybrid_node(u):
