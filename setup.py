@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 setup(name="phylonetwork",
-    version="1.0b5",
+    version="1.0b6",
     author="Gabriel Cardona, David Sanchez",
     author_email="bielcardona@gmail.com, dscharles@gmail.com",
     license="BSD",
