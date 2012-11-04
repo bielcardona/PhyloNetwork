@@ -1,4 +1,4 @@
-from .classes import PhyloTree as PhyloNetwork
+from .classes import PhyloTree 
 from .operations import push_and_hang,hold_and_hang,push_and_label,hold_and_label
 from .utils import random_weighted
 from .memoize import memoize_function
@@ -52,7 +52,7 @@ def all_trees(taxa,binary=False,nested_taxa=True):
     """
     n=len(taxa)
     if n==1:
-        yield PhyloNetwork(eNewick=('%s;' % taxa[0]))
+        yield PhyloTree(eNewick=('%s;' % taxa[0]))
         return
     taxon=taxa[-1]
     parent_taxa=taxa[0:-1]
@@ -120,7 +120,7 @@ def random_tree_bin_nont_global(taxa, id_offset=0):
     
     n = len(taxa)
     if n == 1:
-        return PhyloNetwork(eNewick=('%s;' % taxa[0]),id_offset=id_offset)
+        return PhyloTree(eNewick=('%s;' % taxa[0]),id_offset=id_offset)
     parent = random_tree_bin_nont_global(taxa[0:-1],id_offset)
     u = random.choice(parent.nodes())
     newtree = push_and_hang(parent,u,taxa[-1])
@@ -156,7 +156,7 @@ def random_tree_nobin_nont_partial(taxa,l,N,id_offset=0):
     if (l != n) or (N < n) or (n < 0) or (N >= 2*n):
         return None
     if n==1:
-        return PhyloNetwork(eNewick=('%s;' % taxa[0]),id_offset=id_offset)
+        return PhyloTree(eNewick=('%s;' % taxa[0]),id_offset=id_offset)
     choices = {
         (push_and_hang,l-1,N-2,'nodes') : (N-2)*number_of_trees_nobin_nont_partial(n-1,l-1,N-2),
         (hold_and_hang,l-1,N-1,'interior_nodes') : (N-n)*number_of_trees_nobin_nont_partial(n-1,l-1,N-1)
@@ -184,7 +184,7 @@ def random_tree_nobin_nont_global(taxa,id_offset=0):
     """
     n = len(taxa)
     if n == 1:
-        return PhyloNetwork(eNewick=('%s;' % taxa[0]),id_offset=id_offset)
+        return PhyloTree(eNewick=('%s;' % taxa[0]),id_offset=id_offset)
     choices = {
         N : number_of_trees_nobin_nont_partial(n,n,N) for N in range(n+1,2*n)
     }
@@ -234,7 +234,7 @@ def random_tree_bin_nt_partial(taxa,l,N,e,id_offset):
         return None
     if n==1:
         if (l == 1) and (N == 1) and (e == 0):
-            return PhyloNetwork(eNewick=('%s;' % taxa[0]),id_offset=id_offset)
+            return PhyloTree(eNewick=('%s;' % taxa[0]),id_offset=id_offset)
         else:
             return None
     choices = {
@@ -268,7 +268,7 @@ def random_tree_bin_nt_global(taxa,id_offset=0):
     
     n = len(taxa)
     if n == 1:
-        return PhyloNetwork(eNewick=('%s;' % taxa[0]),id_offset=id_offset)
+        return PhyloTree(eNewick=('%s;' % taxa[0]),id_offset=id_offset)
     choices = {
         (l,N,e) : number_of_trees_bin_nt_partial(n,l,N,e) for l in range(1,n+1) 
                                                           for N in range(n,2*n)
@@ -318,7 +318,7 @@ def random_tree_nobin_nt_partial(taxa,l,N,id_offset):
         return None
     if n==1:
         if (l == 1) and (N == 1):
-            return PhyloNetwork(eNewick=('%s;' % taxa[0]),id_offset=id_offset)
+            return PhyloTree(eNewick=('%s;' % taxa[0]),id_offset=id_offset)
         else:
             return None
     choices = {
@@ -354,7 +354,7 @@ def random_tree_nobin_nt_global(taxa,id_offset):
     
     n = len(taxa)
     if n == 1:
-        return PhyloNetwork(eNewick=('%s;' % taxa[0]),id_offset=id_offset)
+        return PhyloTree(eNewick=('%s;' % taxa[0]),id_offset=id_offset)
     choices = {
         (l,N) : number_of_trees_nobin_nt_partial(n,l,N) for l in range(1,n+1) 
                                                         for N in range(n,2*n)
@@ -369,8 +369,8 @@ def random_yule_tree(taxa,id_offset=0):
     if ntaxa == 0:
         return None
     if ntaxa == 1:
-        return PhyloNetwork(eNewick=taxa[0] + ";")
-    network = PhyloNetwork()
+        return PhyloTree(eNewick=taxa[0] + ";")
+    network = PhyloTree()
     network.add_node('_' + str(id_offset))
     network.add_node('_' + str(id_offset+1))
     network.add_node('_' + str(id_offset+2))
