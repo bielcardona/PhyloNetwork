@@ -28,7 +28,7 @@ def all_trees(taxa, binary=False, nested_taxa=True):
         >>> generator.next().eNewick()
         ... '(C,(B,A));'
         >>> tmp = 2
-        >>> for tree in generator: tmp = tmp+1
+        >>> for tree in generator: tmp += 1
         >>> tmp
         ... 21
     
@@ -407,7 +407,7 @@ def random_yule_tree(taxa, id_offset=0):
         network.add_node(newnode)
         network.add_edge(parent, newnode)
 
-        id_offset = id_offset + 2
+        id_offset += 2
         network.cache = {}
     leaves = network.leaves()
     shuffle(taxa)
