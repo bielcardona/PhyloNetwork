@@ -1,19 +1,20 @@
-from networkx import DiGraph, is_directed_acyclic_graph, dfs_successors 
-from networkx import single_source_shortest_path_length,all_pairs_shortest_path_length,dijkstra_path_length
-from networkx import pydot_layout, draw_networkx
+from networkx import DiGraph, is_directed_acyclic_graph, dfs_successors
+from networkx import single_source_shortest_path_length, all_pairs_shortest_path_length, dijkstra_path_length
+# from networkx import pydot_layout, draw_networkx
 import networkx as nx
 
-import numpy,pyparsing,copy
+import numpy, pyparsing, copy
 
 from .eNewick import eNewickParser
 from .utils import total_cmp
 import permutations
 from .memoize import memoize_method
-##def memoize_method(f): return f # use it to document memoized methods (sphinx bug?)
+# def memoize_method(f): return f # use it to document memoized methods (sphinx bug?)
 from .exceptions import MalformedNewickException
 
 from itertools import combinations
-from collections import Counter 
+from collections import Counter
+
 
 class PhyloNetwork(DiGraph):
     """
@@ -51,14 +52,14 @@ class PhyloNetwork(DiGraph):
 
     def __init__(self, data=None, name='', eNewick=None, ignore_prefix=None, id_offset=0):
         # initialization here
-        DiGraph.__init__(self,data)
-        self.name=name
-        self._labels={}
-        self._lastlabel=id_offset
+        DiGraph.__init__(self, data)
+        self.name = name
+        self._labels = {}
+        self._lastlabel = id_offset
         self.cache = {}
         if eNewick != None:
             self._from_eNewick(eNewick, ignore_prefix=ignore_prefix)
-    
+
     @memoize_method
     def is_phylogenetic_network(self):
         """
@@ -79,7 +80,7 @@ class PhyloNetwork(DiGraph):
         if not is_directed_acyclic_graph(self):
             return False
         return True
-        
+
     def set_label(self, node, label):
         """
         Set a new label to a node.
@@ -107,7 +108,7 @@ class PhyloNetwork(DiGraph):
         if node in self:
             self._labels[node] = label
             self.cache = {}
-    
+
     @memoize_method
     def taxa(self):
         """
@@ -130,7 +131,7 @@ class PhyloNetwork(DiGraph):
         taxa.sort()
         return taxa
 
-    def label(self,node):
+    def label(self, node):
         """
         Returns the label of node, or None if not labelled.
         
@@ -177,9 +178,9 @@ class PhyloNetwork(DiGraph):
             if self.label(node) == taxa:
                 return node
         return None
-        
+
     @memoize_method
-    def nodes_by_taxa(self,taxa):
+    def nodes_by_taxa(self, taxa):
         """
         Returns all nodes labelled with taxa.
         
@@ -208,7 +209,7 @@ class PhyloNetwork(DiGraph):
                 tmp.append(node)
         return set(tmp)
 
-    def is_tree_node(self,u):
+    def is_tree_node(self, u):
         """
         Returns True if u is a tree node, False otherwise.
         
@@ -228,9 +229,9 @@ class PhyloNetwork(DiGraph):
             ... [True, True, True, True, True, False]
             
         """
-        return self.in_degree(u)<=1
-    
-    def is_hybrid_node(self,u):
+        return self.in_degree(u) <= 1
+
+    def is_hybrid_node(self, u):
         """
         Returns True if u is not a tree node, False otherwise.
         
@@ -250,9 +251,9 @@ class PhyloNetwork(DiGraph):
             ... [False, False, False, False, False, True]
             
         """
-        return self.in_degree(u)>1
+        return self.in_degree(u) > 1
 
-    def is_leaf(self,u):
+    def is_leaf(self, u):
         """
         Returns True if u is a leaf, False otherwise.
         
@@ -271,9 +272,9 @@ class PhyloNetwork(DiGraph):
             ... False
             
         """
-        return self.out_degree(u)==0
-    
-    def is_root(self,u):
+        return self.out_degree(u) == 0
+
+    def is_root(self, u):
         """
         Returns True if u is a root, False otherwise.
         
@@ -290,9 +291,9 @@ class PhyloNetwork(DiGraph):
             ... True
             
         """
-        return self.in_degree(u)==0
+        return self.in_degree(u) == 0
 
-    def is_elementary_node(self,u):
+    def is_elementary_node(self, u):
         """
         Returns True if u is an elementary node, False otherwise.
         
@@ -309,10 +310,10 @@ class PhyloNetwork(DiGraph):
             ... '_2'
             
         """
-        
-        return ((self.in_degree(u)<=1) and (self.out_degree(u)==1))
-    
-    def is_labelled(self,u):
+
+        return ((self.in_degree(u) <= 1) and (self.out_degree(u) == 1))
+
+    def is_labelled(self, u):
         """
         Returns True if u is a labelled node, False otherwise.
         
@@ -328,7 +329,7 @@ class PhyloNetwork(DiGraph):
         
         """
         return u in self._labels
-        
+
     @memoize_method
     def leaves(self):
         """
@@ -366,17 +367,17 @@ class PhyloNetwork(DiGraph):
             
         EXAMPLE::
         
-	    >>> graph = networkx.DiGraph()
-	    >>> graph.add_nodes_from(range(5))
-	    >>> graph.add_edges_from([(0,1), (2,3), (1,4), (3,4)])
-	    >>> network = PhyloNetwork(graph)
-	    >>> network.nodes()
-	    ... [0, 1, 2, 3, 4]
-	    >>> network.roots()
-	    ... [0, 2]
-	    >>> network.is_phylogenetic_network()
-	    ... True
-	
+        >>> graph = networkx.DiGraph()
+        >>> graph.add_nodes_from(range(5))
+        >>> graph.add_edges_from([(0,1), (2,3), (1,4), (3,4)])
+        >>> network = PhyloNetwork(graph)
+        >>> network.nodes()
+        ... [0, 1, 2, 3, 4]
+        >>> network.roots()
+        ... [0, 2]
+        >>> network.is_phylogenetic_network()
+        ... True
+    
         """
         roots = filter(self.is_root, self.nodes())
         roots.sort()
@@ -403,7 +404,7 @@ class PhyloNetwork(DiGraph):
            
         """
         return self._labels.keys()
-    
+
     @memoize_method
     def unlabelled_nodes(self):
         """
@@ -424,8 +425,8 @@ class PhyloNetwork(DiGraph):
            ... [None, None]
            
         """
-        return list(set(self.nodes())-set(self.labelled_nodes()))
-            
+        return list(set(self.nodes()) - set(self.labelled_nodes()))
+
     @memoize_method
     def interior_nodes(self):
         """
@@ -442,8 +443,8 @@ class PhyloNetwork(DiGraph):
             ... [False, False, False]
             
         """
-        return list(set(self.nodes())-set(self.leaves()))
-    
+        return list(set(self.nodes()) - set(self.leaves()))
+
     @memoize_method
     def elementary_nodes(self):
         """
@@ -463,9 +464,9 @@ class PhyloNetwork(DiGraph):
             
         """
         return filter(self.is_elementary_node, self.nodes())
-            
+
     @memoize_method
-    def depth(self,u):
+    def depth(self, u):
         """
         Returns the depth of u. If the node u is not from the 
         phylogenetic network, then returns None.
@@ -483,10 +484,10 @@ class PhyloNetwork(DiGraph):
         """
         if not u in self:
             return None
-        return min([dijkstra_path_length(self,root,u) for root in self.roots()])
-        
+        return min([dijkstra_path_length(self, root, u) for root in self.roots()])
+
     @memoize_method
-    def height(self,u):
+    def height(self, u):
         """
         Returns the height of u. If the node u is not from the 
         phylogenetic network, then returns None.
@@ -507,10 +508,10 @@ class PhyloNetwork(DiGraph):
         if self.is_leaf(u):
             return 0
         else:
-            return max(map(self.height, self.successors(u)))+1
+            return max(map(self.height, self.successors(u))) + 1
 
     @memoize_method
-    def mu(self,u):
+    def mu(self, u):
         """
         Returns a tuple containing the number of paths from u to all 
         labelled nodes of the phylogenetic network.
@@ -536,11 +537,11 @@ class PhyloNetwork(DiGraph):
         if u not in self:
             return None
         if self.is_leaf(u):
-            mu = numpy.zeros(len(self.taxa()),int)
+            mu = numpy.zeros(len(self.taxa()), int)
         else:
-            mu = sum(map(self.mu,self.successors(u)))
+            mu = sum(map(self.mu, self.successors(u)))
         if self.is_labelled(u):
-            pos=self.taxa().index(self.label(u))
+            pos = self.taxa().index(self.label(u))
             mu[pos] += 1
         return mu
 
@@ -565,7 +566,7 @@ class PhyloNetwork(DiGraph):
             
         """
         return '-'.join([str(self.mu(u)) for u in self.sorted_nodes()])
-        
+
     @memoize_method
     def sorted_nodes(self):
         """
@@ -585,7 +586,7 @@ class PhyloNetwork(DiGraph):
             
         """
         nodes = self.nodes()[:]
-        nodes.sort(cmp=lambda u,v:total_cmp(self.mu(u),self.mu(v)))
+        nodes.sort(cmp=lambda u, v: total_cmp(self.mu(u), self.mu(v)))
         return nodes
 
     def _generate_new_id(self):
@@ -593,75 +594,75 @@ class PhyloNetwork(DiGraph):
         For private use, it generates a new identification for every node 
         when generating the phylogenetic network.
         """
-        
+
         try:
             self._lastlabel += 1
         except:
             self._lastlabel = 1
         return '_%d' % (self._lastlabel)
-        
-    #getlabel = _generate_new_id # DEPRECATED
-            
-    def _walk(self,parsed,ignore_prefix=None):
+
+    # getlabel = _generate_new_id # DEPRECATED
+
+    def _walk(self, parsed, ignore_prefix=None):
         if isinstance(parsed, pyparsing.ParseResults):
-            
+
             if 'tag' in parsed:
-                internal_label='#'+str(parsed['tag'])
+                internal_label = '#' + str(parsed['tag'])
             else:
-                internal_label=self._generate_new_id()
+                internal_label = self._generate_new_id()
             if 'length' in parsed:
                 pass
             self.add_node(internal_label)
             if 'label' in parsed:
-                self._labels[internal_label]=parsed['label']
+                self._labels[internal_label] = parsed['label']
             for child in parsed:
-                child_label=self._walk(child,ignore_prefix=ignore_prefix)
+                child_label = self._walk(child, ignore_prefix=ignore_prefix)
                 if child_label:
-                    self.add_edge(internal_label,child_label)
+                    self.add_edge(internal_label, child_label)
             return internal_label
 
-    def _from_eNewick(self,string,ignore_prefix=None):
+    def _from_eNewick(self, string, ignore_prefix=None):
         try:
-            parsed=eNewickParser(string)[0]
+            parsed = eNewickParser(string)[0]
         except pyparsing.ParseException:
             raise MalformedNewickException("Malformed eNewick string")
-        self._walk(parsed,ignore_prefix=ignore_prefix)
+        self._walk(parsed, ignore_prefix=ignore_prefix)
         self.cache = {}
 
-    def _eNewick_node(self,u,visited):
+    def _eNewick_node(self, u, visited):
         if self.is_leaf(u):
-            #return self._labels[u]
-            return self._labels.get(u,'')
+            # return self._labels[u]
+            return self._labels.get(u, '')
         if u in visited:
             return u
         visited.append(u)
-        children=map(lambda x:self._eNewick_node(x,visited),self.successors(u))
+        children = map(lambda x: self._eNewick_node(x, visited), self.successors(u))
         children.sort()
-        internal=','.join(children)
-        mylabel=self.label(u) or ''
+        internal = ','.join(children)
+        mylabel = self.label(u) or ''
         if self.is_hybrid_node(u):
-            mylabel+=u
-        return '('+internal+')'+mylabel
+            mylabel += u
+        return '(' + internal + ')' + mylabel
 
     def __str__(self):
         return self.eNewick()
-        
+
     def __repr__(self):
-        return "Phylogenetic Network with taxa [" + ",".join(map(str,self.taxa())) + "]."
-    
+        return "Phylogenetic Network with taxa [" + ",".join(map(str, self.taxa())) + "]."
+
     def eNewick(self):
         """
         Returns the eNewick representation of the network.
         """
-        
-        visited=[]
+
+        visited = []
         string = ''
         for root in self.roots():
-            string += self._eNewick_node(root,visited)+';'
+            string += self._eNewick_node(root, visited) + ';'
         return string
-    
+
     @memoize_method
-    def descendant_nodes(self,u):
+    def descendant_nodes(self, u):
         """
         Returns a set with all the descendents of u.
 
@@ -680,11 +681,11 @@ class PhyloNetwork(DiGraph):
             ... ['4', '3', '2']
             
         """
-        return sum(dfs_successors(self,u).values(),[]) + [u]
-        #return dfs_successors(self,u)
+        return sum(dfs_successors(self, u).values(), []) + [u]
+        # return dfs_successors(self,u)
 
     @memoize_method
-    def descendant_taxa(self,u):
+    def descendant_taxa(self, u):
         """
         Returns a set with all the labelled descendents of u.
         
@@ -706,7 +707,7 @@ class PhyloNetwork(DiGraph):
         return [self.label(desc) for desc in self.descendant_nodes(u) if self.is_labelled(desc)]
 
     @memoize_method
-    def strict_descendant_nodes(self,u):
+    def strict_descendant_nodes(self, u):
         """
         Returns a set with all the strict descendents of u.
         
@@ -730,11 +731,11 @@ class PhyloNetwork(DiGraph):
         pruned.remove_node(u)
         desc_pruned = []
         for root in self.roots():
-            desc_pruned.extend(pruned.descendant_nodes(root)) #dfs_successors(pruned, root)
+            desc_pruned.extend(pruned.descendant_nodes(root))  # dfs_successors(pruned, root)
         return [desc for desc in self.descendant_nodes(u) if not desc in desc_pruned]
 
     @memoize_method
-    def strict_descendant_taxa(self,u):
+    def strict_descendant_taxa(self, u):
         """
         Returns a set with all the strict labelled descendents of u.
         
@@ -754,7 +755,7 @@ class PhyloNetwork(DiGraph):
         return [self.label(desc) for desc in self.strict_descendant_nodes(u) if self.is_labelled(desc)]
 
     @memoize_method
-    def ancestors(self,taxon):
+    def ancestors(self, taxon):
         """
         Returns a set with all nodes that have a fixed descendant taxa.
         
@@ -767,11 +768,11 @@ class PhyloNetwork(DiGraph):
             ... True
             
         """
-            
+
         return [u for u in self.sorted_nodes() if taxon in self.descendant_taxa(u)]
 
     @memoize_method
-    def strict_ancestors(self,taxon):
+    def strict_ancestors(self, taxon):
         """
         Returns a set with all nodes that have a fixed strict descendant taxa.
         
@@ -789,7 +790,7 @@ class PhyloNetwork(DiGraph):
         return [u for u in self.sorted_nodes() if taxon in self.strict_descendant_taxa(u)]
 
     @memoize_method
-    def CSA(self,tax1,tax2):
+    def CSA(self, tax1, tax2):
         """
         Returns a set with the common strict ancestors of taxa1 and taxa2.
         
@@ -810,14 +811,14 @@ class PhyloNetwork(DiGraph):
             ... '_2'
             
         """
-        
+
         return [u for u in self.ancestors(tax1) if
                 (u in self.ancestors(tax2)) and
                 ((u in self.strict_ancestors(tax1)) or
                  (u in self.strict_ancestors(tax2)))]
 
     @memoize_method
-    def LCSA(self,tax1,tax2):
+    def LCSA(self, tax1, tax2):
         """
         Returns a minimum of CSA(taxa1, taxa2) respect the height of nodes.
         
@@ -838,10 +839,10 @@ class PhyloNetwork(DiGraph):
             ... '_2'
             
         """
-        csa=self.CSA(tax1,tax2)
-        #print self,tax1,tax2,csa
-        csa.sort(lambda x,y:cmp(self.height(x),self.height(y)))
-        return csa[0]        
+        csa = self.CSA(tax1, tax2)
+        # print self,tax1,tax2,csa
+        csa.sort(lambda x, y: cmp(self.height(x), self.height(y)))
+        return csa[0]
 
     @memoize_method
     def nodal_matrix(self):
@@ -858,16 +859,16 @@ class PhyloNetwork(DiGraph):
             ...       [1, 1, 1, 0])
             
         """
-        n=len(self.taxa())
-        matrix=numpy.zeros((n,n),int)
-        dicdist=all_pairs_shortest_path_length(self)
+        n = len(self.taxa())
+        matrix = numpy.zeros((n, n), int)
+        dicdist = all_pairs_shortest_path_length(self)
         for i in range(n):
-            ti=self.taxa()[i]
-            for j in range(i,n):
-                tj=self.taxa()[j]
-                lcsa=self.LCSA(ti,tj)
-                matrix[i,j]=dicdist[lcsa][self.node_by_taxa(ti)]
-                matrix[j,i]=dicdist[lcsa][self.node_by_taxa(tj)]
+            ti = self.taxa()[i]
+            for j in range(i, n):
+                tj = self.taxa()[j]
+                lcsa = self.LCSA(ti, tj)
+                matrix[i, j] = dicdist[lcsa][self.node_by_taxa(ti)]
+                matrix[j, i] = dicdist[lcsa][self.node_by_taxa(tj)]
         return matrix
 
     def nodal_area(self):
@@ -886,8 +887,8 @@ class PhyloNetwork(DiGraph):
             ... 19
             
         """
-        mat=self.nodal_matrix()
-        #mat=mat+mat.transpose()
+        mat = self.nodal_matrix()
+        # mat=mat+mat.transpose()
         return sum(abs(mat.flatten()))
 
     @memoize_method
@@ -905,17 +906,17 @@ class PhyloNetwork(DiGraph):
             ...       [0, 0, 0, 1])
             
         """
-        n=len(self.taxa())
-        matrix=numpy.zeros((n,n),int)
+        n = len(self.taxa())
+        matrix = numpy.zeros((n, n), int)
         for i in range(n):
-            ti=self.taxa()[i]
-            for j in range(i,n):
-                tj=self.taxa()[j]
-                lcsa=self.LCSA(ti,tj)
-                matrix[i,j]=self.depth(lcsa)
+            ti = self.taxa()[i]
+            for j in range(i, n):
+                tj = self.taxa()[j]
+                lcsa = self.LCSA(ti, tj)
+                matrix[i, j] = self.depth(lcsa)
         return matrix
 
-    def common_taxa(self,net2):
+    def common_taxa(self, net2):
         """
         Returns common taxa between self and net2.
         
@@ -929,16 +930,16 @@ class PhyloNetwork(DiGraph):
             ... ['1']
             
         """
-        
-        common=[]
-        taxa1=self.taxa()
-        taxa2=net2.taxa()
+
+        common = []
+        taxa1 = self.taxa()
+        taxa2 = net2.taxa()
         for taxon in taxa1:
             if taxon in taxa2:
                 common.append(taxon)
         return common
-            
-    def common_taxa_leaves(self,net2):
+
+    def common_taxa_leaves(self, net2):
         """
         Returns common taxa between self and net2 that are leaves on both networks.
         
@@ -952,17 +953,16 @@ class PhyloNetwork(DiGraph):
             ... ['1']
             
         """
-        
-        common=[]
-        taxa1=filter(lambda l:self.is_leaf(self.node_by_taxa(l)),self.taxa())
-        taxa2=filter(lambda l:net2.is_leaf(net2.node_by_taxa(l)),net2.taxa())
+
+        common = []
+        taxa1 = filter(lambda l: self.is_leaf(self.node_by_taxa(l)), self.taxa())
+        taxa2 = filter(lambda l: net2.is_leaf(net2.node_by_taxa(l)), net2.taxa())
         for taxon in taxa1:
             if taxon in taxa2:
                 common.append(taxon)
         return common
-            
-    
-    def topological_restriction(self,subtaxa,nested=True):
+
+    def topological_restriction(self, subtaxa, nested=True):
         """
         Returns a minimal subnetwork of self such that it containts a fixed subtaxa.
         If nested=False then only taxa on leaves will be considered.
@@ -986,7 +986,7 @@ class PhyloNetwork(DiGraph):
             ... True
             
         """
-        restricted=copy.deepcopy(self)
+        restricted = copy.deepcopy(self)
         for node in restricted.labelled_nodes():
             if restricted.label(node) not in subtaxa:
                 # Delete taxa not in subtaxa
@@ -996,7 +996,7 @@ class PhyloNetwork(DiGraph):
                 # on internal nodes should be removed.
                 del restricted._labels[node]
         restricted.cache = {}
-        
+
         candidates_to_delete = restricted.leaves()
         while len(candidates_to_delete) > 0:
             node = candidates_to_delete.pop()
@@ -1010,7 +1010,7 @@ class PhyloNetwork(DiGraph):
                     not restricted.is_labelled(u):
                 for parent in restricted.predecessors(u):
                     for child in restricted.successors(u):
-                        restricted.add_edge(parent,child)
+                        restricted.add_edge(parent, child)
                 restricted.remove_node(u)
         restricted.cache = {}
         return restricted
@@ -1020,7 +1020,7 @@ class PhyloNetwork(DiGraph):
         """
         Returns True is an internal node is labelled. False otherwise.
         """
-        
+
         for node in self.labelled_nodes():
             if not self.is_leaf(node):
                 return True
@@ -1030,69 +1030,69 @@ class PhyloNetwork(DiGraph):
         try:
             return self._matching_representation
         except:
-            self._matching_representation={}
+            self._matching_representation = {}
             for u in self.nodes():
-                self._matching_representation[u]=0
+                self._matching_representation[u] = 0
             for u in self.leaves():
-                pos=self.taxa().index(self.label(u))
-                self._matching_representation[u]=pos+1
-            h=1
-            i=len(self.leaves())+1
-            thislevel=filter(lambda u:self.height(u)==h,self.nodes())
+                pos = self.taxa().index(self.label(u))
+                self._matching_representation[u] = pos + 1
+            h = 1
+            i = len(self.leaves()) + 1
+            thislevel = filter(lambda u: self.height(u) == h, self.nodes())
             while thislevel:
-                minims={}
+                minims = {}
                 for u in thislevel:
-                    minims[u]=min([self._matching_representation[v] for \
-                                       v in self.successors(u)])
-                thislevel.sort(lambda x,y: minims[x]-minims[y])
+                    minims[u] = min([self._matching_representation[v] for \
+                                     v in self.successors(u)])
+                thislevel.sort(lambda x, y: minims[x] - minims[y])
                 for k in range(len(thislevel)):
-                    self._matching_representation[thislevel[k]]=i
+                    self._matching_representation[thislevel[k]] = i
                     i += 1
                 h += 1
-                thislevel=filter(lambda u:self.height(u)==h,self.nodes())
+                thislevel = filter(lambda u: self.height(u) == h, self.nodes())
             return self._matching_representation
-                          
+
     def matching_permutation(self):
         try:
             return self._matching_permutation
         except:
-            permutation={}
-            representation=self.matching_representation()
+            permutation = {}
+            representation = self.matching_representation()
             for u in self.nodes():
-                children=self.successors(u)
-                children.sort(cmp=lambda u,v:representation[u]-representation[v])
+                children = self.successors(u)
+                children.sort(cmp=lambda u, v: representation[u] - representation[v])
                 for i in range(len(children)):
-                    permutation[representation[children[i]]]=representation[children[(i+1) % len(children)]]
-            self._matching_permutation=permutations.Permutation(permutation)
+                    permutation[representation[children[i]]] = representation[children[(i + 1) % len(children)]]
+            self._matching_permutation = permutations.Permutation(permutation)
             return self._matching_permutation
 
-    def cluster(self,u):
+    def cluster(self, u):
         """
         Returns the cluster of u in the network, None if the node is not in the network.
         """
-        
+
         if not u in self:
             return None
-	    
-        cl=[]
-        dictio=single_source_shortest_path_length(self,u)
+
+        cl = []
+        dictio = single_source_shortest_path_length(self, u)
         for node in dictio.keys():
             if self.label(node):
                 cl.append(self.label(node))
         cl.sort()
-        cl=tuple(cl)
+        cl = tuple(cl)
         return cl
 
     def cluster_representation(self):
         """
         Returns the cluster of all nodes in the network.
         """
-        
-        cls=map(self.cluster,self.nodes())
+
+        cls = map(self.cluster, self.nodes())
         cls.sort()
         return cls
 
-    def nested_label(self,node):
+    def nested_label(self, node):
         """
         Returns a string representation of descendants of u. Very useful to identify where is a node located in the network.
         
@@ -1108,25 +1108,25 @@ class PhyloNetwork(DiGraph):
             >>> network.nested_label('_5')
             ... '{4,{5,6}}' # '_5' is the parent of leaf '4' and node '_7'
         """
-        
+
         try:
             return self._nested_label[node]
         except:
-            if not hasattr(self,'_nested_label'):
+            if not hasattr(self, '_nested_label'):
                 self._nested_label = {}
             if self.is_leaf(node):
                 return self.label(node)
             else:
                 desc_labels = [self.nested_label(u) for u in self.successors(node)]
                 desc_labels.sort()
-                if desc_labels is None: 
+                if desc_labels is None:
                     # If a leaf doesn't have a label
                     self._nested_label[node] = "{}"
                     return self.nested_label[node]
-                self._nested_label[node] = '{'+','.join(desc_labels)+'}'
+                self._nested_label[node] = '{' + ','.join(desc_labels) + '}'
                 return self._nested_label[node]
 
-    def nested_label_representation(self,multiset = False):
+    def nested_label_representation(self, multiset=False):
         """
         Returns the nested label of all nodes in the network. If the optional parameter
         is True, then the result is returned as a Counter object; otherwise as a set
@@ -1146,31 +1146,36 @@ class PhyloNetwork(DiGraph):
             return Counter(nls)
         else:
             return set(nls)
-    
+
     def draw(self):
-        pos = nx.pydot_layout(self,prog='dot')
-        nx.draw_networkx(self, pos, labels = self._labels, edgelist=[])
-        nx.draw_networkx_edges(self, pos)
-        
-        
+        try:
+            pydot_layout = nx.nx_pydot.pydot_layout
+            draw_networkx = nx.draw_networkx()
+            pos = nx.pydot_layout(self, prog='dot')
+            nx.draw_networkx(self, pos, labels=self._labels, edgelist=[])
+            nx.draw_networkx_edges(self, pos)
+        except:
+            pass
+
+
 def _get_chunck(string):
     if string[0] in '(),;':
-        return string[0],string[1:]
+        return string[0], string[1:]
     i = 0
     while string[i] not in '(),;':
         i += 1
-    return string[0:i],string[i:]
+    return string[0:i], string[i:]
+
 
 class PhyloTree(PhyloNetwork):
-    
-    def _from_eNewick(self,string,ignore_prefix=None):
+    def _from_eNewick(self, string, ignore_prefix=None):
         substr = string
         current = self._generate_new_id()
         self.add_node(current)
         finished = False
         while not finished:
-            chunk,substr = _get_chunck(substr)
-            #print chunk,substr
+            chunk, substr = _get_chunck(substr)
+            # print chunk,substr
             if chunk == '(':
                 child = self._generate_new_id()
                 self.add_edge(current, child)
@@ -1205,55 +1210,55 @@ class PhyloTree(PhyloNetwork):
                         length_value = float(length)
                     parent = self.predecessors(current)[0]
                     self.edge[parent][current]['length'] = length_value
-            
 
-    
-#    @memoize_method
-#    def cluster(self,u):
-#        if self.is_leaf(u):
-#            return set([self.label(u)])
-#        cl = set()
-#        for v in self.successors(u):
-#            cl = cl | self.cluster(v)
-#        return cl
-#
-#    @memoize_method
-#    def depth(self,u):
-#        if self.is_root(u):
-#            return 0
-#        return 1+self.depth(self.predecessors(u)[0])
-    
-#    @memoize_method
-#    def nodal_matrix(self):
-#        taxa = self.taxa()
-#        n = len(taxa)
-#        taxa_map = {taxa[i]:i for i in range(n)}
-#        matrix=numpy.zeros((n,n),int)
-#        for u in self.interior_nodes():
-#            descendant_clusters = [self.cluster(v) for v in self.successors(u)]
-#            pairs = combinations(descendant_clusters,2)
-#            for pair in pairs:
-#                cl1 = pair[0]
-#                cl2 = pair[1]
-#                for taxa_i in cl1:
-#                    for taxa_j in cl2:
-#                        i = taxa_map[taxa_i]
-#                        j = taxa_map[taxa_j]
-#                        li = self.depth(self.node_by_taxa(taxa_i)) - self.depth(u)
-#                        lj = self.depth(self.node_by_taxa(taxa_j)) - self.depth(u)
-#                        matrix[i,j] = li
-#                        matrix[j,i] = lj
-#        return matrix
-        
+
+
+                #    @memoize_method
+                #    def cluster(self,u):
+                #        if self.is_leaf(u):
+                #            return set([self.label(u)])
+                #        cl = set()
+                #        for v in self.successors(u):
+                #            cl = cl | self.cluster(v)
+                #        return cl
+                #
+                #    @memoize_method
+                #    def depth(self,u):
+                #        if self.is_root(u):
+                #            return 0
+                #        return 1+self.depth(self.predecessors(u)[0])
+
+                #    @memoize_method
+                #    def nodal_matrix(self):
+                #        taxa = self.taxa()
+                #        n = len(taxa)
+                #        taxa_map = {taxa[i]:i for i in range(n)}
+                #        matrix=numpy.zeros((n,n),int)
+                #        for u in self.interior_nodes():
+                #            descendant_clusters = [self.cluster(v) for v in self.successors(u)]
+                #            pairs = combinations(descendant_clusters,2)
+                #            for pair in pairs:
+                #                cl1 = pair[0]
+                #                cl2 = pair[1]
+                #                for taxa_i in cl1:
+                #                    for taxa_j in cl2:
+                #                        i = taxa_map[taxa_i]
+                #                        j = taxa_map[taxa_j]
+                #                        li = self.depth(self.node_by_taxa(taxa_i)) - self.depth(u)
+                #                        lj = self.depth(self.node_by_taxa(taxa_j)) - self.depth(u)
+                #                        matrix[i,j] = li
+                #                        matrix[j,i] = lj
+                #        return matrix
+
     @memoize_method
     def cophenetic_matrix(self):
         taxa = self.taxa()
         n = len(taxa)
-        taxa_map = {taxa[i]:i for i in range(n)}
-        matrix=numpy.zeros((n,n),int)
+        taxa_map = {taxa[i]: i for i in range(n)}
+        matrix = numpy.zeros((n, n), int)
         for u in self.interior_nodes():
             descendant_clusters = [self.cluster(v) for v in self.successors(u)]
-            pairs = combinations(descendant_clusters,2)
+            pairs = combinations(descendant_clusters, 2)
             for pair in pairs:
                 cl1 = pair[0]
                 cl2 = pair[1]
@@ -1261,30 +1266,29 @@ class PhyloTree(PhyloNetwork):
                     for taxa_j in cl2:
                         i = taxa_map[taxa_i]
                         j = taxa_map[taxa_j]
-                        matrix[min(i,j),max(i,j)] = self.depth(u)
+                        matrix[min(i, j), max(i, j)] = self.depth(u)
         for u in self.leaves():
             i = taxa_map[self.label(u)]
-            matrix[i,i] = self.depth(u)
+            matrix[i, i] = self.depth(u)
         return matrix
-        
-    
+
     def remove_elementary_nodes(self):
-        elementary_nodes = [u for u in self.nodes() if (self.out_degree(u)==1 and not self.is_labelled(u))]
+        elementary_nodes = [u for u in self.nodes() if (self.out_degree(u) == 1 and not self.is_labelled(u))]
         for u in elementary_nodes:
             child = self.successors(u)[0]
             for v in self.predecessors(u):
-                self.add_edge(v,child)
+                self.add_edge(v, child)
             self.remove_node(u)
-            
+
     @memoize_method
     def cluster(self, u):
         """
         Returns the cluster of u in the tree, None if the node is not in the network.
         """
-        
+
         if not u in self:
             return None
-        
+
         if self.is_labelled(u):
             return set([self.label(u)])
         else:
@@ -1292,7 +1296,7 @@ class PhyloTree(PhyloNetwork):
             for child in self.successors(u):
                 tmp = tmp.union(self.cluster(child))
             return tmp
-        
+
     @memoize_method
     def depth(self, u):
         """
@@ -1301,13 +1305,13 @@ class PhyloTree(PhyloNetwork):
         """
         if not u in self:
             return None
-        
+
         if self.is_root(u):
             return 0
         else:
-            return 1+self.depth(self.predecessors(u)[0])
-          
-    @memoize_method  
+            return 1 + self.depth(self.predecessors(u)[0])
+
+    @memoize_method
     def _compute_LCA(self, i, j):
         if i == j:
             return i
@@ -1317,7 +1321,7 @@ class PhyloTree(PhyloNetwork):
         if j in self.descendant_nodes(parent):
             return parent
         return self._compute_LCA(parent, j)
-    
+
     @memoize_method
     def LCA(self, tax1, tax2):
         """
@@ -1332,11 +1336,11 @@ class PhyloTree(PhyloNetwork):
             ... '_2'
             
         """
-        
+
         node1 = self.node_by_taxa(tax1)
         node2 = self.node_by_taxa(tax2)
         return self._compute_LCA(node1, node2)
-    
+
     LCSA = LCA
 
     @memoize_method
@@ -1354,75 +1358,77 @@ class PhyloTree(PhyloNetwork):
             ...       [1, 1, 1, 0])
             
         """
-        n=len(self.taxa())
-        matrix=numpy.zeros((n,n),int)
+        n = len(self.taxa())
+        matrix = numpy.zeros((n, n), int)
         for i in range(n):
-            ti=self.taxa()[i]
-            for j in range(i,n):
-                tj=self.taxa()[j]
-                lca=self.LCA(ti,tj)
-                matrix[i,j]=self.depth(self.node_by_taxa(ti))-self.depth(lca)
-                matrix[j,i]=self.depth(self.node_by_taxa(tj))-self.depth(lca)
+            ti = self.taxa()[i]
+            for j in range(i, n):
+                tj = self.taxa()[j]
+                lca = self.LCA(ti, tj)
+                matrix[i, j] = self.depth(self.node_by_taxa(ti)) - self.depth(lca)
+                matrix[j, i] = self.depth(self.node_by_taxa(tj)) - self.depth(lca)
         return matrix
-    
+
+
 class LGTPhyloNetwork(PhyloNetwork):
-    
-    def _walk(self,parsed,ignore_prefix=None):
+    def _walk(self, parsed, ignore_prefix=None):
         if isinstance(parsed, pyparsing.ParseResults):
             secondary = False
             if 'tag' in parsed:
-                internal_label='#'+str(parsed['tag'])
+                internal_label = '#' + str(parsed['tag'])
                 if 'type' in parsed and parsed['type'] == 'LGT':
                     secondary = True
             else:
-                internal_label=self._generate_new_id()
+                internal_label = self._generate_new_id()
             if 'length' in parsed:
                 pass
             self.add_node(internal_label)
             if 'label' in parsed:
-                self._labels[internal_label]=parsed['label']
+                self._labels[internal_label] = parsed['label']
             for child in parsed:
-                inner_walk = self._walk(child,ignore_prefix=ignore_prefix)
+                inner_walk = self._walk(child, ignore_prefix=ignore_prefix)
                 if inner_walk:
                     child_label = inner_walk[0]
                     secondary_edge = inner_walk[1]
-                    self.add_edge(internal_label,child_label,attr_dict={'secondary':secondary_edge})
-            return [internal_label,secondary]
+                    self.add_edge(internal_label, child_label, attr_dict={'secondary': secondary_edge})
+            return [internal_label, secondary]
 
     def principal_edges(self):
-        return [(edge[0],edge[1]) for edge in self.edges(data=True) if 
-                not 'secondary' in edge[2] or edge[2]['secondary']==False]
+        return [(edge[0], edge[1]) for edge in self.edges(data=True) if
+                not 'secondary' in edge[2] or edge[2]['secondary'] == False]
 
     def secondary_edges(self):
-        return [(edge[0],edge[1]) for edge in self.edges(data=True) if 
-                'secondary' in edge[2] and edge[2]['secondary']==True]
-        
-    def principal_subtree(self, simplify = True):
+        return [(edge[0], edge[1]) for edge in self.edges(data=True) if
+                'secondary' in edge[2] and edge[2]['secondary'] == True]
+
+    def principal_subtree(self, simplify=True):
         tree = PhyloTree()
         tree.add_edges_from(self.principal_edges())
         tree._labels = self._labels
         if simplify:
             tree.remove_elementary_nodes()
         return tree
-    
-    def secondary_subtrees(self, simplify = True):
+
+    def secondary_subtrees(self, simplify=True):
         subtrees = []
         for edge in self.secondary_edges():
             tree = PhyloTree()
-            edges = [e for e in self.principal_edges() if e[1]!=edge[1]]
+            edges = [e for e in self.principal_edges() if e[1] != edge[1]]
             edges.append(edge)
             tree.add_edges_from(edges)
             tree._labels = self._labels
             if simplify:
                 tree.remove_elementary_nodes()
             subtrees.append(tree)
-        return subtrees     
-    
-    def draw(self):
-        pos = nx.pydot_layout(self,prog='dot')
-        nx.draw_networkx(self, pos, labels = self._labels, edgelist=[])
-        nx.draw_networkx_edges(self, pos, edgelist = self.principal_edges())
-        nx.draw_networkx_edges(self, pos, edgelist = self.secondary_edges(), style = 'dashed')
+        return subtrees
 
-        
-        
+    def draw(self):
+        try:
+            pydot_layout = nx.nx_pydot.pydot_layout
+            draw_networkx = nx.draw_networkx()
+            pos = nx.pydot_layout(self, prog='dot')
+            nx.draw_networkx(self, pos, labels=self._labels, edgelist=[])
+            nx.draw_networkx_edges(self, pos, edgelist=self.principal_edges())
+            nx.draw_networkx_edges(self, pos, edgelist=self.secondary_edges(), style='dashed')
+        except:
+            pass
