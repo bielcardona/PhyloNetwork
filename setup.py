@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 setup(name="phylonetwork",
-    version="1.0b8",
+    version="1.0b9",
     author="Gabriel Cardona, David Sanchez",
     author_email="bielcardona@gmail.com, dscharles@gmail.com",
     license="BSD",
@@ -8,7 +8,7 @@ setup(name="phylonetwork",
     packages=['phylonetwork'],
     package_dir = {'phylonetwork': 'src/phylonetwork'},
     install_requires = [
-        'networkx',
+        'networkx>=1,<2',
         'pyparsing',
         'numpy'
     ]
