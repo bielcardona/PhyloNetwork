@@ -27,5 +27,5 @@ def eNewick_reader(filename,ignore_prefix=None):
 if __name__ == '__main__':
     net1=PhyloNetwork(eNewick='(1,2,3);')
     net2=PhyloNetwork(eNewick='(1,2)3;')
-    print mu_distance(net1,net2)
+    print(mu_distance(net1,net2))
     

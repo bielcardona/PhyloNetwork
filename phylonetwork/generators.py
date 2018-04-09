@@ -35,7 +35,7 @@ def all_trees(taxa, binary=False, nested_taxa=True):
     EXAMPLE::
     
         >>> for tree in all_trees(['A', 'B', 'C', binary=True, nested_taxa=False):
-        >>>     print tree.eNewick()
+        >>>     print(tree.eNewick())
         ... ((C,B),A);
         ... (C,(B,A));
         ... ((C,A),B);
@@ -43,7 +43,7 @@ def all_trees(taxa, binary=False, nested_taxa=True):
     EXAMPLE::
     
         >>> for tree in all_trees(['A', 'B', 'C', binary=False, nested_taxa=False):
-        >>>     print tree.eNewick()
+        >>>     print(tree.eNewick())
         ... ((C,B),A);
         ... (C,(B,A));
         ... ((C,A),B);
@@ -209,12 +209,12 @@ def number_of_trees_bin_nt_partial(n, l, N, e):
     Gives the number of phylogenetic trees on n taxa with l leaves, N nodes, e of them being elementary.
     Assume binary trees with nested taxa.
     """
-    # print "n=%d, l=%d, N=%d, e=%d" % (n,l,N,e)
+    # print("n=%d, l=%d, N=%d, e=%d" % (n,l,N,e))
     if (l <= 0) or (l > n) or (n < 0) or (N < n) or (l + e > N) or (l + e > n) or (e < 0):
         # h "n=%d, l=%d, N=%d, e=%d, --> %d" % (n,l,N,e,0)
         return 0
     if n == 1:
-        # print "n=%d, l=%d, N=%d, e=%d, --> %d" % (n,l,N,e,1)
+        # print("n=%d, l=%d, N=%d, e=%d, --> %d" % (n,l,N,e,1))
         if (l == 1) and (N == 1) and (e == 0):
             return 1
         else:
@@ -226,7 +226,7 @@ def number_of_trees_bin_nt_partial(n, l, N, e):
         l * number_of_trees_bin_nt_partial(n - 1, l, N - 1, e - 1) +  # H&H leaf
         (e + 1) * number_of_trees_bin_nt_partial(n - 1, l - 1, N - 1, e + 1)  # H&H elem
     )
-    # print "n=%d, l=%d, N=%d, e=%d, --> %d" % (n,l,N,e,count)
+    # print("n=%d, l=%d, N=%d, e=%d, --> %d" % (n,l,N,e,count))
     return count
 
 
@@ -299,12 +299,12 @@ def number_of_trees_nobin_nt_partial(n, l, N):
     Gives the number of phylogenetic trees on n taxa with l leaves, N nodes, e of them being elementary.
     Assume binary trees with nested taxa.
     """
-    # print "n=%d, l=%d, N=%d, e=%d" % (n,l,N,e)
+    # print("n=%d, l=%d, N=%d, e=%d" % (n,l,N,e))
     if (l <= 0) or (l > n) or (n < 0) or (N < n):
-        # print "n=%d, l=%d, N=%d, e=%d, --> %d" % (n,l,N,e,0)
+        # print("n=%d, l=%d, N=%d, e=%d, --> %d" % (n,l,N,e,0))
         return 0
     if n == 1:
-        # print "n=%d, l=%d, N=%d, --> %d" % (n,l,N,1)
+        # print("n=%d, l=%d, N=%d, --> %d" % (n,l,N,1))
         if (l == 1) and (N == 1):
             return 1
         else:
@@ -316,7 +316,7 @@ def number_of_trees_nobin_nt_partial(n, l, N):
         (N - 1) * number_of_trees_nobin_nt_partial(n - 1, l, N - 1) +  # P&L
         (N - n + 1) * number_of_trees_nobin_nt_partial(n - 1, l, N)  # H&L
     )
-    # print "n=%d, l=%d, N=%d, --> %d" % (n,l,N,count)
+    # print("n=%d, l=%d, N=%d, --> %d" % (n,l,N,count))
     return count
 
 
@@ -345,10 +345,10 @@ def random_tree_nobin_nt_partial(taxa, l, N, id_offset):
         (push_and_label, l, N - 1, 'nodes'): (N - 1) * number_of_trees_nobin_nt_partial(n - 1, l, N - 1),
         (hold_and_label, l, N, 'unlabelled_nodes'): (N - n + 1) * number_of_trees_nobin_nt_partial(n - 1, l, N)
     }
-    # print choices
+    # print(choices)
     (operation, lp, Np, candidates_method) = random_weighted(choices)
     parent = random_tree_nobin_nt_partial(taxa[0:-1], lp, Np, id_offset)
-    # print parent
+    # print(parent)
     candidates = getattr(parent, candidates_method)()
     u = random.choice(candidates)
     newtree = operation(parent, u, taxa[-1])
@@ -377,9 +377,9 @@ def random_tree_nobin_nt_global(taxa, id_offset):
         (l, N): number_of_trees_nobin_nt_partial(n, l, N) for l in range(1, n + 1)
         for N in range(n, 2 * n)
         }
-    # print choices
+    # print(choices)
     (l, N) = random_weighted(choices)
-    # print (l,N)
+    # print(l,N)
     return random_tree_nobin_nt_partial(taxa, l, N, id_offset)
 
 
@@ -430,7 +430,7 @@ def random_tree_generator(taxa, binary=False, nested_taxa=True, yule=False, id_o
     
         >>> generator = random_tree_generator(['a', 'b', 'c', 'd', 'e', 'f'], binary=False)
         >>> for i in range(3):
-        >>>     print generator.next().eNewick()
+        >>>     print(generator.next().eNewick())
         ... ((a)d,(e,b,(c,f)));
         ... (((((d)c)e)f,a))b;
         ... ((e,d,(c)a),b,f);
@@ -439,7 +439,7 @@ def random_tree_generator(taxa, binary=False, nested_taxa=True, yule=False, id_o
     
         >>> generator = random_tree_generator(['a', 'b', 'c', 'd', 'e', 'f'], binary=True)
         >>> for i in range(3):
-        >>>     print generator.next().eNewick()
+        >>>     print(generator.next().eNewick())
         ... '((d,b),(c,((e)f)a));'
         ... '(c,(((a,e),d),f)b);'
         ... '(((c,f),((b)e)d))a;'
@@ -448,7 +448,7 @@ def random_tree_generator(taxa, binary=False, nested_taxa=True, yule=False, id_o
     
         >>> generator = random_tree_generator(['a', 'b', 'c', 'd', 'e', 'f'], yule=True)
         >>> for i in range(3):
-        >>>     print generator.next().eNewick()
+        >>>     print(generator.next().eNewick())
         ... ((b,(d,f)),((e,c),a));
         ... (((c,e),b),((a,f),d));
         ... ((e,(f,(a,b))),(d,c));
@@ -474,4 +474,4 @@ def random_tree_generator(taxa, binary=False, nested_taxa=True, yule=False, id_o
 if __name__ == "__main__":
     tg = all_trees(['1', '2', '3'])
     while tg:
-        print tg.next()
+        print(tg.next())

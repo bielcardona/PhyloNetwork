@@ -58,4 +58,4 @@ if __name__ == '__main__':
     text='((1,,(2)h#LTG1:1.5)x,(h1,3:5.5)y:5.76)r;'
 #    text='xx#3'
     expr=eNewickParser(text)
-    print expr
+    print(expr)

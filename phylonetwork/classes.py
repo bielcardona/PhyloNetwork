@@ -7,7 +7,7 @@ import numpy, pyparsing, copy
 
 from .eNewick import eNewickParser
 from .utils import total_cmp
-import permutations
+from . import permutations
 from .memoize import memoize_method
 # def memoize_method(f): return f # use it to document memoized methods (sphinx bug?)
 from .exceptions import MalformedNewickException
@@ -346,7 +346,7 @@ class PhyloNetwork(DiGraph):
             ... [True, True, True, True]
             
         """
-        leaves = filter(self.is_leaf, self.nodes())
+        leaves = list(filter(self.is_leaf, self.nodes()))
         leaves.sort()
         return leaves
 
@@ -379,7 +379,7 @@ class PhyloNetwork(DiGraph):
         ... True
     
         """
-        roots = filter(self.is_root, self.nodes())
+        roots = list(filter(self.is_root, self.nodes()))
         roots.sort()
         return roots
 
@@ -463,7 +463,7 @@ class PhyloNetwork(DiGraph):
             ... '_2'
             
         """
-        return filter(self.is_elementary_node, self.nodes())
+        return list(filter(self.is_elementary_node, self.nodes()))
 
     @memoize_method
     def depth(self, u):
@@ -840,7 +840,7 @@ class PhyloNetwork(DiGraph):
             
         """
         csa = self.CSA(tax1, tax2)
-        # print self,tax1,tax2,csa
+        # print(self,tax1,tax2,csa)
         csa.sort(lambda x, y: cmp(self.height(x), self.height(y)))
         return csa[0]
 
@@ -955,8 +955,8 @@ class PhyloNetwork(DiGraph):
         """
 
         common = []
-        taxa1 = filter(lambda l: self.is_leaf(self.node_by_taxa(l)), self.taxa())
-        taxa2 = filter(lambda l: net2.is_leaf(net2.node_by_taxa(l)), net2.taxa())
+        taxa1 = list(filter(lambda l: self.is_leaf(self.node_by_taxa(l)), self.taxa()))
+        taxa2 = list(filter(lambda l: net2.is_leaf(net2.node_by_taxa(l)), net2.taxa()))
         for taxon in taxa1:
             if taxon in taxa2:
                 common.append(taxon)
@@ -1038,7 +1038,7 @@ class PhyloNetwork(DiGraph):
                 self._matching_representation[u] = pos + 1
             h = 1
             i = len(self.leaves()) + 1
-            thislevel = filter(lambda u: self.height(u) == h, self.nodes())
+            thislevel = list(filter(lambda u: self.height(u) == h, self.nodes()))
             while thislevel:
                 minims = {}
                 for u in thislevel:
@@ -1049,7 +1049,7 @@ class PhyloNetwork(DiGraph):
                     self._matching_representation[thislevel[k]] = i
                     i += 1
                 h += 1
-                thislevel = filter(lambda u: self.height(u) == h, self.nodes())
+                thislevel = list(filter(lambda u: self.height(u) == h, self.nodes()))
             return self._matching_representation
 
     def matching_permutation(self):
@@ -1175,7 +1175,7 @@ class PhyloTree(PhyloNetwork):
         finished = False
         while not finished:
             chunk, substr = _get_chunck(substr)
-            # print chunk,substr
+            # print(chunk,substr)
             if chunk == '(':
                 child = self._generate_new_id()
                 self.add_edge(current, child)

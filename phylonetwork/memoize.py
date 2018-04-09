@@ -9,11 +9,11 @@ class memoize_method(object):
     """
 
     def __init__(self, func):
-        # print "Init"
+        # print("Init")
         self.func = func
 
     def __call__(self, *args):
-        # print "Call"
+        # print("Call")
         if not self.func in self.cache:
             self.cache[self.func] = {}
         try:
@@ -33,7 +33,7 @@ class memoize_method(object):
 
     def __get__(self, obj, objtype):
         """Support instance methods."""
-        # print "Get", obj, objtype
+        # print("Get", obj, objtype)
         fn = functools.partial(self.__call__, obj)
         fn.__doc__ = self.func.__doc__
         fn.__name__ = self.func.__name__
@@ -42,7 +42,7 @@ class memoize_method(object):
         except:
             obj.cache = {}
             self.cache = obj.cache
-        # print self.cache
+        # print(self.cache)
         return fn
 
 
@@ -88,16 +88,16 @@ if __name__ == "__main__":
 
         @memoize_method
         def func1(self, x):
-            print "Computing func1"
+            print("Computing func1")
             return "I am func1 of %s. Data is %s. x is %s\n" % (self, self.data, x)
 
         @memoize_method
         def func2(self, x):
-            print "Computing func2"
+            print( "Computing func2")
             return "I am func2 of %s. Data is %s. x is %s\n" % (self, self.data, x)
 
         def func3(self, x):
-            print "Computing func3"
+            print( "Computing func3")
             return "I am func3 of %s. Data is %s. x is %s\n" % (self, self.data, x)
 
 
@@ -105,26 +105,26 @@ if __name__ == "__main__":
     mc2 = MyClass("data2")
     mc3 = MyClass("data3")
 
-    print mc1.func1(1)
-    print mc1.func1(1)
-    print mc1.func2(1)
-    print mc1.func2(1)
-    print mc1.func3(1)
-    print mc1.func3(1)
+    print( mc1.func1(1))
+    print( mc1.func1(1))
+    print( mc1.func2(1))
+    print( mc1.func2(1))
+    print( mc1.func3(1))
+    print( mc1.func3(1))
 
-    print mc2.func1(1)
-    print mc2.func1(1)
-    print mc2.func2(1)
-    print mc2.func2(1)
-    print mc2.func3(1)
-    print mc2.func3(1)
+    print( mc2.func1(1))
+    print( mc2.func1(1))
+    print( mc2.func2(1))
+    print( mc2.func2(1))
+    print( mc2.func3(1))
+    print( mc2.func3(1))
 
-    print "Update mc1\n"
+    print( "Update mc1\n")
     mc1.update("data1new")
 
-    print mc1.func1(1)
-    print mc1.func2(1)
-    print mc1.func3(1)
-    print mc2.func1(1)
-    print mc2.func2(1)
-    print mc2.func3(1)
+    print( mc1.func1(1))
+    print( mc1.func2(1))
+    print( mc1.func3(1))
+    print( mc2.func1(1))
+    print( mc2.func2(1))
+    print( mc2.func3(1))
