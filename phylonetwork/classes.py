@@ -15,6 +15,9 @@ from .exceptions import MalformedNewickException
 from itertools import combinations
 from collections import Counter
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 class PhyloNetwork(DiGraph):
     """
@@ -614,19 +617,19 @@ class PhyloNetwork(DiGraph):
                 length = float(parsed['length'][0])
             else:
                 length = None
-            # print(f'adding node {internal_label}')
+            logger.debug(f'adding node {internal_label}')
             self.add_node(internal_label)
             if 'label' in parsed:
-                # print(f'setting label {parsed["label"]} to node {internal_label}')
+                logger.debug(f'setting label {parsed["label"]} to node {internal_label}')
                 self._labels[internal_label] = parsed['label']
             for child in parsed:
                 walk_child = self._walk(child, ignore_prefix=ignore_prefix)
                 if walk_child:
                     child_label, child_length = walk_child
-                    # print(f'adding arc from {internal_label} to {child_label}')
+                    logger.debug(f'adding arc from {internal_label} to {child_label}')
                     self.add_edge(internal_label, child_label)
                     if child_length is not None:
-                        # print(f'setting arc length from {internal_label} to {child_label} with length {child_length}')
+                        logger.debug(f'setting arc length from {internal_label} to {child_label} with length {child_length}')
                         self.edge[internal_label][child_label]['length']=child_length
             return internal_label, length
 
