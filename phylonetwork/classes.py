@@ -403,7 +403,7 @@ class PhyloNetwork(DiGraph):
            ... [None, None]
            
         """
-        return self._labels.keys()
+        return list(self._labels.keys())
 
     @memoize_method
     def unlabelled_nodes(self):
@@ -508,7 +508,7 @@ class PhyloNetwork(DiGraph):
         if self.is_leaf(u):
             return 0
         else:
-            return max(map(self.height, self.successors(u))) + 1
+            return max(list(map(self.height, self.successors(u)))) + 1
 
     @memoize_method
     def mu(self, u):
@@ -516,7 +516,7 @@ class PhyloNetwork(DiGraph):
         Returns a tuple containing the number of paths from u to all 
         labelled nodes of the phylogenetic network.
         Returns None if the node u is not in the phylogenetic network.
-        
+
         EXAMPLE::
         
             >>> network = PhyloNetwork(eNewick="((((LEAF1, LEAF2#1)), #1)INT,#1);")
@@ -611,15 +611,24 @@ class PhyloNetwork(DiGraph):
             else:
                 internal_label = self._generate_new_id()
             if 'length' in parsed:
-                pass
+                length = float(parsed['length'][0])
+            else:
+                length = None
+            # print(f'adding node {internal_label}')
             self.add_node(internal_label)
             if 'label' in parsed:
+                # print(f'setting label {parsed["label"]} to node {internal_label}')
                 self._labels[internal_label] = parsed['label']
             for child in parsed:
-                child_label = self._walk(child, ignore_prefix=ignore_prefix)
-                if child_label:
+                walk_child = self._walk(child, ignore_prefix=ignore_prefix)
+                if walk_child:
+                    child_label, child_length = walk_child
+                    # print(f'adding arc from {internal_label} to {child_label}')
                     self.add_edge(internal_label, child_label)
-            return internal_label
+                    if child_length is not None:
+                        # print(f'setting arc length from {internal_label} to {child_label} with length {child_length}')
+                        self.edge[internal_label][child_label]['length']=child_length
+            return internal_label, length
 
     def _from_eNewick(self, string, ignore_prefix=None):
         try:
@@ -636,7 +645,7 @@ class PhyloNetwork(DiGraph):
         if u in visited:
             return u
         visited.append(u)
-        children = map(lambda x: self._eNewick_node(x, visited), self.successors(u))
+        children = [self._eNewick_node(x, visited) for x in self.successors(u)]
         children.sort()
         internal = ','.join(children)
         mylabel = self.label(u) or ''
@@ -681,7 +690,7 @@ class PhyloNetwork(DiGraph):
             ... ['4', '3', '2']
             
         """
-        return sum(dfs_successors(self, u).values(), []) + [u]
+        return sum(list(dfs_successors(self, u).values(), [])) + [u]
         # return dfs_successors(self,u)
 
     @memoize_method
@@ -955,8 +964,8 @@ class PhyloNetwork(DiGraph):
         """
 
         common = []
-        taxa1 = list(filter(lambda l: self.is_leaf(self.node_by_taxa(l)), self.taxa()))
-        taxa2 = list(filter(lambda l: net2.is_leaf(net2.node_by_taxa(l)), net2.taxa()))
+        taxa1 = list([l for l in self.taxa() if self.is_leaf(self.node_by_taxa(l))])
+        taxa2 = list([l for l in net2.taxa() if net2.is_leaf(net2.node_by_taxa(l))])
         for taxon in taxa1:
             if taxon in taxa2:
                 common.append(taxon)
@@ -1038,7 +1047,7 @@ class PhyloNetwork(DiGraph):
                 self._matching_representation[u] = pos + 1
             h = 1
             i = len(self.leaves()) + 1
-            thislevel = list(filter(lambda u: self.height(u) == h, self.nodes()))
+            thislevel = [u for u in self.nodes() if self.height(u) == h]
             while thislevel:
                 minims = {}
                 for u in thislevel:
@@ -1049,7 +1058,7 @@ class PhyloNetwork(DiGraph):
                     self._matching_representation[thislevel[k]] = i
                     i += 1
                 h += 1
-                thislevel = list(filter(lambda u: self.height(u) == h, self.nodes()))
+                thislevel = [u for u in self.nodes() if self.height(u) == h]
             return self._matching_representation
 
     def matching_permutation(self):
@@ -1076,7 +1085,7 @@ class PhyloNetwork(DiGraph):
 
         cl = []
         dictio = single_source_shortest_path_length(self, u)
-        for node in dictio.keys():
+        for node in list(dictio.keys()):
             if self.label(node):
                 cl.append(self.label(node))
         cl.sort()
@@ -1088,7 +1097,7 @@ class PhyloNetwork(DiGraph):
         Returns the cluster of all nodes in the network.
         """
 
-        cls = map(self.cluster, self.nodes())
+        cls = list(map(self.cluster, self.nodes()))
         cls.sort()
         return cls
 
