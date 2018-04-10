@@ -648,7 +648,12 @@ class PhyloNetwork(DiGraph):
         if u in visited:
             return u
         visited.append(u)
-        children = [self._eNewick_node(x, visited) for x in self.successors(u)]
+
+        def length_suffix(x):
+            e = self.edge[u][x]
+            return ":{}".format(e['length']) if 'length' in e else ""
+
+        children = [self._eNewick_node(x, visited) + length_suffix(x) for x in self.successors(u)]
         children.sort()
         internal = ','.join(children)
         mylabel = self.label(u) or ''
