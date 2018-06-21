@@ -6,7 +6,7 @@ import networkx as nx
 import numpy, pyparsing, copy
 
 from .eNewick import eNewickParser
-from .utils import total_cmp
+from .utils import total_cmp, cmp_to_key
 from . import permutations
 from .memoize import memoize_method
 # def memoize_method(f): return f # use it to document memoized methods (sphinx bug?)
@@ -106,7 +106,7 @@ class PhyloNetwork(DiGraph):
             >>> network.set_label(2, 'New label')
             >>> network.taxa()
             ... ['Label 2', 'Label 3', 'New label']
-        
+
         """
         if node in self:
             self._labels[node] = label
@@ -221,18 +221,18 @@ class PhyloNetwork(DiGraph):
             >>> network = PhyloNetwork(eNewick="((3),(1,2));")
             >>> network.nodes()
             ... ['_6', '_5', '_4', '_3', '_2', '_1']
-            >>> map(network.is_tree_node, network.nodes())
+            >>> list(map(network.is_tree_node, network.nodes()))
             ... [True, True, True, True, True, True]
             >>> network.is_tree_node('non-existing node')
             ... False
             >>> network = PhyloNetwork(eNewick="((4,5#1)2,(#1,6)3)1;")
             >>> network.nodes()
             ... ['_5', '_4', '_3', '_2', '_1', '#1']
-            >>> map(network.is_tree_node, network.nodes())
+            >>> list(map(network.is_tree_node, network.nodes()))
             ... [True, True, True, True, True, False]
             
         """
-        return self.in_degree(u) <= 1
+        return u in self.nodes() and self.in_degree(u) <= 1
 
     def is_hybrid_node(self, u):
         """
@@ -243,18 +243,18 @@ class PhyloNetwork(DiGraph):
             >>> network = PhyloNetwork(eNewick="((3),(1,2));")
             >>> network.nodes()
             ... ['_6', '_5', '_4', '_3', '_2', '_1']
-            >>> map(network.is_hybrid_node, network.nodes())
+            >>> list(map(network.is_hybrid_node, network.nodes()))
             ... [False, False, False, False, False, False]
             >>> network.is_hybrid_node('non-existing node')
             ... False
             >>> network = PhyloNetwork(eNewick="((4,5#1)2,(#1,6)3)1;")
             >>> network.nodes()
             ... ['_5', '_4', '_3', '_2', '_1', '#1']
-            >>> map(network.is_hybrid_node, network.nodes())
+            >>> list(map(network.is_hybrid_node, network.nodes()))
             ... [False, False, False, False, False, True]
             
         """
-        return self.in_degree(u) > 1
+        return u in self.nodes() and self.in_degree(u) > 1
 
     def is_leaf(self, u):
         """
@@ -275,7 +275,7 @@ class PhyloNetwork(DiGraph):
             ... False
             
         """
-        return self.out_degree(u) == 0
+        return u in self.nodes() and self.out_degree(u) == 0
 
     def is_root(self, u):
         """
@@ -294,7 +294,7 @@ class PhyloNetwork(DiGraph):
             ... True
             
         """
-        return self.in_degree(u) == 0
+        return u in self.nodes() and self.in_degree(u) == 0
 
     def is_elementary_node(self, u):
         """
@@ -310,11 +310,11 @@ class PhyloNetwork(DiGraph):
             >>> network.label('_2')
             ... 'E'
             >>> network.elementary_nodes()
-            ... '_2'
+            ... ['_2']
             
         """
 
-        return ((self.in_degree(u) <= 1) and (self.out_degree(u) == 1))
+        return u in self.nodes() and ((self.in_degree(u) <= 1) and (self.out_degree(u) == 1))
 
     def is_labelled(self, u):
         """
@@ -325,7 +325,7 @@ class PhyloNetwork(DiGraph):
             >>> network = PhyloNetwork(eNewick="((3),(1,2))4;")
             >>> network.nodes()
             ... ['_6', '_5', '_4', '_3', '_2', '_1']
-            >>> map(network.is_labelled, network.nodes())
+            >>> list(map(network.is_labelled, network.nodes()))
             ... [True, True, False, True, False, True]
             >>> network.label('_1')
             ... '4'
@@ -345,7 +345,7 @@ class PhyloNetwork(DiGraph):
             ... ['_8', '_7', '_6', '_5', '_4', '_3', '_2', '_1']
             >>> network.leaves()
             ... ['_3', '_5', '_7', '_8']
-            >>> map(network.is_leaf, network.leaves())
+            >>> list(map(network.is_leaf, network.leaves()))
             ... [True, True, True, True]
             
         """
@@ -398,11 +398,11 @@ class PhyloNetwork(DiGraph):
            ... ['_6', '_5', '_4', '_3', '_2', '_1']
            >>> network.labelled_nodes()
            ... ['_6', '_5', '_4', '_3']
-           >>> map(network.label, network.labelled_nodes())
+           >>> list(map(network.label, network.labelled_nodes()))
            ... ['1', 'C', 'B', 'A']
            >>> network.unlabelled_nodes()
            ... ['_2', '_1']
-           >>> map(network.label, network.unlabelled_nodes())
+           >>> list(map(network.label, network.unlabelled_nodes()))
            ... [None, None]
            
         """
@@ -589,7 +589,7 @@ class PhyloNetwork(DiGraph):
             
         """
         nodes = self.nodes()[:]
-        nodes.sort(cmp=lambda u, v: total_cmp(self.mu(u), self.mu(v)))
+        nodes.sort(key=cmp_to_key(lambda u, v: total_cmp(self.mu(u), self.mu(v))))
         return nodes
 
     def _generate_new_id(self):
@@ -698,7 +698,7 @@ class PhyloNetwork(DiGraph):
             ... ['4', '3', '2']
             
         """
-        return sum(list(dfs_successors(self, u).values(), [])) + [u]
+        return sum(list(dfs_successors(self, u).values()), [])+ [u]
         # return dfs_successors(self,u)
 
     @memoize_method
@@ -858,7 +858,7 @@ class PhyloNetwork(DiGraph):
         """
         csa = self.CSA(tax1, tax2)
         # print(self,tax1,tax2,csa)
-        csa.sort(lambda x, y: cmp(self.height(x), self.height(y)))
+        csa.sort(key=self.height)
         return csa[0]
 
     @memoize_method
@@ -1061,7 +1061,7 @@ class PhyloNetwork(DiGraph):
                 for u in thislevel:
                     minims[u] = min([self._matching_representation[v] for \
                                      v in self.successors(u)])
-                thislevel.sort(lambda x, y: minims[x] - minims[y])
+                thislevel.sort(key = cmp_to_key(lambda x, y: minims[x] - minims[y]))
                 for k in range(len(thislevel)):
                     self._matching_representation[thislevel[k]] = i
                     i += 1
@@ -1077,7 +1077,7 @@ class PhyloNetwork(DiGraph):
             representation = self.matching_representation()
             for u in self.nodes():
                 children = self.successors(u)
-                children.sort(cmp=lambda u, v: representation[u] - representation[v])
+                children.sort(key=cmp_to_key(lambda u, v: representation[u] - representation[v]))
                 for i in range(len(children)):
                     permutation[representation[children[i]]] = representation[children[(i + 1) % len(children)]]
             self._matching_permutation = permutations.Permutation(permutation)

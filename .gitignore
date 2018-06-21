@@ -12,3 +12,4 @@ PhyloNetwork.egg-info/
 doc/
 venv
 docs/_build
+.pytest_cache
