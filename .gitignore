@@ -13,3 +13,4 @@ doc/
 venv
 docs/_build
 .pytest_cache
+.python-version
