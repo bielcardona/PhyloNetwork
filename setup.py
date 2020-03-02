@@ -1,15 +1,19 @@
-from setuptools import setup, find_packages
+from setuptools import setup
+import versioneer
+
 setup(name="phylonetwork",
-    version="1.4",
-    author="Gabriel Cardona, David Sanchez",
-    author_email="bielcardona@gmail.com, dscharles@gmail.com",
-    license="BSD",
-    keywords="phylogenetic trees networks",
-    packages=['phylonetwork'],
-    # package_dir = {'phylonetwork': 'src/phylonetwork'},
-    install_requires = [
-        'networkx>=1,<2',
-        'pyparsing',
-        'numpy'
-    ]
-)
+      version=versioneer.get_version(),
+      cmdclass=versioneer.get_cmdclass(),
+      author="Gabriel Cardona",
+      author_email="bielcardona@gmail.com",
+      license="BSD",
+      keywords="phylogenetic trees networks",
+      packages=['phylonetwork'],
+      # package_dir = {'phylonetwork': 'src/phylonetwork'},
+      python_requires='>=3.7',
+      install_requires=[
+          'networkx>=2,<3',
+          'pyparsing',
+          'numpy'
+      ]
+      )

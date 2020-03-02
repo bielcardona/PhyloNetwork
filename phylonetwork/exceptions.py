@@ -9,3 +9,10 @@ class TaxaException(Exception):
     Raised when trying to compare to networks with incompatible Taxa.
     """
     pass
+
+
+class NotAPhylogeneticNetwork(Exception):
+    """
+    Raised when the graph is not a Phylogenetic Network
+    """
+    pass
