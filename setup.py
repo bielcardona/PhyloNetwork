@@ -1,5 +1,10 @@
 from setuptools import setup
 import versioneer
+from os import path
+
+this_directory = path.abspath(path.dirname(__file__))
+with open(path.join(this_directory, 'README.md')) as f:
+    long_description = f.read()
 
 setup(name="phylonetwork",
       version=versioneer.get_version(),
@@ -16,5 +21,8 @@ setup(name="phylonetwork",
           'pyparsing',
           'numpy',
           'cached_property'
-      ]
+      ],
+      url='https://github.com/bielcardona/PhyloNetworks',
+      long_description=long_description,
+      long_description_content_type='text/markdown'
       )
