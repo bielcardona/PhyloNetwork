@@ -10,8 +10,9 @@ Welcome to PhyloNetwork's documentation!
    :maxdepth: 4
    :caption: Contents:
 
-   intro
+   demo
    modules
+
 
 
 Indices and tables
