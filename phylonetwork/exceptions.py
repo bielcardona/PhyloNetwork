@@ -1,3 +1,7 @@
+"""
+Custom exceptions for the phylonetwork package
+"""
+
 class MalformedNewickException(Exception):
     """
     Raised when creating a new network from a malformed eNewick string.
@@ -16,3 +20,8 @@ class NotAPhylogeneticNetwork(Exception):
     Raised when the graph is not a Phylogenetic Network
     """
     pass
+
+class NotImplemented(Exception):
+    """
+    Raised when a method/function is not yet implemented
+    """

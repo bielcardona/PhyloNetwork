@@ -1,3 +1,8 @@
+"""
+Module that generates phylogenetic trees either sequentially or randomly.
+The implemented random models are uniform and Yule distributions
+"""
+
 from . import PhylogeneticTree as PhyloTree
 from .tree_operations import push_and_hang, hold_and_hang, push_and_label, hold_and_label
 from .utils import random_weighted, product
@@ -10,9 +15,9 @@ import random
 
 def all_trees(taxa, binary=True):
     """
-    Returns a generator for trees with given taxa. 
+    Returns a sequential generator for all trees with leaves labeled by `taxa`.
 
-    If binary is True, then only binary trees will be generated; otherwise trees will
+    If `binary` is True, then only binary trees will be generated; otherwise trees will
     have internal nodes with arbitrary out-degree.
     """
     n = len(taxa)
@@ -34,15 +39,15 @@ def all_trees(taxa, binary=True):
 
 
 @lru_cache(maxsize=None)
-def number_of_trees_bin_global(n):
+def _number_of_trees_bin_global(n):
     """
-    Gives the number of binary phylogenetic trees on 'n' taxa.
+    Gives the number of binary phylogenetic trees on `n` taxa.
     """
     #return number_of_trees_bin_partial(n, n, 2 * n - 1)
     return product(range(2*n-3,1,-2))
 
 
-def random_tree_bin_global(taxa):
+def _random_tree_bin_global(taxa):
     """
     Returns a random binary phylogenetic tree over 'taxa'.
     """
@@ -50,7 +55,7 @@ def random_tree_bin_global(taxa):
     n = len(taxa)
     if n == 1:
         return PhyloTree(Newick=('%s;' % taxa[0]))
-    parent = random_tree_bin_global(taxa[0:-1])
+    parent = _random_tree_bin_global(taxa[0:-1])
     u = random.choice(list(parent.nodes()))
     newtree = push_and_hang(parent, u, taxa[-1])
     return newtree
@@ -59,7 +64,7 @@ def random_tree_bin_global(taxa):
 # Number of and random trees: not necessarily binary
 
 @lru_cache(maxsize=None)
-def number_of_trees_nobin_partial(n, N):
+def _number_of_trees_nobin_partial(n, N):
     """
     Gives the number of multifurcating phylogenetic trees on n taxa and N nodes.
     """
@@ -67,21 +72,21 @@ def number_of_trees_nobin_partial(n, N):
         return 0
     if n == 1:
         return 1
-    return (N - 2) * number_of_trees_nobin_partial(n - 1, N - 2) + \
-           (N - n) * number_of_trees_nobin_partial(n - 1, N - 1)
+    return (N - 2) * _number_of_trees_nobin_partial(n - 1, N - 2) + \
+           (N - n) * _number_of_trees_nobin_partial(n - 1, N - 1)
 
 
 @lru_cache(maxsize=None)
-def number_of_trees_nobin_global(n):
+def _number_of_trees_nobin_global(n):
     """
     Gives the number of multifurcating phylogenetic trees on n taxa.
     """
     if n == 1:
         return 1
-    return sum([number_of_trees_nobin_partial(n, N) for N in range(n + 1, 2 * n)])
+    return sum([_number_of_trees_nobin_partial(n, N) for N in range(n + 1, 2 * n)])
 
 
-def random_tree_nobin_partial(taxa, N):
+def _random_tree_nobin_partial(taxa, N):
     """
     Returns a (uniformly) random multifurcating phylogenetic tree over 'taxa' with 'N' nodes.
     """
@@ -91,19 +96,19 @@ def random_tree_nobin_partial(taxa, N):
     if n == 1:
         return PhyloTree(Newick=('%s;' % taxa[0]))
     choices = {
-        (push_and_hang, N - 2, 'nodes'): (N - 2) * number_of_trees_nobin_partial(n - 1, N - 2),
+        (push_and_hang, N - 2, 'nodes'): (N - 2) * _number_of_trees_nobin_partial(n - 1, N - 2),
         (hold_and_hang, N - 1, 'interior_nodes'):
-            (N - n) * number_of_trees_nobin_partial(n - 1, N - 1)
+            (N - n) * _number_of_trees_nobin_partial(n - 1, N - 1)
     }
     (operation, Np, candidates_method) = random_weighted(choices)
-    parent = random_tree_nobin_partial(taxa[0:-1], Np)
+    parent = _random_tree_nobin_partial(taxa[0:-1], Np)
     candidates = list(getattr(parent, candidates_method))
     u = random.choice(candidates)
     newtree = operation(parent, u, taxa[-1])
     return newtree
 
 
-def random_tree_nobin_global(taxa):
+def _random_tree_nobin_global(taxa):
     """
     Returns a (uniformly) random multifurcating phylogenetic tree over 'taxa'.
     """
@@ -111,18 +116,38 @@ def random_tree_nobin_global(taxa):
     if n == 1:
         return PhyloTree(Newick=('%s;' % taxa[0]))
     choices = {
-        N: number_of_trees_nobin_partial(n, N) for N in range(n + 1, 2 * n)
+        N: _number_of_trees_nobin_partial(n, N) for N in range(n + 1, 2 * n)
         }
     N = random_weighted(choices)
-    return random_tree_nobin_partial(taxa, N)
+    return _random_tree_nobin_partial(taxa, N)
+
+
+def number_of_trees(n, binary=True):
+    """
+    Returns the number of phylogenetic trees with `n` labelled leaves.
+    If `binary` is True, only  binary trees are counted.
+    """
+    if binary:
+        return _number_of_trees_bin_global(n)
+    else:
+        return _number_of_trees_nobin_global(n)
 
 
 def random_uniform_tree_generator(taxa, binary=True):
-    f = random_tree_bin_global if binary else random_tree_nobin_global
+    """
+    Returns a random uniform generator of trees with leaves labeled by `taxa`.
+
+    If `binary` is True, then only binary trees will be generated; otherwise trees will
+    have internal nodes with arbitrary out-degree.
+    """
+    f = _random_tree_bin_global if binary else _random_tree_nobin_global
     while True:
         yield f(taxa)
 
 def random_yule_tree_generator(taxa):
+    """
+    Returns a random Yule generator of binary trees with leaves labeled by `taxa`.
+    """
     ntaxa = len(taxa)
     while True:
         if ntaxa == 0:

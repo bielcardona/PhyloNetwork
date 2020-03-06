@@ -45,14 +45,6 @@ phylonetwork.tree_operations module
     :undoc-members:
     :show-inheritance:
 
-phylonetwork.tree_shapes module
--------------------------------
-
-
-.. automodule:: phylonetwork.tree_shapes
-    :members:
-    :undoc-members:
-    :show-inheritance:
 
 phylonetwork.exceptions module
 ------------------------------

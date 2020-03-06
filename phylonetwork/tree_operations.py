@@ -1,3 +1,7 @@
+"""
+Auxiliary constructors for phylogenetic trees.
+"""
+
 import copy
 
 def push_and_hang(net,u,newtaxa):

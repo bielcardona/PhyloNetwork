@@ -1,3 +1,7 @@
+"""
+Generation of random binary tree-child time-consistent networks under a Yule-like model.
+"""
+
 from phylonetwork import NetworkShape, PhylogeneticNetwork
 import random
 from itertools import combinations

@@ -1,3 +1,7 @@
+"""
+Module for working with tree shapes (beta!)
+"""
+
 from collections import Counter
 from itertools import combinations_with_replacement
 from networkx import union

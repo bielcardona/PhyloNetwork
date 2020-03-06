@@ -1,3 +1,7 @@
+"""
+Main module of the package. Defines classes and methods for working with phylogenetic trees and networks.
+"""
+
 import networkx as nx
 import numpy
 from networkx import DiGraph
@@ -470,6 +474,13 @@ class PhylogeneticNetwork(NetworkShape):
 
 
 class PhylogeneticTree(PhylogeneticNetwork):
+    """
+    Class for working with phylogenetic trees.
+
+    Implements some methods that are not defined for networks (or are easier to implement on trees).
+
+    If `Newick` is given, it will be populated.
+    """
 
     def __init__(self, Newick=None, **kwargs):
         super().__init__(eNewick=Newick, **kwargs)
@@ -494,35 +505,46 @@ class PhylogeneticTree(PhylogeneticNetwork):
         return self.LCA_dict[u, v]
 
     def nodal_matrix(self):
-        pass
+        """Not implemented"""
+        raise exceptions.NotImplemented
 
     def cophenetic_matrix(self):
-        pass
+        """Not implemented"""
+        raise exceptions.NotImplemented
 
     def __repr__(self):
         return f"PhylogeneticTree(eNewick = {self.eNewick()})"
 
 
 class LGTNetwork(PhylogeneticNetwork):
-    pass
+    """Class for representing LGT networks (Not yet implemented)"""
+
+    def __init__(self, eNewick=None, **kwargs):
+        super().__init__(eNewick=eNewick, **kwargs)
 
     def _walk(self, parsed, ignore_prefix=None):
-        pass
+        """Not implemented"""
+        raise exceptions.NotImplemented
 
     def principal_edges(self):
-        pass
+        """Not implemented"""
+        raise exceptions.NotImplemented
 
     def secondary_edges(self):
-        pass
+        """Not implemented"""
+        raise exceptions.NotImplemented
 
     def principal_subtree(self, simplify=True):
-        pass
+        """Not implemented"""
+        raise exceptions.NotImplemented
 
     def secondary_subtrees(self, simplify=True):
-        pass
+        """Not implemented"""
+        raise exceptions.NotImplemented
 
     def draw(self):
-        pass
+        """Not implemented"""
+        raise exceptions.NotImplemented
 
 
 from ._version import get_versions

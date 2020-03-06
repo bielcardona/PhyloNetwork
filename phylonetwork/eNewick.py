@@ -1,3 +1,7 @@
+"""
+Helper module that creates a parser of eNewick strings.
+"""
+
 from pyparsing import Combine, Optional, Literal, CaselessLiteral, \
     Word, alphanums, alphas, alphas8bit, \
     nums, oneOf, Group, Dict, Forward, \
@@ -62,6 +66,7 @@ def makeeNewickParser():
 
     return tree.parseString
 #    return hyblabel.parseString
+
 
 eNewickParser = makeeNewickParser()
 
