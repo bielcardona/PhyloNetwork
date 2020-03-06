@@ -14,6 +14,7 @@ setup(name="phylonetwork",
       install_requires=[
           'networkx>=2,<3',
           'pyparsing',
-          'numpy'
+          'numpy',
+          'cached_property'
       ]
       )
