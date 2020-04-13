@@ -466,8 +466,8 @@ class PhylogeneticNetwork(NetworkShape):
         from networkx.drawing.nx_agraph import graphviz_layout
         pos = graphviz_layout(self, prog='dot')
         #nx.draw(self, pos)
-        nx.draw_networkx_nodes(self, pos, self.tree_nodes, node_size=200,)
-        nx.draw_networkx_nodes(self, pos, self.reticulations, node_size=150, node_shape='s')
+        nx.draw_networkx_nodes(self, pos, self.tree_nodes, node_size=200, node_color='#57f542')
+        nx.draw_networkx_nodes(self, pos, self.reticulations, node_size=150, node_shape='s', node_color='#57f542')
         nx.draw_networkx_edges(self, pos)
         nx.draw_networkx_labels(self, pos, labels=self.labeling_dict)
         plt.show()
