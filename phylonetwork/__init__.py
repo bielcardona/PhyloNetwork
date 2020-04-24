@@ -360,6 +360,7 @@ class PhylogeneticNetwork(NetworkShape):
                     else:
                         visited.add(x)
                         children.append(result[x])
+                children.sort()
                 internal = ','.join(children)
                 mylabel = self.nodes[u].get('label', '')
                 if self.is_reticulation(u):
