@@ -13,6 +13,11 @@ import random
 
 # Sequential generator
 
+def tree_with_single_taxon(taxon):
+    t = PhyloTree()
+    t.add_node('_1', label=taxon)
+    return t
+
 def all_trees(taxa, binary=True):
     """
     Returns a sequential generator for all trees with leaves labeled by `taxa`.
@@ -22,7 +27,7 @@ def all_trees(taxa, binary=True):
     """
     n = len(taxa)
     if n == 1:
-        yield PhyloTree(Newick=('%s;' % taxa[0]))
+        yield tree_with_single_taxon(taxa[0])
         return
     taxon = taxa[-1]
     parent_taxa = taxa[0:-1]
@@ -54,7 +59,7 @@ def _random_tree_bin_global(taxa):
 
     n = len(taxa)
     if n == 1:
-        return PhyloTree(Newick=('%s;' % taxa[0]))
+        return tree_with_single_taxon(taxa[0])
     parent = _random_tree_bin_global(taxa[0:-1])
     u = random.choice(list(parent.nodes()))
     newtree = push_and_hang(parent, u, taxa[-1])
@@ -94,7 +99,7 @@ def _random_tree_nobin_partial(taxa, N):
     if (N < n) or (n < 0) or (N >= 2 * n):
         return None
     if n == 1:
-        return PhyloTree(Newick=('%s;' % taxa[0]))
+        return tree_with_single_taxon(taxa[0])
     choices = {
         (push_and_hang, N - 2, 'nodes'): (N - 2) * _number_of_trees_nobin_partial(n - 1, N - 2),
         (hold_and_hang, N - 1, 'interior_nodes'):
@@ -114,7 +119,7 @@ def _random_tree_nobin_global(taxa):
     """
     n = len(taxa)
     if n == 1:
-        return PhyloTree(Newick=('%s;' % taxa[0]))
+        return tree_with_single_taxon(taxa[0])
     choices = {
         N: _number_of_trees_nobin_partial(n, N) for N in range(n + 1, 2 * n)
         }
@@ -153,7 +158,7 @@ def random_yule_tree_generator(taxa):
         if ntaxa == 0:
             yield None
         if ntaxa == 1:
-            yield PhyloTree(Newick=taxa[0] + ";")
+            yield tree_with_single_taxon(taxa[0])
         tree = PhyloTree()
         u = tree.new_node()
         v = tree.new_node()
