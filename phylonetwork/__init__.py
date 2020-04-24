@@ -9,10 +9,8 @@ import pyparsing
 from .eNewick import eNewickParser
 from .exceptions import *
 from itertools import combinations
-try:
-    from functools import cached_property
-except ImportError:
-    from cached_property import cached_property
+
+from cached_property import cached_property
 
 import logging
 logger = logging.getLogger(__name__)
@@ -151,11 +149,13 @@ class NetworkShape(DiGraph):
 
     def clear_cache(self):
         """Clears the cache of all computed properties"""
-        for x, v in self.__class__.__dict__.items():
-            if v.__class__ is cached_property:
-                logger.info(f'found chached property {x}...')
+        names = dir(self.__class__)
+        for name in names:
+            attr = getattr(self.__class__, name)
+            if attr.__class__ is cached_property:
+                logger.info(f'found chached property {name}...')
                 try:
-                    delattr(self, x)
+                    delattr(self, name)
                     logger.info(f'deleted!')
                 except:
                     logger.info(f'could not delete!')
