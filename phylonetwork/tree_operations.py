@@ -16,7 +16,8 @@ def push_and_hang(net,u,newtaxa):
          / \        / \
     """
     parents=net.predecessors(u)
-    newnet=copy.deepcopy(net)
+    # newnet=copy.deepcopy(net)
+    newnet = net.copy()
     w=newnet._generate_new_id()
     for parent in parents:
         newnet.remove_edge(parent,u)
@@ -25,7 +26,7 @@ def push_and_hang(net,u,newtaxa):
     newleaf=newnet._generate_new_id()
     newnet.add_edge(w,newleaf)
     newnet.nodes[newleaf]['label']=newtaxa
-    newnet.clear_cache()
+    # newnet.clear_cache()
     return newnet
 
 def hold_and_hang(net,u,newtaxa):
@@ -39,11 +40,12 @@ def hold_and_hang(net,u,newtaxa):
           /|         /|\
                         \newtaxa
     """
-    newnet=copy.deepcopy(net)
+    # newnet=copy.deepcopy(net)
+    newnet = net.copy()
     newleaf = newnet._generate_new_id()
     newnet.add_edge(u,newleaf)
     newnet.nodes[newleaf]['label']=newtaxa
-    newnet.clear_cache()
+    # newnet.clear_cache()
     return newnet
 
 def push_and_label(net,u,newtaxa):
@@ -59,14 +61,15 @@ def push_and_label(net,u,newtaxa):
           / \        / \
     """
     parents=net.predecessors(u)
-    newnet=copy.deepcopy(net)
+    # newnet=copy.deepcopy(net)
+    newnet = net.copy()
     newnode = newnet._generate_new_id()
     for parent in parents:
         newnet.remove_edge(parent,u)
         newnet.add_edge(parent,newnode)
     newnet.add_edge(newnode,u)
     newnet.nodes[newnode]['label']=newtaxa
-    newnet.clear_cache()
+    # newnet.clear_cache()
     return newnet
 
 def hold_and_label(net,u,newtaxa):
@@ -81,7 +84,8 @@ def hold_and_label(net,u,newtaxa):
     """
     if net.is_labeled(u):
         return
-    newnet=copy.deepcopy(net)
+    # newnet=copy.deepcopy(net)
+    newnet = net.copy()
     newnet.nodes[u]['label']=newtaxa
-    newnet.clear_cache()
+    # newnet.clear_cache()
     return newnet
