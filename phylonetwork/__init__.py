@@ -9,8 +9,8 @@ import pyparsing
 from .eNewick import eNewickParser
 from .exceptions import *
 from itertools import combinations
-
 from cached_property import cached_property
+import re
 
 import logging
 logger = logging.getLogger(__name__)
@@ -216,9 +216,9 @@ class PhylogeneticNetwork(NetworkShape):
 
     """
 
-    def __init__(self, eNewick=None, **kwargs):  # noqa
+    def __init__(self, eNewick=None, sequence=None, mu_data=None, **kwargs):  # noqa
         """
-        Initializes a PhylogeneticNetwork instance. If `eNewick` is given, it will be populated.
+        Initializes a PhylogeneticNetwork instance. If `eNewick`, `sequence` or `mu_data` is given, it will be populated.
 
         The (e)Newick features implemented are:
 
@@ -228,8 +228,13 @@ class PhylogeneticNetwork(NetworkShape):
         """
         super().__init__(kwargs)
         self._last_id = 0
+        self.__cached_taxa = set()
         if eNewick is not None:
             self._from_eNewick(eNewick)
+        elif sequence is not None:
+            self._from_sequence(sequence)
+        elif mu_data is not None:
+            self._from_mu_data(mu_data)
 
     @staticmethod
     def _process_metadata(string):
@@ -293,6 +298,89 @@ class PhylogeneticNetwork(NetworkShape):
         self._walk(parsed, ignore_prefix=ignore_prefix)
         self.cache = {}
 
+    def _from_sequence(self, sequence):
+        """For private use, build network from a given reducible sequence."""
+        if type(sequence) == str:
+            sequence = self._seq_strarr(sequence)
+
+        # add pairs in reversed order
+        for i in range(len(sequence) - 1, -1, -1):
+            self.add_pair(sequence[i])
+
+    def _from_mu_data(self, mu_data):
+        """For private use, build an orhcard network from extended mu-data."""
+        if not mu_data:
+            raise Exception("No mu-data provided.")
+        if len(mu_data) == 1:
+            # trivial network
+            leaf = mu_data[0].index(1)
+            root = self.new_node()
+            self.root = root
+            self.nodes[root]['label'] = str(leaf)
+            return
+        S = []
+        mu_data = [list(mu) for mu in mu_data]
+        lenmu = len(mu_data[0])
+        mu_root = max(mu_data)
+        while mu_data:
+            found = False
+            for mu in mu_data:
+                s = sum(mu)
+                if s == 2:
+                    p = tuple([i for i in range(1, lenmu) if mu[i] == 1])
+                    S.append(p)
+                    found = True
+                    # reduce p=(i,j)
+                    try:
+                        mu_data.remove(self.delta([p[0], p[1]], lenmu))
+                        mu_data.remove(self.delta([p[0]], lenmu))
+                    except:
+                        pass
+                    for m in mu_data:
+                        m[p[0]] = 0
+                    break
+                elif s == 3 and mu[0] == 1:
+                    # ret cherry
+                    p = tuple([i for i in range(1, lenmu) if mu[i] == 1])
+                    if mu_root[p[0]] < mu_root[p[1]]:
+                        p = (p[1], p[0])
+                    S.append(p)
+                    found = True
+                    # reduce p=(i,j)
+                    try:
+                        mu_data.remove(self.delta([0, p[0], p[1]], lenmu))
+                    except:
+                        pass
+                    for m in mu_data:
+                        m[0] -= m[p[0]]
+                        m[p[0]] -= m[p[1]]
+                    break
+            if not found:
+                raise Exception("Extended mu-data doesn't generate an orchard network.")
+        self._from_sequence(S)
+
+    def _seq_strarr(self, seq):
+        """Converts a string sequence to array."""
+        seq = seq.replace(" ", "")
+        pairs = re.findall("\(\d+\,\d+\)", seq)
+        r = []
+        for p in pairs:
+            if p:
+                coords = p[1:-1].split(',')
+                r.append((int(coords[0]), int(coords[1])))
+        return r
+
+    def _seq_arrstr(self, seq):
+        """Converts an array sequence to string."""
+        return "".join([f"({pair[0]},{pair[1]})" for pair in seq])
+
+    def delta(self, coords, total):
+        """Creates a vector with 1 in the coords specified and 0 elsewhere."""
+        vect = [0 for _ in range(total)]
+        for c in coords:
+            vect[c] = 1
+        return vect
+
     @cached_property
     def labeling_dict(self):
         """Dict that maps nodes to labels"""
@@ -307,6 +395,25 @@ class PhylogeneticNetwork(NetworkShape):
     def ordered_taxa(self):
         """Ordered list of taxa"""
         return sorted(self.taxa)
+
+    @property
+    def cached_taxa(self):
+        """Set of cached labels of taxa."""
+        self.__cached_taxa = self.__cached_taxa.union(self.taxa)
+        return self.__cached_taxa
+
+    @property
+    def ordered_cached_taxa(self):
+        """Set of cached labels of taxa."""
+        return sorted(self.cached_taxa)
+
+    def set_cached_taxa(self, taxa):
+        """Sets the default cached_taxa."""
+        self.__cached_taxa = taxa
+        
+    def clear_cached_taxa(self):
+        """Clears the cached taxa to remove from extend mu-data."""
+        self.__cached_taxa = set()
 
     def is_labeled(self, u):
         """Tests if `u` is labeled"""
@@ -397,6 +504,32 @@ class PhylogeneticNetwork(NetworkShape):
         return self.mu_dict[u]
 
     @cached_property
+    def emu_dict(self):
+        """Dict that maps each node to its extended mu-vector"""
+        data = {}
+        for u in self.bottom_to_top_nodes:
+            if self.is_leaf(u):
+                data[u] = numpy.zeros(len(self.cached_taxa) + 1, int)
+            else:
+                data[u] = sum([data[v] for v in self.successors(u)])
+            if self.is_labeled(u):
+                pos = self.ordered_cached_taxa.index(self.label(u)) + 1
+                data[u][pos] += 1
+            elif self.is_reticulation(u):
+                data[u][0] += 1
+        return data
+
+    @cached_property
+    def emu_data(self):
+        """Dict corresponding to the extended mu-data (no reticulations)."""
+        data = self.emu_dict
+        return {key: data[key] for key in data if not self.is_reticulation(key)}
+
+    def emu(self, u):
+        """Returns the extended mu-vector of `u`"""
+        return self.emu_dict[u]
+
+    @cached_property
     def cluster_dict(self):
         """Dict that maps each node to its cluster"""
         cls = {}
@@ -459,6 +592,165 @@ class PhylogeneticNetwork(NetworkShape):
             if not any([self.is_tree_node(v) for v in self.successors(u)]):
                 return False
         return True
+
+    def parent(self, u):
+        """Returns one parent of `u` or '' if it's the root."""
+        if self.root == u:
+            return ''
+        return list(self.predecessors(u))[0]
+
+    def cherry(self, a, b):
+        """Set this network as the cherry (a, b)."""
+        self._last_id = 0
+        self.clear()
+        self.clear_cache()
+        root, u1, u2 = self.new_node(), self.new_node(), self.new_node()
+        self.root = root
+        self.add_edge(root, u1)
+        self.add_edge(root, u2)
+        self.nodes[u1]['label'] = str(a)
+        self.nodes[u2]['label'] = str(b)
+
+    def add_pair(self, pair):
+        """Adds the (reticulated) cherry pair=`(i,j)`."""
+        if len(self.nodes) <= 1:
+            self.cherry(pair[0], pair[1])
+        else:
+            if str(pair[1]) not in self.cached_taxa:
+                raise Exception(f"Second coordinate of pair ({pair[0]},{pair[1]}) not in taxa")
+            if str(pair[0]) in self.cached_taxa:
+                # reticulated
+                l1 = self.node_with_label(str(pair[0]))
+                l2 = self.node_with_label(str(pair[1]))
+                p1 = self.parent(l1)
+                p2 = self.parent(l2)
+                t = self.new_node()
+                r = self.new_reticulation_node()
+
+                self.remove_edge(p1, l1)
+                self.remove_edge(p2, l2)
+
+                self.add_edge(p1, r)
+                self.add_edge(r, l1)
+
+                self.add_edge(p2, t)
+                self.add_edge(t, l2)
+                self.add_edge(t, r)
+            else:
+                # cherry
+                l1 = self.node_with_label(str(pair[1]))
+                p = self.parent(l1)
+                t = self.new_node()
+                l2 = self.new_node()
+
+                self.nodes[l2]['label'] = str(pair[0])
+                self.remove_edge(p, l1)
+
+                self.add_edge(p, t)
+                self.add_edge(t, l1)
+                self.add_edge(t, l2)
+            self.clear_cache()
+
+    def reduce_pair(self, pair):
+        """Reduces the pair=`(i,j)`"""
+        if pair not in self.reducible_pairs:
+            raise Exception("Not a reducible pair")
+
+        p = (str(pair[0]), str(pair[1]))
+        l1 = self.node_with_label(p[0])
+        p1 = self.parent(l1)
+        l2 = self.node_with_label(p[1])
+        p2 = self.parent(l2)
+
+        if self.is_reticulation(p1):
+            # reduce reticulated cherry
+            self.remove_edge(p2, p1)
+            self.remove_node_and_reconnect(p1)
+            self.remove_node_and_reconnect(p2)
+            pass
+        else:
+            # reduce cherry
+            self.remove_node_and_reconnect(l1)
+            self.remove_node_and_reconnect(p2)
+            pass
+        self.clear_cache()
+
+    def reduce_sequence(self, seq):
+        """Reduces by the given sequence."""
+        if type(seq) == str:
+            seq = self._seq_strarr(seq)
+        for pair in seq:
+            self.reduce_pair(pair)
+
+    def add_sequence(self, seq):
+        """Adds by the given sequence."""
+        if type(seq) == str:
+            seq = self._seq_strarr(seq)
+        for pair in reversed(seq):
+            self.add_pair(pair)
+
+    @cached_property
+    def reducible_pairs(self):
+        """List of the reducible pairs."""
+        result = []
+        for mu in self.emu_data.values():
+            s = sum(mu)
+            if s == 2:
+                result.append(tuple([i for i in range(1, len(self.cached_taxa) + 1) if mu[i] == 1]))
+            elif s == 3 and mu[0] == 1:
+                # ret cherry
+                x = tuple([i for i in range(1, len(self.cached_taxa) + 1) if mu[i] == 1])
+                if self.emu(self.root)[x[0]] < self.emu(self.root)[x[1]]:
+                    x = (x[1], x[0])
+                result.append(x)
+        return result
+
+    @cached_property
+    def smallest_pair(self):
+        """Returns the smallest reducible pair."""
+        return None if not self.reducible_pairs else min(self.reducible_pairs)
+
+    @cached_property
+    def all_sequences_array(self):
+        """Returns a list of all the CPS."""
+        def reduce_recursive(obj):
+            """Returns all CPS for the network obj."""
+            if len(obj.taxa) <= 1:
+                return [[]]
+            red = []
+            for s in obj.reducible_pairs:
+                copy = obj.copy()
+                copy.set_cached_taxa(obj.cached_taxa)
+                copy.reduce_pair(s)
+                for x in reduce_recursive(copy):
+                    red.append([s] + x)
+            return red
+        return reduce_recursive(self)
+
+    @cached_property
+    def smallest_sequence_array(self):
+        """Returns the smallest reducible sequence, if any."""
+        return min(self.all_sequences_array)
+
+    @cached_property
+    def all_sequences(self):
+        """Returns a list of all the CPS."""
+        return [self._seq_arrstr(seq) for seq in self.all_sequences_array]
+
+    @cached_property
+    def smallest_sequence(self):
+        """Returns the smallest reducible sequence, if any."""
+        return self._seq_arrstr(self.smallest_sequence_array)
+
+    def is_orchard(self):
+        """Tests if the network is orchard."""
+        return self.smallest_sequence is not None
+
+    def distance(self, other):
+        """Returns the distance between self and other."""
+        mu1 = [list(mu) for mu in self.emu_data.values()]
+        mu2 = [list(mu) for mu in other.emu_data.values()]
+        return len([mu for mu in mu1 + mu2 if mu not in mu1 or mu not in mu2])
 
     def draw(self):
         """Plots the network with labels"""
