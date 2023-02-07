@@ -11,6 +11,39 @@ from functools import lru_cache
 import random
 
 
+# Generation using cached trees
+all_binary_trees_cached = {}
+
+def all_binary_trees_by_num_taxa(num_taxa):
+    if num_taxa in all_binary_trees_cached:
+        return all_binary_trees_cached[num_taxa]
+    if num_taxa == 1:
+        all_binary_trees_cached[0] = [tree_with_single_taxon('0')]
+        return all_binary_trees_cached[0]
+    taxon = str(num_taxa - 1)
+    trees = []
+    parents = all_binary_trees_by_num_taxa(num_taxa - 1)
+    for parent in parents:
+        for u in parent.nodes:
+            newtree = push_and_hang(parent, u, taxon)
+            _ = newtree.lookup_label_dict
+            trees.append(newtree)
+    all_binary_trees_cached[num_taxa] = trees
+    return trees
+
+def relabel(tree, lookup_dict, taxa):
+    for i, taxon in enumerate(taxa):
+        u = lookup_dict[i]
+        tree.nodes[u]['label'] = taxon
+
+def all_binary_trees_by_taxa(taxa):
+    trees = all_binary_trees_by_num_taxa(len(taxa))
+    for tree in trees:
+        newtree = tree.copy()
+        relabel(newtree, tree.lookup_label_dict, taxa)
+        yield newtree
+# End of generator usign cached trees
+
 # Sequential generator
 
 def tree_with_single_taxon(taxon):
