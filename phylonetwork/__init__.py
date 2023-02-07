@@ -9,8 +9,10 @@ import pyparsing
 from .eNewick import eNewickParser
 from .exceptions import *
 from itertools import combinations
-from cached_property import cached_property
+from .utils import clearable_cached_property
+from .utils import clear_cache as clearable_cached_property_clear_cache
 import re
+# from cached_property import cached_property
 
 import logging
 logger = logging.getLogger(__name__)
@@ -66,12 +68,12 @@ class NetworkShape(DiGraph):
         """Tests if `u` is a leaf of the network"""
         return self.out_degree(u) == 0  # noqa
 
-    @cached_property
+    @clearable_cached_property
     def leaves(self):
         """The set of all leaves of the network"""
         return set([u for u in self.nodes if self.is_leaf(u)])
 
-    @cached_property
+    @clearable_cached_property
     def interior_nodes(self):
         """The set of all interior (not leaves) nodes of the network"""
         return set([u for u in self.nodes if not self.is_leaf(u)])
@@ -80,7 +82,7 @@ class NetworkShape(DiGraph):
         """Tests if node `u` is a reticulation (indeg >= 2)"""
         return self.in_degree(u) > 1  # noqa
 
-    @cached_property
+    @clearable_cached_property
     def reticulations(self):
         """The set of all reticulations"""
         return set([u for u in self.nodes if self.is_reticulation(u)])
@@ -89,7 +91,7 @@ class NetworkShape(DiGraph):
         """Tests if node `u` is a tree node (indeg <= 1)"""
         return self.in_degree(u) <= 1  # noqa
 
-    @cached_property
+    @clearable_cached_property
     def tree_nodes(self):
         """The set of all tree nodes"""
         return set([u for u in self.nodes if self.is_tree_node(u)])
@@ -98,12 +100,12 @@ class NetworkShape(DiGraph):
         """Tests if `u` is a root"""
         return self.in_degree(u) == 0  # noqa
 
-    @cached_property
+    @clearable_cached_property
     def roots(self):
         """The set of all roots of the network"""
         return set([u for u in self.nodes if self.is_root(u)])
 
-    @cached_property
+    @clearable_cached_property
     def root(self):
         """Root of the network. Raises exception if no root or >1 roots"""
         if len(self.roots) != 1:
@@ -115,27 +117,27 @@ class NetworkShape(DiGraph):
         """Tests if `u` is elementary"""
         return self.in_degree(u) <= 1 and self.out_degree(u) == 1  # noqa
 
-    @cached_property
+    @clearable_cached_property
     def elementary_nodes(self):
         """The set of elementary nodes"""
         return set([u for u in self.nodes if self.is_elementary(u)])
 
-    @cached_property
+    @clearable_cached_property
     def bottom_to_top_nodes(self):
         """List of nodes ordered from bottom to top (last node is the root)"""
         return list(reversed(list(nx.topological_sort(self))))
 
-    @cached_property
+    @clearable_cached_property
     def top_to_bottom_nodes(self):
         """List of nodes ordered from top to bottom (first node is the root)"""
         return list(nx.topological_sort(self))
 
-    @cached_property
+    @clearable_cached_property
     def depths(self):
         """Dict associating each node to its depth (distance to root)"""
         return nx.single_source_shortest_path_length(self, self.root)
 
-    @cached_property
+    @clearable_cached_property
     def heights(self):
         """Dict associating each node to its height (max. distance to a leaf)"""
         logger.info('computing heights')
@@ -149,16 +151,7 @@ class NetworkShape(DiGraph):
 
     def clear_cache(self):
         """Clears the cache of all computed properties"""
-        names = dir(self.__class__)
-        for name in names:
-            attr = getattr(self.__class__, name)
-            if attr.__class__ is cached_property:
-                logger.info(f'found chached property {name}...')
-                try:
-                    delattr(self, name)
-                    logger.info(f'deleted!')
-                except:
-                    logger.info(f'could not delete!')
+        clearable_cached_property_clear_cache(self)
 
     def remove_node_and_reconnect(self, u, clear_cache=False):
         """Removes node `u` and connects each of its parents to each of its children"""
@@ -381,7 +374,7 @@ class PhylogeneticNetwork(NetworkShape):
             vect[c] = 1
         return vect
 
-    @cached_property
+    @clearable_cached_property
     def labeling_dict(self):
         """Dict that maps nodes to labels"""
         return nx.get_node_attributes(self, 'label')
@@ -423,17 +416,17 @@ class PhylogeneticNetwork(NetworkShape):
         """Returns the label of `u` (or None if it is not labeled)"""
         return self.labeling_dict.get(u, None)
 
-    @cached_property
+    @clearable_cached_property
     def labeled_nodes(self):
         """Set of all labeled nodes"""
         return set([u for u in self.nodes if self.is_labeled(u)])
 
-    @cached_property
+    @clearable_cached_property
     def unlabeled_nodes(self):
         """Set of all unlabeled nodes"""
         return set([u for u in self.nodes if not self.is_labeled(u)])
 
-    @cached_property
+    @clearable_cached_property
     def lookup_label_dict(self):
         """Dict that maps each label to the corresponding node"""
         return {v: k for k, v in self.labeling_dict.items()}
@@ -485,7 +478,7 @@ class PhylogeneticNetwork(NetworkShape):
     def __repr__(self):
         return f"PhylogeneticNetwork(eNewick = {self.eNewick()})"
 
-    @cached_property
+    @clearable_cached_property
     def mu_dict(self):
         """Dict that maps each node to its mu-vector"""
         mus = {}
@@ -503,7 +496,7 @@ class PhylogeneticNetwork(NetworkShape):
         """Returns the mu-vector of `u`"""
         return self.mu_dict[u]
 
-    @cached_property
+    @clearable_cached_property
     def emu_dict(self):
         """Dict that maps each node to its extended mu-vector"""
         data = {}
@@ -519,7 +512,7 @@ class PhylogeneticNetwork(NetworkShape):
                 data[u][0] += 1
         return data
 
-    @cached_property
+    @clearable_cached_property
     def emu_data(self):
         """Dict corresponding to the extended mu-data (no reticulations)."""
         data = self.emu_dict
@@ -529,7 +522,7 @@ class PhylogeneticNetwork(NetworkShape):
         """Returns the extended mu-vector of `u`"""
         return self.emu_dict[u]
 
-    @cached_property
+    @clearable_cached_property
     def cluster_dict(self):
         """Dict that maps each node to its cluster"""
         cls = {}
@@ -548,7 +541,7 @@ class PhylogeneticNetwork(NetworkShape):
         """Returns the cluster of `u`"""
         return self.cluster_dict[u]
 
-    @cached_property
+    @clearable_cached_property
     def nested_label_dict(self):
         """Dict that maps each node to its nested label representation"""
         result = {}
