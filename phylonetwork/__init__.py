@@ -312,7 +312,7 @@ class PhylogeneticNetwork(NetworkShape):
             self.nodes[root]['label'] = str(leaf)
             return
         S = []
-        mu_data = [list(mu) for mu in mu_data]
+        mu_data = [list(mu) for mu in mu_data if sum(mu) > 1]
         lenmu = len(mu_data[0])
         mu_root = max(mu_data)
         while mu_data:
@@ -325,8 +325,7 @@ class PhylogeneticNetwork(NetworkShape):
                     found = True
                     # reduce p=(i,j)
                     try:
-                        mu_data.remove(self.delta([p[0], p[1]], lenmu))
-                        mu_data.remove(self.delta([p[0]], lenmu))
+                        mu_data.remove(mu)
                     except:
                         pass
                     for m in mu_data:
@@ -341,7 +340,7 @@ class PhylogeneticNetwork(NetworkShape):
                     found = True
                     # reduce p=(i,j)
                     try:
-                        mu_data.remove(self.delta([0, p[0], p[1]], lenmu))
+                        mu_data.remove(mu)
                     except:
                         pass
                     for m in mu_data:
@@ -611,7 +610,7 @@ class PhylogeneticNetwork(NetworkShape):
         else:
             if str(pair[1]) not in self.cached_taxa:
                 raise Exception(f"Second coordinate of pair ({pair[0]},{pair[1]}) not in taxa")
-            if str(pair[0]) in self.cached_taxa:
+            if str(pair[0]) in self.taxa:
                 # reticulated
                 l1 = self.node_with_label(str(pair[0]))
                 l2 = self.node_with_label(str(pair[1]))
@@ -682,7 +681,7 @@ class PhylogeneticNetwork(NetworkShape):
         for pair in reversed(seq):
             self.add_pair(pair)
 
-    @cached_property
+    @clearable_cached_property
     def reducible_pairs(self):
         """List of the reducible pairs."""
         result = []
@@ -698,12 +697,12 @@ class PhylogeneticNetwork(NetworkShape):
                 result.append(x)
         return result
 
-    @cached_property
+    @clearable_cached_property
     def smallest_pair(self):
         """Returns the smallest reducible pair."""
         return None if not self.reducible_pairs else min(self.reducible_pairs)
 
-    @cached_property
+    @clearable_cached_property
     def all_sequences_array(self):
         """Returns a list of all the CPS."""
         def reduce_recursive(obj):
@@ -720,17 +719,17 @@ class PhylogeneticNetwork(NetworkShape):
             return red
         return reduce_recursive(self)
 
-    @cached_property
+    @clearable_cached_property
     def smallest_sequence_array(self):
         """Returns the smallest reducible sequence, if any."""
         return min(self.all_sequences_array)
 
-    @cached_property
+    @clearable_cached_property
     def all_sequences(self):
         """Returns a list of all the CPS."""
         return [self._seq_arrstr(seq) for seq in self.all_sequences_array]
 
-    @cached_property
+    @clearable_cached_property
     def smallest_sequence(self):
         """Returns the smallest reducible sequence, if any."""
         return self._seq_arrstr(self.smallest_sequence_array)
@@ -771,7 +770,7 @@ class PhylogeneticTree(PhylogeneticNetwork):
     def __init__(self, Newick=None, **kwargs):
         super().__init__(eNewick=Newick, **kwargs)
 
-    @cached_property
+    @clearable_cached_property
     def LCA_dict(self):
         """Dict that associate to each pair of taxons its least common ancestor"""
         result = {}
