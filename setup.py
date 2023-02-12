@@ -17,7 +17,7 @@ setup(name="phylonetwork",
       # package_dir = {'phylonetwork': 'src/phylonetwork'},
       python_requires='>=3.7',
       install_requires=[
-          'networkx>=2,<3',
+          'networkx>=2',
           'pyparsing',
           'numpy',
           'cached_property'
