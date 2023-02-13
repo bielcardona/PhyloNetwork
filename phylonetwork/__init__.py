@@ -209,9 +209,9 @@ class PhylogeneticNetwork(NetworkShape):
 
     """
 
-    def __init__(self, eNewick=None, sequence=None, mu_data=None, **kwargs):  # noqa
+    def __init__(self, eNewick=None, sequence=None, mu_repr=None, **kwargs):  # noqa
         """
-        Initializes a PhylogeneticNetwork instance. If `eNewick`, `sequence` or `mu_data` is given, it will be populated.
+        Initializes a PhylogeneticNetwork instance. If `eNewick`, `sequence` or `mu_repr` is given, it will be populated.
 
         The (e)Newick features implemented are:
 
@@ -226,8 +226,8 @@ class PhylogeneticNetwork(NetworkShape):
             self._from_eNewick(eNewick)
         elif sequence is not None:
             self._from_sequence(sequence)
-        elif mu_data is not None:
-            self._from_mu_data(mu_data)
+        elif mu_repr is not None:
+            self._from_mu_representation(mu_repr)
 
     @staticmethod
     def _process_metadata(string):
@@ -300,24 +300,26 @@ class PhylogeneticNetwork(NetworkShape):
         for i in range(len(sequence) - 1, -1, -1):
             self.add_pair(sequence[i])
 
-    def _from_mu_data(self, mu_data):
+    def _from_mu_representation(self, mu_representation):
         """For private use, build an orhcard network from extended mu-data."""
-        if not mu_data:
+        if type(mu_representation) == dict:
+            mu_representation = list(mu_representation.values())
+        if not mu_representation:
             raise Exception("No mu-data provided.")
-        if len(mu_data) == 1:
+        if len(mu_representation) == 1:
             # trivial network
-            leaf = mu_data[0].index(1)
+            leaf = mu_representation[0].index(1)
             root = self.new_node()
             self.root = root
             self.nodes[root]['label'] = str(leaf)
             return
         S = []
-        mu_data = [list(mu) for mu in mu_data if sum(mu) > 1]
-        lenmu = len(mu_data[0])
-        mu_root = max(mu_data)
-        while mu_data:
+        mu_representation = [list(mu) for mu in mu_representation if sum(mu) > 1]
+        lenmu = len(mu_representation[0])
+        mu_root = max(mu_representation)
+        while mu_representation:
             found = False
-            for mu in mu_data:
+            for mu in mu_representation:
                 s = sum(mu)
                 if s == 2:
                     p = tuple([i for i in range(1, lenmu) if mu[i] == 1])
@@ -325,10 +327,10 @@ class PhylogeneticNetwork(NetworkShape):
                     found = True
                     # reduce p=(i,j)
                     try:
-                        mu_data.remove(mu)
+                        mu_representation.remove(mu)
                     except:
                         pass
-                    for m in mu_data:
+                    for m in mu_representation:
                         m[p[0]] = 0
                     break
                 elif s == 3 and mu[0] == 1:
@@ -340,10 +342,10 @@ class PhylogeneticNetwork(NetworkShape):
                     found = True
                     # reduce p=(i,j)
                     try:
-                        mu_data.remove(mu)
+                        mu_representation.remove(mu)
                     except:
                         pass
-                    for m in mu_data:
+                    for m in mu_representation:
                         m[0] -= m[p[0]]
                         m[p[0]] -= m[p[1]]
                     break
@@ -512,7 +514,7 @@ class PhylogeneticNetwork(NetworkShape):
         return data
 
     @clearable_cached_property
-    def emu_data(self):
+    def emu_representation(self):
         """Dict corresponding to the extended mu-data (no reticulations)."""
         data = self.emu_dict
         return {key: data[key] for key in data if not self.is_reticulation(key)}
@@ -685,7 +687,7 @@ class PhylogeneticNetwork(NetworkShape):
     def reducible_pairs(self):
         """List of the reducible pairs."""
         result = []
-        for mu in self.emu_data.values():
+        for mu in self.emu_representation.values():
             s = sum(mu)
             if s == 2:
                 result.append(tuple([i for i in range(1, len(self.cached_taxa) + 1) if mu[i] == 1]))
@@ -740,8 +742,8 @@ class PhylogeneticNetwork(NetworkShape):
 
     def distance(self, other):
         """Returns the distance between self and other."""
-        mu1 = [list(mu) for mu in self.emu_data.values()]
-        mu2 = [list(mu) for mu in other.emu_data.values()]
+        mu1 = [list(mu) for mu in self.emu_representation.values()]
+        mu2 = [list(mu) for mu in other.emu_representation.values()]
         return len([mu for mu in mu1 + mu2 if mu not in mu1 or mu not in mu2])
 
     def draw(self):
