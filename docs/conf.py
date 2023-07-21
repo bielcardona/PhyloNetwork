@@ -21,7 +21,7 @@ print(sys.executable)
 # -- Project information -----------------------------------------------------
 
 project = 'PhyloNetwork'
-copyright = '2020, Biel Cardona'
+copyright = '2023, Biel Cardona'
 author = 'Biel Cardona'
 
 
