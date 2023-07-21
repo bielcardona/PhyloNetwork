@@ -6,4 +6,5 @@ python:
     - method: pip
       path: .
     - requirements: docs/requirements.txt
+  setup_py_install: true
   system_packages: true
