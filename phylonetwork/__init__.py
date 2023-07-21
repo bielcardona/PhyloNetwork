@@ -196,7 +196,8 @@ class PhylogeneticNetwork(NetworkShape):
     * Internal nodes _may_ be labeled
     * All labels are different
 
-    If `eNewick` is given, it will be populated.
+    It can be given by their `eNewick`, its reduction `sequence` (for orchard networks), or its `mu_repr` (for tree-child networks).
+    If none of those are given, it will be created empty.
 
     The (e)Newick features implemented are:
 
